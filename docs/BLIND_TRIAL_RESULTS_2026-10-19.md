@@ -65,6 +65,6 @@
 - B02：住所なし予測CIとログ固定 ✅（[#39236943433](https://github.com/moyashimisosoup/koredoko/actions/runs/39236943433)）
 - B03：公式住所をGSI参照点に照合し精度ラベル付与 ✅
 - B04：4件の包含判定・失敗分析 ✅（[#39237292452](https://github.com/moyashimisosoup/koredoko/actions/runs/39237292452)）
-- B05：回帰試験化・main保存・読戻し確認（PR完了後）
+- B05：回帰試験化・main保存・読戻し確認 ✅（[PR #8](https://github.com/moyashimisosoup/koredoko/pull/8) / [CI #39237607124](https://github.com/moyashimisosoup/koredoko/actions/runs/39237607124) / [main commit f4f7fe8](https://github.com/moyashimisosoup/koredoko/commit/f4f7fe8c0c6f4df248f2b6b4a83724361575c3d2)）。Python3.11/3.13各128件、Node.js32件に合格。
 
-評価工程のCI・main統合前時点では4/5=80%。**全体工程P0〜P5=1/6=17%・歩行経路PoC=5/8=63%・P1内部3/5=60%は据え置き**。
+**B01〜B05=5/5（100%）**。この数字は本試験の研究パイプラインの完了条件のみを示し、位置推定の精度・安全性が100%という意味ではない。**全体工程P0〜P5=1/6=17%・歩行経路PoC=5/8=63%・P1内部3/5=60%は据え置き**。
