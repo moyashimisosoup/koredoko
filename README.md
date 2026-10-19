@@ -21,6 +21,9 @@
 ## 開発資料
 
 - [全体ロードマップ](docs/ROADMAP.md)
+- [R06 出入口座標の比較検証](docs/R06_EXIT_CROSSCHECK_2026-10-19.md)
+- [P1 入力MVPの仕様・課題](docs/P1_INPUT_REVIEW_2026-10-19.md)
+- [入力画面（開発中）](index.html)：定型JSONと原文の入力点検。GitHub Pages未公開
 - [開発・品質管理上のルール](AGENTS.md)
 
 ## 安全と精度

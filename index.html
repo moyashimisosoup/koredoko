@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>これどこ | 物件条件の点検</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#202b35;background:#f6f7f6}
+    *{box-sizing:border-box}body{margin:0}button,textarea,input{font:inherit}
+    main{max-width:900px;padding:28px 18px 70px;margin:auto}
+    h1{font-size:clamp(26px,5vw,38px);letter-spacing:-.04em;margin:0 0 8px}h2{font-size:18px;margin:0 0 12px}
+    p{line-height:1.65;margin:8px 0 18px;color:#586675}
+    .eyebrow{color:#51667b;font-size:13px;font-weight:700;letter-spacing:.1em}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .panel{background:white;border:1px solid #d7dfdb;border-radius:20px;padding:18px;margin:18px 0;box-shadow:0 2px 12px #1c3c5010}
+    label{display:block;font-weight:700;font-size:13px;margin:14px 0 8px}
+    textarea,input{display:block;width:100%;padding:12px;border:1px solid #aebbb7;border-radius:10px;background:#fff;color:#202b35;line-height:1.5}
+    textarea{min-height:190px;resize:vertical}#original{min-height:100px}
+    input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid #2c8774;outline-offset:2px}
+    button{border:1px solid #a4b3ad;background:#fff;color:#244337;border-radius:100px;padding:12px 17px;cursor:pointer;font-weight:700;min-height:44px}
+    button.primary{background:#286b58;color:white;border-color:#286b58}
+    button:hover{filter:brightness(.97)}.actions{display:flex;gap:8px;flex-wrap:wrap}
+    .muted{color:#637477;font-size:13px}.small{font-size:12px}
+    .status{border-radius:12px;background:#f2f5f3;padding:14px;line-height:1.6}
+    .ok{border-left:4px solid #3f806d}.bad{border-left:4px solid #bd5a54}
+    .warning{color:#79581f}.error{color:#a43a35}
+    .pill{display:inline-block;border:1px solid #bdcec8;border-radius:99px;padding:3px 9px;margin:3px 4px 4px 0;font-size:12px}
+    ul{padding-left:21px;line-height:1.75;overflow-wrap:anywhere}
+    .detail{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.6;color:#38526b}
+    .hidden{display:none!important}
+    @media(max-width:650px){main{padding:22px 13px 60px}.grid{grid-template-columns:1fr}.panel{padding:16px;margin:12px 0}button{flex:1}textarea{min-height:160px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">APP-023 / koredoko</div>
+  <h1>これどこ</h1>
+  <p>公開物件の情報を整理し、<strong>出典・徒歩分数・抽出根拠</strong>を点検する試作品です。現時点では所在地の推定や地図照合を行いません。</p>
+  <section class="panel" aria-label="物件入力">
+    <h2>1. 情報を入力</h2>
+    <div class="grid">
+      <div>
+        <label for="url">物件URL（記録用）</label>
+        <input type="url" id="url" placeholder="https://...">
+        <div class="muted small">URLの自動取得は未実装です。入力したURLへアクセス・送信しません。</div>
+      </div>
+      <div>
+        <label for="original">元の広告本文（任意）</label>
+        <textarea id="original" spellcheck="false" placeholder="原文を貼ると引用が存在するか照合します"></textarea>
+      </div>
+    </div>
+    <label for="payload">定型JSON（必須）</label>
+    <textarea id="payload" spellcheck="false" aria-describedby="data-help" placeholder="AIが抽出した schema_version: 0.2 のJSONを貼り付けてください"></textarea>
+    <p class="muted small" id="data-help">広告の原文がない場合、JSONの構造を点検できても抽出内容の正しさは確認できません。</p>
+    <div class="actions">
+      <button class="primary" id="check" type="button">入力内容を点検</button>
+      <button id="example" type="button">架空のサンプル</button>
+      <button id="prompt" type="button">AI抽出用の指示をコピー</button>
+      <button id="clear" type="button">入力を消去</button>
+    </div>
+    <p class="muted small" id="notice" role="status" aria-live="polite"></p>
+  </section>
+  <section class="panel" id="results" aria-live="polite" aria-label="検証結果">
+    <h2>2. 点検結果</h2>
+    <p id="placeholder">JSONを貼り付けて「入力内容を点検」を押してください。</p>
+    <div id="report" class="hidden">
+      <div class="status" id="status"></div>
+      <h2 style="margin-top:22px">抽出された条件</h2>
+      <div id="facts"></div>
+      <h2 style="margin-top:22px">問題点・注意事項</h2>
+      <ul id="messages"></ul>
+    </div>
+  </section>
+  <p class="muted small">データの検査はこのブラウザ内で行い、外部サーバーへ送信しません。画面を閉じると入力内容は保持されません。JSON Schema全体の正式検証や広告情報の正誤判定は今後の工程です。</p>
+</main>
+<script type="module">
+import {reviewInput} from "./src/input_review.mjs";
+const el = id => document.getElementById(id);
+const prompt = [
+"次の公開不動産広告から情報を抽出し、koredokoのJSON契約v0.2に沿うJSONのみ返してください。",
+"schema_versionは0.2、sourcesは{id,method:'ai_json',url,retrieved_at,sha256,terms_checked}の配列、",
+"listingにはstations[{name,line,entity_id,walk_minutes,travel_mode,qualifier}],nearby[{name,kind,category,walk_minutes,qualifier}]、",
+"property_type,location_hint,built_year,building_floors,unit_floor,structure,area_sqm,layoutを含めてください。",
+"evidenceには各明示的条件のfield_path、source_id、kind:'explicit'、verbatim_excerpt、dependency_groupを含めてください。",
+"不明値はnullにしてください。広告にない情報を推測で補いません。URLだけで本文が読めない場合は、読めないと伝えてください。",
+"元データの文言を正確に引用してください。出力はJSONだけにしてください。"
+].join("\n");
+function setNotice(msg){el("notice").textContent=msg;}
+function addLi(ul,text,type){const li=document.createElement("li");li.textContent=text;if(type)li.className=type;ul.append(li);}
+function label(text){const x=document.createElement("span");x.className="pill";x.textContent=text;el("facts").append(x);}
+el("example").addEventListener("click", async()=>{
+  try{const r=await fetch("./examples/synthetic_listing_v0.2.json",{cache:"no-store"});if(!r.ok)throw new Error(String(r.status));
+    const d=await r.json();el("payload").value=JSON.stringify(d,null,2);el("original").value="";setNotice("架空のサンプルを読み込みました。");}
+  catch(_){setNotice("サンプルを取得できません。Webサーバー上で開いてください。");}
+});
+el("check").addEventListener("click",()=>{
+  const result=reviewInput(el("payload").value,el("original").value);
+  el("placeholder").classList.add("hidden");el("report").classList.remove("hidden");
+  el("status").className="status "+(result.valid?"ok":"bad");
+  el("status").textContent=result.valid?"入力形式の基本点検を通過。ただし物件の正確性は未確認です。":"入力に問題があります。位置推定には使用できません。";
+  el("facts").replaceChildren();el("messages").replaceChildren();
+  if(result.data?.listing){
+    const d=result.data.listing;
+    (Array.isArray(d.stations)?d.stations:[]).forEach(x=>label("駅: "+String(x.name||"不明")+" / 徒歩"+String(x.walk_minutes??"不明")+"分"));
+    (Array.isArray(d.nearby)?d.nearby:[]).forEach(x=>label("施設: "+String(x.name||"不明")+" / 徒歩"+String(x.walk_minutes??"不明")+"分"));
+    if(d.built_year)label("築年: "+d.built_year);if(d.building_floors)label("建物: "+d.building_floors+"階");
+  }
+  if(!result.errors.length&&!result.warnings.length)addLi(el("messages"),"基本検査で追加の注意事項はありません。ただし実物件の特定精度とは無関係です。");
+  result.errors.forEach(e=>addLi(el("messages"),e,"error"));result.warnings.forEach(e=>addLi(el("messages"),e,"warning"));
+  setNotice("入力内容をブラウザ内で点検しました。");
+});
+el("prompt").addEventListener("click",async()=>{
+  try{await navigator.clipboard.writeText(prompt);setNotice("AI抽出用プロンプトをコピーしました。");}
+  catch(_){setNotice("コピー権限がありません。安全なHTTPSページで開いてください。");}
+});
+el("clear").addEventListener("click",()=>{
+  ["payload","original","url"].forEach(x=>el(x).value="");
+  el("placeholder").classList.remove("hidden");el("report").classList.add("hidden");
+  setNotice("入力内容を消去しました。");
+});
+</script>
+</body>
+</html>
