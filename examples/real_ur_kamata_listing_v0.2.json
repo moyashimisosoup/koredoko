@@ -4,7 +4,7 @@
     {
       "id": "ur-kamata-official-20261019",
       "url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3330.html",
-      "method": "manual",
+      "method": "ai_json",
       "retrieved_at": null,
       "sha256": null,
       "terms_checked": false
