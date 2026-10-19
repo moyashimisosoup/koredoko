@@ -1,0 +1,45 @@
+{
+  "warning": "These references were added only after address-free prediction CI run 39236943433 fixed commit 080c24c9de63586469ad267b9c8fd1eeb9bcac16. Points come from GSI address-search response and might be address-block representatives, NOT surveyed building entrances. Buildings are already public named UR housing complexes; no resident, room or unit addresses recorded.",
+  "prediction_locked_commit": "080c24c9de63586469ad267b9c8fd1eeb9bcac16",
+  "prediction_run_url": "https://github.com/moyashimisosoup/koredoko/actions/runs/39236943433",
+  "reference_source": "https://msearch.gsi.go.jp/address-search/AddressSearch",
+  "reference_source_role": "official public address geocoding; representative of returned address match, location precision differs by result",
+  "records": [
+    {
+      "id": "C01",
+      "public_housing_name": "蒲田駅前ハイツ",
+      "official_ad": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3330.html",
+      "gsi_title": "東京都大田区蒲田五丁目１３番",
+      "reference_lat": 35.561253,
+      "reference_lng": 139.715759,
+      "matched_level": "block_only; lot suffix omitted"
+    },
+    {
+      "id": "C02",
+      "public_housing_name": "目白",
+      "official_ad": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_0541.html",
+      "gsi_title": "東京都豊島区目白二丁目２７番１３号",
+      "reference_lat": 35.724297,
+      "reference_lng": 139.708817,
+      "matched_level": "full_street_address_label_not_entrance"
+    },
+    {
+      "id": "C03",
+      "public_housing_name": "神田小川町ハイツ",
+      "official_ad": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3820.html",
+      "gsi_title": "東京都千代田区神田小川町一丁目７番",
+      "reference_lat": 35.694077,
+      "reference_lng": 139.765594,
+      "matched_level": "block_only"
+    },
+    {
+      "id": "C04",
+      "public_housing_name": "豊洲四丁目",
+      "official_ad": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3200.html",
+      "gsi_title": "東京都江東区豊洲四丁目１０番",
+      "reference_lat": 35.653416,
+      "reference_lng": 139.801849,
+      "matched_level": "large_multi_building_block; does_not_establish_all_building_coordinates"
+    }
+  ]
+}
