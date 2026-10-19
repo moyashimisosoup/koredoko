@@ -48,7 +48,7 @@
 ## 検証できたことと限界
 
 - **確認できたこと**：公開URLから公式ページ本文を読めた。既存JSON契約に広告の主な徒歩情報などを変換できた。駅のPOI実データを取得できた。
-- **CI成功を確認するまで未達**：Pythonスキーマ検査・ブラウザ基本検査・駅候補フィルタの追加テスト（作成時点のステータス）。
+- **CI合格を確認**：[PR #6](https://github.com/moyashimisosoup/koredoko/pull/6) について [Actions #39233788131](https://github.com/moyashimisosoup/koredoko/actions/runs/39233788131) でPython 3.11/3.13の各110/110件、Node.js 24の31/31件が成功。実例追加分はPython 3件、Node.js 15件。テスト成功は位置推定正解率を意味しない。
 - **未検証**：アプリ自体のURL自動抽出、完全な広告内容抽出、写真解析、OpenPOIからの建物同定、駅出口・歩行経路、PLATEAU建物照合、PC/iPhone実操作、実物件の独立正解率、GitHub Pages配信。
 
 ## 精度について
