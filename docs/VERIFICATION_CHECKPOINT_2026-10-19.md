@@ -26,7 +26,7 @@
 
 1. v0.4アーカイブそのものはこのセッションで展開し、Python単体テスト **91/91** と保存済みルート観測のオフライン再点検 **6/6** を実行した。
 2. 保存済みデータの結果は、道路への端点吸着が規定の暫定基準25m以下の「探索用・暫定」5件と、T01（終点約44m）の「要確認」1件。いずれも正式な駅・建物入口の独立検証はない。
-3. Github上のPRブランチへの移管テストは、CIが実行・成功し結果を読み戻すまでは「合格済み」と記さない。
+3. GitHub上の移管テストは [PR #1](https://github.com/moyashimisosoup/koredoko/pull/1) にてPython 3.11/3.13各91/91件成功。 [Actions run #39200837652](https://github.com/moyashimisosoup/koredoko/actions/runs/39200837652) の両ジョブ成功とログを読戻し確認し、[squash commit 025b08d](https://github.com/moyashimisosoup/koredoko/commit/025b08d3f43bd68ac54378d54ccf2c4785b08a45) でmainへ統合、ファイルを読戻し確認した。
 4. **実物件の位置推定正解率、候補内包含率、駅出入口の座標精度は未測定**。合成データテストが通っても保証を宣言しない。
 
 ## 関連する品質上の問題
