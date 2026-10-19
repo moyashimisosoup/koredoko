@@ -1,0 +1,189 @@
+{
+  "schema_version": "comparison-v0.1",
+  "dataset_kind": "synthetic",
+  "description": "架空の公共施設周辺にある架空集合住宅。実在する建物・住戸の住所や緯度経度は含まない。",
+  "conditions": [
+    {
+      "id": "walk_a",
+      "kind": "walk",
+      "place_id": "station-a",
+      "label": "A駅 徒歩7分",
+      "min_minutes": 7,
+      "max_minutes": 7,
+      "travel_mode": "walk_only"
+    },
+    {
+      "id": "walk_a_other_line",
+      "kind": "walk",
+      "place_id": "station-a",
+      "label": "A駅（別路線）徒歩7分",
+      "min_minutes": 7,
+      "max_minutes": 7,
+      "travel_mode": "walk_only"
+    },
+    {
+      "id": "walk_b",
+      "kind": "walk",
+      "place_id": "station-b",
+      "label": "B駅 徒歩11分",
+      "min_minutes": 11,
+      "max_minutes": 11,
+      "travel_mode": "walk_only"
+    },
+    {
+      "id": "walk_grocery",
+      "kind": "walk",
+      "place_id": "grocery-c",
+      "label": "スーパーC 徒歩3分",
+      "min_minutes": 3,
+      "max_minutes": 3,
+      "travel_mode": "walk_only"
+    },
+    {
+      "id": "built",
+      "kind": "built_year",
+      "label": "築年 2012年",
+      "value": 2012
+    },
+    {
+      "id": "floors",
+      "kind": "building_floors",
+      "label": "建物5階建",
+      "value": 5
+    }
+  ],
+  "candidates": [
+    {
+      "id": "A",
+      "label": "候補A（架空）",
+      "distances": [
+        {
+          "place_id": "station-a",
+          "meters": 526,
+          "method": "pedestrian_route",
+          "entrance_verified": true,
+          "graph_pinned": true,
+          "endpoint_snap_m": 3,
+          "source_id": "synthetic-walk-A"
+        },
+        {
+          "place_id": "station-b",
+          "meters": 846,
+          "method": "pedestrian_route",
+          "entrance_verified": true,
+          "graph_pinned": true,
+          "endpoint_snap_m": 5,
+          "source_id": "synthetic-walk-B"
+        },
+        {
+          "place_id": "grocery-c",
+          "meters": 203,
+          "method": "pedestrian_route",
+          "entrance_verified": true,
+          "graph_pinned": true,
+          "endpoint_snap_m": 4,
+          "source_id": "synthetic-walk-C"
+        }
+      ],
+      "attributes": {
+        "built_year": {
+          "value": 2012,
+          "verified": true,
+          "source_id": "synthetic-registry-A"
+        },
+        "building_floors": {
+          "value": 5,
+          "verified": true,
+          "source_id": "synthetic-registry-A"
+        }
+      }
+    },
+    {
+      "id": "B",
+      "label": "候補B（架空）",
+      "distances": [
+        {
+          "place_id": "station-a",
+          "meters": 512,
+          "method": "pedestrian_route",
+          "entrance_verified": true,
+          "graph_pinned": true,
+          "endpoint_snap_m": 3,
+          "source_id": "synthetic-walk-A2"
+        },
+        {
+          "place_id": "station-b",
+          "meters": 987,
+          "method": "pedestrian_route",
+          "entrance_verified": true,
+          "graph_pinned": true,
+          "endpoint_snap_m": 5,
+          "source_id": "synthetic-walk-B2"
+        },
+        {
+          "place_id": "grocery-c",
+          "meters": 212,
+          "method": "pedestrian_route",
+          "entrance_verified": true,
+          "graph_pinned": true,
+          "endpoint_snap_m": 3,
+          "source_id": "synthetic-walk-C2"
+        }
+      ],
+      "attributes": {
+        "built_year": {
+          "value": 2012,
+          "verified": true,
+          "source_id": "synthetic-registry-B"
+        },
+        "building_floors": {
+          "value": 8,
+          "verified": true,
+          "source_id": "synthetic-registry-B"
+        }
+      }
+    },
+    {
+      "id": "C",
+      "label": "候補C（架空）",
+      "distances": [
+        {
+          "place_id": "station-a",
+          "meters": 517,
+          "method": "straight_line",
+          "source_id": "synthetic-poi-A"
+        },
+        {
+          "place_id": "station-b",
+          "meters": 833,
+          "method": "straight_line",
+          "source_id": "synthetic-poi-B"
+        },
+        {
+          "place_id": "grocery-c",
+          "meters": 195,
+          "method": "straight_line",
+          "source_id": "synthetic-poi-C"
+        }
+      ],
+      "attributes": {
+        "built_year": {
+          "value": 2012,
+          "verified": false,
+          "source_id": "synthetic-profile-C"
+        },
+        "building_floors": {
+          "value": 5,
+          "verified": false,
+          "source_id": "synthetic-profile-C"
+        }
+      }
+    },
+    {
+      "id": "D",
+      "label": "候補D（架空・情報不足）",
+      "distances": [],
+      "attributes": {}
+    }
+  ]
+}
