@@ -20,6 +20,9 @@ test("UR public listing can pass input basic checks with exact excerpts",()=>{
  assert.equal(report.valid,true,report.errors.join(", "));
  assert.deepEqual(report.errors,[]);
 });
+test("AI-assisted extraction method remains explicit in provenance",()=>{
+ assert.equal(listing().sources[0].method,"ai_json");
+});
 test("missing advertising source content cannot be mistaken for full validation",()=>{
  const report=reviewInput(JSON.stringify(listing()));
  assert.equal(report.valid,true);
