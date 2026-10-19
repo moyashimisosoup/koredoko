@@ -108,14 +108,17 @@ function evaluateWalk(c, candidate) {
   const records = candidate.distances.filter(d => d.place_id === c.place_id);
   if (!records.length) return unobserved(c);
   const strongs = records.filter(d => routeTier(d) === "strong");
-  if (strongs.length > 1) {
-    const sourceFamilies = new Set(strongs.map(x => x.source_id));
-    const distances = strongs.map(x => x.meters);
-    if (sourceFamilies.size > 1 && Math.max(...distances) - Math.min(...distances) > 80) {
-      return unobserved(c, "conflicting_strong_distance_sources");
+  const weaks = records.filter(d => routeTier(d) === "weak");
+  // Never select a convenient measurement when repeated records disagree.
+  // Conflicting numbers must be held for review regardless of source ID.
+  const selectedTier = strongs.length ? strongs : weaks;
+  if (selectedTier.length > 1) {
+    const distances = selectedTier.map(x => x.meters);
+    if (Math.max(...distances) - Math.min(...distances) > 80) {
+      return unobserved(c, "conflicting_distance_observations");
     }
   }
-  const preferred = strongs[0] || records.find(x => routeTier(x) === "weak");
+  const preferred = strongs[0] || weaks[0];
   if (!preferred) return unobserved(c, "entrance_or_graph_not_verified");
   const tier = routeTier(preferred);
   const lower = (c.min_minutes - 1) * 80;
