@@ -25,4 +25,4 @@
 
 - 重要な変更は小さなPRとCI確認を優先する。既存のmain内容・HEADを読んで競合を避ける。
 - 各マイルストーンの出口条件・未完了事項は `docs/ROADMAP.md` に記録する。
-- プロジェクト全体の正式なAPP-IDはSession Deck台帳との照合・登録完了まで未採番とし、推測で決めない。
+- 正式APP-IDは **APP-023**。Session Deck `docs/APP_PORTFOLIO.md` への登録と読戻しを2026-10-19に確認済み。
