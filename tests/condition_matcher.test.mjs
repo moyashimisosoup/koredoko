@@ -93,7 +93,19 @@ test("multiple discordant strong sources are not silently cherry-picked",()=>{
  input.candidates[0].distances.push({...input.candidates[0].distances[0],meters:1000,source_id:"other-qualified-survey"});
  const a=entry(evaluateCandidates(input),"A");
  assert.equal(detail(a,"walk_a").status,"unknown");
- assert.equal(detail(a,"walk_a").reason,"conflicting_strong_distance_sources");
+ assert.equal(detail(a,"walk_a").reason,"conflicting_distance_observations");
+});
+test("same-source conflicting strong routes are not cherry-picked",()=>{
+ const input=fixture();
+ input.candidates[0].distances.push({...input.candidates[0].distances[0],meters:950});
+ const a=entry(evaluateCandidates(input),"A");
+ assert.equal(detail(a,"walk_a").reason,"conflicting_distance_observations");
+});
+test("contradictory straight-line proxies are held for review",()=>{
+ const input=fixture();
+ input.candidates[2].distances.push({...input.candidates[2].distances[0],meters:980});
+ const a=entry(evaluateCandidates(input),"C");
+ assert.equal(detail(a,"walk_a").reason,"conflicting_distance_observations");
 });
 test("range walking minutes are supported as one interval",()=>{
  const input=fixture();input.conditions[0].min_minutes=7;input.conditions[0].max_minutes=11;
