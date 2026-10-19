@@ -10,6 +10,8 @@
 
 ## 状態（2026-10-19 JST）
 
+- 正式APP-ID：**APP-023**（Session Deck台帳に登録・読戻し確認済み）。
+
 - GitHubリポジトリ：Public作成・初期化中。作成元は [App Factory Issue #10](https://github.com/moyashimisosoup/app-factory/issues/10)。
 - P0：APIと基礎データ点検を実施。P1以降は未完成。
 - 既存研究資料（設計v0.4、API実測、経路検証、テスト群）のリポジトリへの移管は別工程で、**現時点では移管完了とみなさない**。
