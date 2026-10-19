@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>koredoko｜実物件の徒歩距離計算</title>
+<style>
+:root{font:15px/1.55 system-ui,-apple-system,"Hiragino Kaku Gothic ProN",sans-serif;color:#243a31;background:#f5f7f4}*{box-sizing:border-box}
+body{margin:0}main{max-width:890px;margin:auto;padding:28px 16px 60px}
+h1{font-size:clamp(26px,4vw,37px);margin:8px 0}h2{font-size:18px;margin:0 0 12px}
+p{color:#596d63;margin:10px 0 15px}a{color:#24674e}
+.panel{background:#fff;border:1px solid #dbe5dc;border-radius:18px;margin:16px 0;padding:20px}
+select,input,button{font:inherit;padding:10px;border:1px solid #aebfb4;border-radius:10px;background:white;min-height:44px;color:#244d38}
+select{width:100%}input{width:100px}button{font-weight:700;cursor:pointer}
+button:disabled{opacity:.5}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #6baf98;outline-offset:2px}
+.row{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.card{border:1px solid #dce7df;background:#fcfdfa;border-radius:13px;padding:15px;margin:12px 0}
+.data{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}
+.data div{background:#f0f3f0;border-radius:8px;padding:10px;font-size:12px;color:#5b7165}
+.data strong{display:block;color:#263a31;font-size:18px}
+.notice{border-radius:11px;background:#fff5df;border:1px solid #eee1c0;padding:12px;font-size:13px;color:#765b27}
+.muted{color:#65786b;font-size:12px}
+.tag{border-radius:99px;background:#e9f1e8;color:#306147;padding:4px 10px;font-size:11px;font-weight:700}
+.tag.caution{background:#fff0d8;color:#805f25}
+@media(max-width:600px){main{padding:19px 12px}.panel{padding:14px}.data{gap:5px}.data div{padding:8px}.data strong{font-size:16px}}
+</style></head>
+<body><main>
+<div class="muted">APP-023 / <a href="./index.html">入力画面</a> / <a href="./compare.html">総合比較</a></div>
+<h1>これどこ　実データ計算</h1>
+<p>実在する公開UR物件の交通条件と、歩行経路APIの計算結果を比較します。徒歩分数を変更するとその場で再計算します。</p>
+<section class="panel"><h2>1. 公開物件を選ぶ</h2><select id="complex" aria-label="公開物件を選ぶ" disabled><option>読み込み中</option></select>
+<p id="source" class="muted"></p></section>
+<section class="panel"><h2>2. 徒歩距離の照合</h2>
+<div class="notice">起点は国土地理院の住所代表点、終点はOpenPOIの駅代表点です。建物入口・駅出口の実測距離ではないため、広告との差があっても物件や広告の誤りとは確定しません。</div>
+<div id="results" aria-live="polite"></div><p id="status" class="muted" role="status"></p></section>
+<section class="panel"><h2>出典・制約</h2><p class="muted">歩行経路9本は2026-10-19にValhalla公開デモAPIへ実問い合わせした結果。端点の道路吸着量も記録しています。利用者が「再取得」を押した場合だけ1経路を問い合わせます。再取得が通信制限やCORSで失敗しても、保存済み観測値を使った計算は機能します。</p>
+<p class="muted"><a href="https://valhalla.github.io/valhalla/" target="_blank" rel="noopener noreferrer">Valhalla</a> / <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a> / <a href="https://docs.openpoiapi.com/" target="_blank" rel="noopener noreferrer">OpenPOI</a> / <a href="https://msearch.gsi.go.jp/address-search/AddressSearch" target="_blank" rel="noopener noreferrer">国土地理院住所検索</a></p></section>
+</main>
+<script type="module">
+import {evaluatePublicComplex,fetchWalkingRoute} from "./src/real_walk_calculator.mjs";
+const el=id=>document.getElementById(id);
+let dataset=null,selected=null,busy=false;
+const mk=(tag,value,cls)=>{const n=document.createElement(tag);n.textContent=value||"";if(cls)n.className=cls;return n};
+const status=s=>el("status").textContent=s;
+function render(){
+ if(!selected)return;
+ const item=dataset.cases.find(c=>c.case_id===selected);
+ const root=el("results");root.replaceChildren();
+ const source=el("source");source.replaceChildren();
+ const link=mk("a",item.complex+"の公式情報");link.href=item.official_url;link.target="_blank";link.rel="noopener noreferrer";
+ source.append(link,mk("span"," / 住所代表点："+item.gsi_precision));
+ for(const group of item.conditions){
+  const card=mk("section","","card");
+  const head=mk("div","","row");head.append(mk("strong",group.label));
+  const label=mk("label","広告徒歩分数（変更して再計算） ");
+  const inp=mk("input");inp.type="number";inp.min=1;inp.max=180;inp.step=1;
+  inp.value=String(group.current_minutes??group.minutes_max);
+  inp.setAttribute("aria-label",group.label+"の徒歩分数");
+  const v=Number(inp.value);
+  const result=evaluatePublicComplex({...item,conditions:[group]},{[group.place_id]:v}).groups[0];
+  const value=result.outcome==="reference_band_near"?"参考距離帯内":result.outcome==="reference_distance_differs"?"数値差あり":"要確認";
+  head.append(mk("span",value,"tag"+(value==="参考距離帯内"?"":" caution")));
+  card.append(head);
+  inp.addEventListener("change",()=>{
+    const n=Number(inp.value);
+    if(Number.isInteger(n)&&n>=1&&n<=180){group.current_minutes=n;render()}
+    else{inp.value=String(group.current_minutes??group.minutes_max);status("徒歩分数は1〜180の整数です")}
+  });
+  label.append(inp);card.append(label);
+  card.append(mk("p","広告換算の参考距離帯："+result.band.lower_exclusive_m+"m超 ～ "+result.band.upper_inclusive_m+"m以下","muted"));
+  for(let j=0;j<result.rows.length;j++){
+   const obs=result.rows[j];const grid=mk("div","","data");
+   for(const [name,n] of [["道路経路",obs.road_m+"m"],["直線距離",obs.air_m+"m"],["端点補正",obs.start_snap_m+"m / "+obs.end_snap_m+"m"]]){
+     const col=mk("div");col.append(mk("span",name),mk("strong",n));grid.append(col);
+   }
+   card.append(grid);
+   const d=obs.delta_outside_band_m;
+   card.append(mk("p","代表点"+(j+1)+"：広告距離帯との差 "+(d>0?"+":"")+d+"m。"+(obs.status==="review_snap"?"端点補正が大きく判定保留。":"駅出入口は未確認。"),"muted"));
+   const btn=mk("button","この経路だけ再取得");btn.type="button";btn.disabled=busy;
+   btn.addEventListener("click",async()=>{
+     if(busy)return;busy=true;btn.disabled=true;status("この経路を1回だけ問い合わせ中…");
+     try{
+       group.targets[j].sample=await fetchWalkingRoute(item.origin,[group.targets[j].lat,group.targets[j].lon]);
+       status("API応答から新しく道路距離を計算しました。保存済みファイルは変更しません。");
+     }catch(e){status("再取得できませんでした。元の観測データを維持します："+String(e.message))}
+     finally{busy=false;render()}
+   });
+   card.append(btn);
+  }
+  if(result.reference_variation_m>80)card.append(mk("p","同一駅の代表点間で"+result.reference_variation_m+"m差があります。恣意的に1点を選ばず要確認とします。","muted"));
+  root.append(card);
+ }
+}
+async function init(){
+ try{
+  const r=await fetch("./examples/ur_real_pedestrian_routes_20261019.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);
+  dataset=await r.json();
+  el("complex").replaceChildren();
+  for(const c of dataset.cases){const op=mk("option",c.complex);op.value=c.case_id;el("complex").append(op)}
+  selected=dataset.cases[0].case_id;el("complex").disabled=false;
+  el("complex").addEventListener("change",()=>{selected=el("complex").value;render();status("")});
+  render();status("実際に取得した歩行経路データを読み込んで計算しました。");
+ }catch(e){status("入力データの読込に失敗しました。Webサーバーで開いてください："+String(e.message))}
+}
+init();
+</script></body></html>
