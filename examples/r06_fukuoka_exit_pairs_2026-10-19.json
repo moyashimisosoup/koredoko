@@ -1,0 +1,159 @@
+{
+  "recorded_on": "2026-10-19",
+  "purpose": "R06 research: subway-exit public dataset crosscheck. These are station exits, not home locations.",
+  "independence": "NOT VERIFIED: OSM 2025 map node editing and 2018 GTFS personal survey are distinguishable records, but absence of direct independent survey provenance prevents formal validation.",
+  "sources": {
+    "legacy": "https://github.com/kuwayamamasayuki/GTFS-FukuokaCitySubway/blob/master/scripts/data/legacy_entrances.csv",
+    "legacy_provenance": "https://github.com/kuwayamamasayuki/GTFS-FukuokaCitySubway/blob/master/docs/design/station-entrances.md",
+    "osm": "https://api.openstreetmap.org/api/0.6/",
+    "osm_changeset": "https://www.openstreetmap.org/changeset/174005616",
+    "osm_attribution": "© OpenStreetMap contributors | Open Database License (ODbL) | https://www.openstreetmap.org/copyright"
+  },
+  "mapping_note": "Exit number was matched using OSM current ref or historical name from 2025 node edit; train station north/south use current ref. This matching is research-only, pending independent station-operator coordinates.",
+  "entries": [
+    {
+      "key": "meinohama_north",
+      "official_station": "姪浜",
+      "identity_match": "osm_ref",
+      "legacy": {
+        "record_id": "1_Nex",
+        "lat": 33.583835,
+        "lon": 130.324827,
+        "source_revision": "legacy-2018-observations"
+      },
+      "osm": {
+        "node_id": "13015024451",
+        "lat": 33.5838529,
+        "lon": 130.3246932,
+        "first_seen": "2025-07-21T08:30:48Z",
+        "changeset_id": "169229879"
+      }
+    },
+    {
+      "key": "meinohama_south",
+      "official_station": "姪浜",
+      "identity_match": "osm_ref",
+      "legacy": {
+        "record_id": "1_Sex",
+        "lat": 33.583596,
+        "lon": 130.324785,
+        "source_revision": "legacy-2018-observations"
+      },
+      "osm": {
+        "node_id": "13271710434",
+        "lat": 33.5836015,
+        "lon": 130.3246797,
+        "first_seen": "2025-10-31T06:34:20Z",
+        "changeset_id": "174005616"
+      }
+    },
+    {
+      "key": "muromi_1",
+      "official_station": "室見",
+      "identity_match": "osm_historical_name",
+      "legacy": {
+        "record_id": "2_1ex",
+        "lat": 33.581001,
+        "lon": 130.339477,
+        "source_revision": "legacy-2018-observations"
+      },
+      "osm": {
+        "node_id": "13271710446",
+        "lat": 33.5810249,
+        "lon": 130.3394174,
+        "first_seen": "2025-10-31T06:34:20Z",
+        "changeset_id": "174005616"
+      }
+    },
+    {
+      "key": "muromi_2",
+      "official_station": "室見",
+      "identity_match": "osm_historical_name",
+      "legacy": {
+        "record_id": "2_2ex",
+        "lat": 33.580748,
+        "lon": 130.339452,
+        "source_revision": "legacy-2018-observations"
+      },
+      "osm": {
+        "node_id": "13271710444",
+        "lat": 33.580749,
+        "lon": 130.3395066,
+        "first_seen": "2025-10-31T06:34:20Z",
+        "changeset_id": "174005616"
+      }
+    },
+    {
+      "key": "muromi_3",
+      "official_station": "室見",
+      "identity_match": "osm_ref",
+      "legacy": {
+        "record_id": "2_3ex",
+        "lat": 33.580828,
+        "lon": 130.340523,
+        "source_revision": "legacy-2018-observations"
+      },
+      "osm": {
+        "node_id": "13271710435",
+        "lat": 33.5808354,
+        "lon": 130.3405071,
+        "first_seen": "2025-10-31T06:34:20Z",
+        "changeset_id": "174005616"
+      }
+    },
+    {
+      "key": "muromi_4",
+      "official_station": "室見",
+      "identity_match": "osm_ref",
+      "legacy": {
+        "record_id": "2_4ex",
+        "lat": 33.580604,
+        "lon": 130.340404,
+        "source_revision": "legacy-2018-observations"
+      },
+      "osm": {
+        "node_id": "13271710437",
+        "lat": 33.5806129,
+        "lon": 130.3404804,
+        "first_seen": "2025-10-31T06:34:20Z",
+        "changeset_id": "174005616"
+      }
+    },
+    {
+      "key": "muromi_5",
+      "official_station": "室見",
+      "identity_match": "osm_ref",
+      "legacy": {
+        "record_id": "2_5ex",
+        "lat": 33.580863,
+        "lon": 130.339993,
+        "source_revision": "legacy-2018-observations"
+      },
+      "osm": {
+        "node_id": "13271710439",
+        "lat": 33.5809023,
+        "lon": 130.339921,
+        "first_seen": "2025-10-31T06:34:20Z",
+        "changeset_id": "174005616"
+      }
+    },
+    {
+      "key": "muromi_6",
+      "official_station": "室見",
+      "identity_match": "osm_historical_name",
+      "legacy": {
+        "record_id": "2_6ex",
+        "lat": 33.580935,
+        "lon": 130.339708,
+        "source_revision": "legacy-2018-observations"
+      },
+      "osm": {
+        "node_id": "13271710442",
+        "lat": 33.5809334,
+        "lon": 130.3396835,
+        "first_seen": "2025-10-31T06:34:20Z",
+        "changeset_id": "174005616"
+      }
+    }
+  ]
+}
