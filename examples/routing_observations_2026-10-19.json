@@ -1,0 +1,156 @@
+{
+  "method": "Selected fields transcribed from v0.4 archived normalized public Valhalla demo responses, 2026-10-19 JST. Not a raw response or road-graph snapshot. Public-area test coordinates, no residential locations.",
+  "source_endpoint": "https://valhalla1.openstreetmap.de/route",
+  "entries": [
+    {
+      "id": "T01",
+      "start_lat_lon": [
+        35.681236,
+        139.767052
+      ],
+      "end_lat_lon": [
+        35.6767,
+        139.7641
+      ],
+      "road_m": 747,
+      "straight_m_rounded": 571,
+      "shape_first_lat_lon": [
+        35.681228,
+        139.767086
+      ],
+      "shape_last_lat_lon": [
+        35.676505,
+        139.76453
+      ],
+      "snapping_start_m_rounded": 3,
+      "snapping_end_m_rounded": 44,
+      "official_entrances_verified": false,
+      "routing_graph_snapshot_identified": false
+    },
+    {
+      "id": "T02",
+      "start_lat_lon": [
+        35.681236,
+        139.767052
+      ],
+      "end_lat_lon": [
+        35.6781,
+        139.7639
+      ],
+      "road_m": 687,
+      "straight_m_rounded": 450,
+      "shape_first_lat_lon": [
+        35.681228,
+        139.767086
+      ],
+      "shape_last_lat_lon": [
+        35.678054,
+        139.763885
+      ],
+      "snapping_start_m_rounded": 3,
+      "snapping_end_m_rounded": 5,
+      "official_entrances_verified": false,
+      "routing_graph_snapshot_identified": false
+    },
+    {
+      "id": "S01",
+      "start_lat_lon": [
+        35.689592,
+        139.700464
+      ],
+      "end_lat_lon": [
+        35.6875,
+        139.7038
+      ],
+      "road_m": 572,
+      "straight_m_rounded": 381,
+      "shape_first_lat_lon": [
+        35.68959,
+        139.700431
+      ],
+      "shape_last_lat_lon": [
+        35.687517,
+        139.703888
+      ],
+      "snapping_start_m_rounded": 3,
+      "snapping_end_m_rounded": 8,
+      "official_entrances_verified": false,
+      "routing_graph_snapshot_identified": false
+    },
+    {
+      "id": "B01",
+      "start_lat_lon": [
+        35.6591,
+        139.7006
+      ],
+      "end_lat_lon": [
+        35.6611,
+        139.7043
+      ],
+      "road_m": 580,
+      "straight_m_rounded": 401,
+      "shape_first_lat_lon": [
+        35.659111,
+        139.700552
+      ],
+      "shape_last_lat_lon": [
+        35.661154,
+        139.704248
+      ],
+      "snapping_start_m_rounded": 5,
+      "snapping_end_m_rounded": 8,
+      "official_entrances_verified": false,
+      "routing_graph_snapshot_identified": false
+    },
+    {
+      "id": "Y01",
+      "start_lat_lon": [
+        35.4553,
+        139.6332
+      ],
+      "end_lat_lon": [
+        35.4587,
+        139.6364
+      ],
+      "road_m": 670,
+      "straight_m_rounded": 476,
+      "shape_first_lat_lon": [
+        35.455276,
+        139.633219
+      ],
+      "shape_last_lat_lon": [
+        35.458694,
+        139.636395
+      ],
+      "snapping_start_m_rounded": 3,
+      "snapping_end_m_rounded": 1,
+      "official_entrances_verified": false,
+      "routing_graph_snapshot_identified": false
+    },
+    {
+      "id": "T03",
+      "start_lat_lon": [
+        35.681236,
+        139.767052
+      ],
+      "end_lat_lon": [
+        35.6801,
+        139.7698
+      ],
+      "road_m": 343,
+      "straight_m_rounded": 278,
+      "shape_first_lat_lon": [
+        35.681228,
+        139.767086
+      ],
+      "shape_last_lat_lon": [
+        35.680148,
+        139.769826
+      ],
+      "snapping_start_m_rounded": 3,
+      "snapping_end_m_rounded": 6,
+      "official_entrances_verified": false,
+      "routing_graph_snapshot_identified": false
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.2",
+  "sources": [{
+    "id": "demo-fictional-source",
+    "url": null,
+    "method": "manual",
+    "retrieved_at": null,
+    "sha256": null,
+    "terms_checked": true
+  }],
+  "listing": {
+    "property_type": "賃貸マンション（架空）",
+    "location_hint": "架空都市・架空区",
+    "stations": [
+      {"name": "架空駅A", "line": "架空線", "entity_id": null, "walk_minutes": 7, "travel_mode": "walk_only", "qualifier": "exact_advertised"},
+      {"name": "架空駅B", "line": null, "entity_id": null, "walk_minutes": 12, "travel_mode": "walk_only", "qualifier": "exact_advertised"}
+    ],
+    "nearby": [
+      {"name": "スーパー", "kind": "generic_category", "category": "grocery", "walk_minutes": 4, "qualifier": "exact_advertised"}
+    ],
+    "built_year": 2012,
+    "building_floors": 5,
+    "unit_floor": 3,
+    "structure": "RC造",
+    "area_sqm": 42.5,
+    "layout": "1LDK"
+  },
+  "evidence": [
+    {"field_path": "listing.stations[0].walk_minutes", "source_id": "demo-fictional-source", "kind": "explicit", "verbatim_excerpt": "架空駅A徒歩7分", "dependency_group": "advertisement-1"},
+    {"field_path": "listing.stations[1].walk_minutes", "source_id": "demo-fictional-source", "kind": "explicit", "verbatim_excerpt": "架空駅B徒歩12分", "dependency_group": "advertisement-1"},
+    {"field_path": "listing.nearby[0].walk_minutes", "source_id": "demo-fictional-source", "kind": "explicit", "verbatim_excerpt": "スーパーまで徒歩4分", "dependency_group": "advertisement-1"}
+  ]
+}

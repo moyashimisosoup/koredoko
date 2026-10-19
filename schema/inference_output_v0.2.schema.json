@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/property-locator/inference_output_v0.2.schema.json",
+  "title": "Property Locator Traceable Output v0.2",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "state", "location_is_verified", "distance_mode", "evidence_state", "trace_id", "limitations", "verified_source_ids"],
+  "properties": {
+    "schema_version": {"const": "0.2"},
+    "state": {"enum": ["verified_public", "candidate", "region", "abstain"]},
+    "location_is_verified": {"type": "boolean"},
+    "distance_mode": {"enum": ["geodesic_lower_bound_only", "validated_pedestrian_network", "not_computed"]},
+    "evidence_state": {"type": "object", "additionalProperties": false, "required": ["consistent", "contradictory", "unknown", "quarantined"], "properties": {
+      "consistent": {"type": "integer", "minimum": 0},
+      "contradictory": {"type": "integer", "minimum": 0},
+      "unknown": {"type": "integer", "minimum": 0},
+      "quarantined": {"type": "integer", "minimum": 0}
+    }},
+    "trace_id": {"type": "string", "minLength": 1},
+    "limitations": {"type": "array", "items": {"type": "string"}},
+    "verified_source_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  },
+  "allOf": [
+    {"if": {"properties": {"state": {"const": "verified_public"}}, "required": ["state"]},
+     "then": {"properties": {"location_is_verified": {"const": true}, "verified_source_ids": {"minItems": 2}}},
+     "else": {"properties": {"location_is_verified": {"const": false}}}}
+  ]
+}
