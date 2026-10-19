@@ -1,0 +1,138 @@
+{
+  "methodology_note": "Nominal pseudo-blind comparison. Entire dataset contains only publicly advertised walking-time constraints and OpenPOI n02 station representative coordinates; NO complex name, street address or GSI reference coordinates. Match IDs only after algorithm is frozen. Passing means containing a GSI address-block reference point, not confirming entrance position.",
+  "algorithm_version": "blind-nominal-grid-v0.1",
+  "grid_m": 25,
+  "scenarios_m": [
+    0,
+    100
+  ],
+  "cases": [
+    {
+      "id": "C01",
+      "public_district": "大田区",
+      "groups": [
+        {
+          "station_key": "jr-kamata",
+          "max_walk_minutes": 5,
+          "representatives": [
+            {
+              "lat": 35.5621521775779,
+              "lng": 139.71541621040657,
+              "source": "openpoi:n02",
+              "city": "大田区"
+            }
+          ]
+        },
+        {
+          "station_key": "keikyu-kamata",
+          "max_walk_minutes": 10,
+          "representatives": [
+            {
+              "lat": 35.56169342658397,
+              "lng": 139.72432931755196,
+              "source": "openpoi:n02",
+              "city": "大田区"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "public_district": "豊島区",
+      "groups": [
+        {
+          "station_key": "mejiro",
+          "max_walk_minutes": 7,
+          "representatives": [
+            {
+              "lat": 35.720389999999995,
+              "lng": 139.70628,
+              "source": "openpoi:n02",
+              "city": "豊島区"
+            }
+          ]
+        },
+        {
+          "station_key": "ikebukuro",
+          "max_walk_minutes": 7,
+          "representatives": [
+            {
+              "lat": 35.729984592882076,
+              "lng": 139.71112090565867,
+              "source": "openpoi:n02",
+              "city": "豊島区"
+            },
+            {
+              "lat": 35.731480000000005,
+              "lng": 139.70772,
+              "source": "openpoi:n02",
+              "city": "豊島区"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C03",
+      "public_district": "千代田区",
+      "groups": [
+        {
+          "station_key": "ogawamachi",
+          "max_walk_minutes": 2,
+          "representatives": [
+            {
+              "lat": 35.69521394313962,
+              "lng": 139.76686049823263,
+              "source": "openpoi:n02",
+              "city": "千代田区"
+            }
+          ]
+        },
+        {
+          "station_key": "shin-ochanomizu",
+          "max_walk_minutes": 2,
+          "representatives": [
+            {
+              "lat": 35.696925,
+              "lng": 139.76545,
+              "source": "openpoi:n02",
+              "city": "千代田区"
+            }
+          ]
+        },
+        {
+          "station_key": "awajicho",
+          "max_walk_minutes": 3,
+          "representatives": [
+            {
+              "lat": 35.694869999999995,
+              "lng": 139.76745499999998,
+              "source": "openpoi:n02",
+              "city": "千代田区"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C04",
+      "public_district": "江東区",
+      "groups": [
+        {
+          "station_key": "toyosu",
+          "max_walk_minutes": 12,
+          "independence_note": "Two rail lines share the same station; ranges 7-11 and 9-12; keep one physical station and maximum 12, bus+walk ignored.",
+          "representatives": [
+            {
+              "lat": 35.65470610993433,
+              "lng": 139.7958213851191,
+              "source": "openpoi:n02",
+              "city": "江東区"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
