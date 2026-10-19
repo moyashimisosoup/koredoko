@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>koredoko | 複数条件の照合実験</title>
+<style>
+:root{font:15px/1.65 system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#23332f;background:#f5f7f5}
+*{box-sizing:border-box}
+body{margin:0}
+main{width:min(960px,100%);margin:auto;padding:26px 16px 74px}
+a{color:#256754;text-underline-offset:3px}
+h1{font-size:clamp(26px,5vw,37px);letter-spacing:-.045em;margin:0 0 2px}
+h2{font-size:17px;letter-spacing:-.02em;margin:0}
+p{margin:8px 0 14px;color:#57645e}
+.eyebrow{font-size:11px;letter-spacing:.13em;font-weight:800;color:#4b766a}
+.card{background:#fff;border:1px solid #d7dfdb;border-radius:21px;padding:19px;margin:16px 0;box-shadow:0 4px 12px #23372a06}
+.muted{font-size:12px;color:#738078}
+button{font:inherit;min-height:44px;padding:10px 15px;border:1px solid #bacdc4;background:#fff;border-radius:12px;color:#285c4c;font-weight:700;cursor:pointer}
+button.primary{background:#286c57;color:#fff;border-color:#286c57}
+button:focus-visible,textarea:focus-visible{outline:3px solid #4d9d88;outline-offset:2px}
+textarea{width:100%;min-height:145px;border:1px solid #b8c8be;border-radius:12px;padding:12px;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#1f312c;resize:vertical}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0}
+.big{font-size:23px;font-weight:750;letter-spacing:-.035em}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+.metric{background:#f1f5f2;border-radius:14px;padding:12px}
+.metric small{display:block;color:#64756e;font-size:11px}
+.rail{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:11px;padding:3px 9px;border-radius:99px;background:#e9f2eb;color:#426251;border:1px solid #d8e8dc}
+.pill.warn{background:#f9f1df;color:#7e6028;border-color:#f0e2c0}
+.items{display:grid;gap:13px}
+.result{padding:15px;border:1px solid #d7dfdb;border-radius:15px;background:#fff}
+.result:first-child{border-color:#7fafa0}
+.resulthead{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.score{font-weight:800;font-size:18px;font-variant-numeric:tabular-nums}
+.fine{font-size:12px;color:#566b61}
+details{margin-top:10px;border-top:1px solid #e6ebe7;padding-top:8px}
+summary{font-size:13px;font-weight:700;cursor:pointer}
+.evidence{list-style:none;margin:11px 0 0;padding:0;display:grid;gap:7px}
+.evidence li{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;padding:7px 2px;border-bottom:1px solid #edf0ed;font-size:12px}
+.state{border-radius:8px;background:#eef3ef;padding:2px 7px;color:#426a52}
+.state.conflict{background:#fce9e6;color:#99453e}
+.state.caution,.state.review,.state.unknown{background:#fbf2de;color:#795a20}
+.banner{padding:13px 15px;background:#f9f0de;border:1px solid #f0e3c7;border-radius:12px;color:#785c28;font-size:13px}
+.error{color:#9a3d3d}
+.hidden{display:none}
+@media(max-width:640px){main{padding:20px 12px 58px}.card{padding:15px}.metrics{gap:6px}.metric{padding:9px}.big{font-size:19px}.resulthead{align-items:flex-start}button{flex:1}.evidence li{display:block}.evidence li .state{margin-left:5px}}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">APP-023 / MULTI-CONDITION POC</div>
+<h1>これどこ <span class="muted">照合実験</span></h1>
+<p>駅・周辺施設までの徒歩条件と、建物属性を<strong>候補ごとに総合比較</strong>する研究用画面です。現段階では候補の正解・住所を確定しません。</p>
+<p class="muted"><a href="./index.html">入力点検へ戻る</a> · 実験データはブラウザ内で処理し、外部送信しません。</p>
+
+<section class="card" aria-label="実験入力">
+<h2>1. 比較条件を読み込む</h2>
+<p>架空の候補を読み込むか、所定の比較用JSONを貼り付けてください。物件広告用JSON v0.2とは別の形式です。</p>
+<div class="toolbar">
+<button id="sample" class="primary" type="button">架空の比較データを読み込む</button>
+<button id="run" type="button">条件を総合照合</button>
+<button id="clear" type="button">消去</button>
+</div>
+<label for="payload" class="muted">比較用JSON（comparison-v0.1）</label>
+<textarea id="payload" spellcheck="false" placeholder="架空サンプルを読み込むと、4候補の根拠データがここに表示されます"></textarea>
+<div id="notice" role="status" aria-live="polite" class="muted"></div>
+</section>
+
+<section class="card hidden" id="results" aria-label="比較結果" aria-live="polite">
+<h2>2. 条件ごとの照合結果</h2>
+<div class="banner">これは<strong>参考比較</strong>です。点数は仮設計の順位用で、物件の位置的中率や確率ではありません。駅出口・道路データが未確認の場合は、断定ではなく弱いヒントまたは保留にします。</div>
+<div class="metrics">
+<div class="metric"><small>独立した目的地</small><div id="destcount" class="big"></div></div>
+<div class="metric"><small>重複条件の統合</small><div id="duplicates" class="big"></div></div>
+<div class="metric"><small>比較した候補</small><div id="candidates" class="big"></div></div>
+</div>
+<p id="rankingstatus" class="fine"></p>
+<div id="cards" class="items"></div>
+</section>
+<section class="card">
+<h2>検証の前提</h2>
+<p class="muted">ここで表示される距離はJSONに与えた測定値です。OpenPOIや経路APIへ自動照会していません。実在する個人の居住位置・非公開住戸を割り出す用途を想定していません。候補の収集、道路計算、公開建物データへの接続、実測精度評価は今後の作業です。</p>
+</section>
+</main>
+<script type="module">
+import {evaluateCandidates} from "./src/condition_matcher.mjs";
+const el=id=>document.getElementById(id);
+function textNode(tag,value,cls){const n=document.createElement(tag);n.textContent=String(value);if(cls)n.className=cls;return n;}
+const jpStatus={
+match:"一致（検証済み経路等）",conflict:"不一致（検証済み経路等）",
+hint:"参考：近接",caution:"参考：距離差",review:"判定保留",unknown:"情報不足"
+};
+function render(report) {
+  el("results").classList.remove("hidden");
+  el("destcount").textContent=String(report.independent_place_conditions);
+  el("duplicates").textContent=String(report.duplicate_conditions_suppressed);
+  el("candidates").textContent=String(report.ranked.length);
+  el("rankingstatus").textContent=report.ranking_state==="abstain"
+    ?"比較に利用できる根拠がなく順位判定を保留しました。"
+    :report.has_unique_provisional_leader
+      ?"参考点で最上位の候補がありますが、正解を確定したわけではありません。"
+      :"最上位が同点、または判断に十分な根拠がありません。";
+  const root=el("cards");root.replaceChildren();
+  report.ranked.forEach((candidate, index)=>{
+    const card=textNode("article","","result");
+    const head=textNode("div","","resulthead");
+    const name=textNode("div",(index+1)+". "+candidate.label);
+    const points=textNode("div",candidate.points+" 点（参考）","score");
+    head.append(name,points);card.append(head);
+    const line=textNode("div","","rail");
+    const s=candidate.summary;
+    [["一致",s.matched],["弱い手がかり",s.weak_hints],["不一致",s.conflicts],["要注意",s.cautions],["未確認",s.unknown]].forEach(([label,count])=>{
+      const p=textNode("span",label+" "+count,"pill"+((label==="不一致"||label==="未確認")?" warn":""));line.append(p);
+    });card.append(line);
+    const det=document.createElement("details");
+    det.append(textNode("summary","条件別の根拠を見る"));
+    const list=textNode("ul","","evidence");
+    candidate.details.forEach(e=>{
+      const li=document.createElement("li");
+      const name=textNode("span",e.label+(e.observation_m!==null&&e.observation_m!==undefined?"（計測 "+Math.round(e.observation_m)+"m）":""));
+      const state=textNode("span",jpStatus[e.status]||e.status,"state "+e.status);
+      li.append(name,state);list.append(li);
+    });det.append(list);card.append(det);root.append(card);
+  });
+}
+el("sample").addEventListener("click",async()=>{
+  try{const r=await fetch("./examples/synthetic_multicondition_v0.1.json",{cache:"no-store"});
+    if(!r.ok)throw new Error(String(r.status));
+    const data=await r.json();el("payload").value=JSON.stringify(data,null,2);
+    el("notice").textContent="架空の実験データを読み込みました。「条件を総合照合」を押してください。";
+  }catch(_){el("notice").textContent="読み込めませんでした。Webサーバー経由で開いてください。";}
+});
+el("run").addEventListener("click",()=>{
+  try{const result=evaluateCandidates(JSON.parse(el("payload").value));
+    render(result);
+    el("notice").textContent="ブラウザ内で比較しました。外部送信は行っていません。";
+  }catch(err){el("results").classList.add("hidden");el("notice").textContent="入力を確認してください："+String(err.message);}
+});
+el("clear").addEventListener("click",()=>{el("payload").value="";el("results").classList.add("hidden");el("notice").textContent="入力を消去しました。";});
+</script>
+</body>
+</html>
