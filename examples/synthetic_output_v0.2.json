@@ -1,0 +1,10 @@
+{
+  "schema_version": "0.2",
+  "state": "region",
+  "location_is_verified": false,
+  "distance_mode": "geodesic_lower_bound_only",
+  "evidence_state": {"consistent": 0, "contradictory": 0, "unknown": 3, "quarantined": 1},
+  "trace_id": "synthetic-test-run-01",
+  "limitations": ["ルートの道路距離未確認", "OpenPOIに隔離中の位置異常あり"],
+  "verified_source_ids": []
+}
