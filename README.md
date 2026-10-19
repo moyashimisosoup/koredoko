@@ -26,6 +26,7 @@
 - [入力画面（開発中）](index.html)：定型JSONと原文の入力点検。GitHub Pages未公開
 - [2026-10-19 CHECKPOINT（R06・P1）](docs/CHECKPOINT_R06_P1_2026-10-19.md)
 - [実際の公開物件による入力・POI照合試験](docs/REAL_LISTING_TRIAL_2026-10-19.md)（CI合格、URL自動取得・物件位置推定は未実装）
+- [公開UR4物件の擬似ブラインド検証](docs/BLIND_TRIAL_RESULTS_2026-10-19.md)：GSI住所参照点包含2/4件、駅代表点だけでは候補除外に不十分
 - [開発・品質管理上のルール](AGENTS.md)
 
 ## 安全と精度
