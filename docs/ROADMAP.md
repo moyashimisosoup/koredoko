@@ -1,6 +1,6 @@
 # koredoko｜ロードマップと初期CHECKPOINT
 
-更新：2026-10-19 JST / 正本リポジトリ：`moyashimisosoup/koredoko`
+更新：2026-10-19 JST / APP-ID：**APP-023** / 正本リポジトリ：`moyashimisosoup/koredoko`
 
 ## 全体計画
 
