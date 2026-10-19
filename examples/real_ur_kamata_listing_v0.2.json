@@ -1,0 +1,72 @@
+{
+  "schema_version": "0.2",
+  "sources": [
+    {
+      "id": "ur-kamata-official-20261019",
+      "url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3330.html",
+      "method": "manual",
+      "retrieved_at": null,
+      "sha256": null,
+      "terms_checked": false
+    }
+  ],
+  "listing": {
+    "property_type": "UR賃貸住宅（団地全体の情報）",
+    "location_hint": "東京都大田区（検証では部屋・住戸住所を扱わない）",
+    "stations": [
+      {
+        "name": "蒲田",
+        "line": "JR京浜東北線ほか",
+        "entity_id": null,
+        "walk_minutes": 5,
+        "travel_mode": "walk_only",
+        "qualifier": "exact_advertised"
+      },
+      {
+        "name": "京急蒲田",
+        "line": "京急本線",
+        "entity_id": null,
+        "walk_minutes": 10,
+        "travel_mode": "walk_only",
+        "qualifier": "exact_advertised"
+      }
+    ],
+    "nearby": [],
+    "built_year": null,
+    "building_floors": null,
+    "unit_floor": null,
+    "structure": "鉄骨鉄筋コンクリート造",
+    "area_sqm": null,
+    "layout": "3DK"
+  },
+  "evidence": [
+    {
+      "field_path": "listing.stations[0].walk_minutes",
+      "source_id": "ur-kamata-official-20261019",
+      "kind": "explicit",
+      "verbatim_excerpt": "｢蒲田｣駅 徒歩5分",
+      "dependency_group": "ur-kamata-official"
+    },
+    {
+      "field_path": "listing.stations[1].walk_minutes",
+      "source_id": "ur-kamata-official-20261019",
+      "kind": "explicit",
+      "verbatim_excerpt": "｢京急蒲田｣駅 徒歩10分",
+      "dependency_group": "ur-kamata-official"
+    },
+    {
+      "field_path": "listing.structure",
+      "source_id": "ur-kamata-official-20261019",
+      "kind": "explicit",
+      "verbatim_excerpt": "鉄骨鉄筋コンクリート造",
+      "dependency_group": "ur-kamata-official"
+    },
+    {
+      "field_path": "listing.layout",
+      "source_id": "ur-kamata-official-20261019",
+      "kind": "explicit",
+      "verbatim_excerpt": "3DK/59㎡～61㎡",
+      "dependency_group": "ur-kamata-official"
+    }
+  ]
+}

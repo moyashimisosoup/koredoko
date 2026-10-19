@@ -1,0 +1,53 @@
+{
+  "observed_date": "2026-10-19",
+  "source_url": "https://api.openpoiapi.com/v1/search",
+  "source_note": "Observed API results reduced to fields required for search candidate screening. No completeness, position, exit-location, or data-freshness guarantee.",
+  "licenses_and_attribution": "OpenPOI response includes upstream source licenses; n02 CC-BY-4.0; overture CDLA-Permissive-2.0. See docs.openpoiapi.com and original response attribution for any redistribution.",
+  "queries": [
+    "蒲田駅",
+    "京急蒲田駅"
+  ],
+  "expected_city": "大田区",
+  "results": [
+    {
+      "query": "蒲田駅",
+      "name": "蒲田駅",
+      "city": "大田区",
+      "category": "station",
+      "lat": 35.5621521775779,
+      "lng": 139.71541621040657,
+      "source": "n02",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "query": "京急蒲田駅",
+      "name": "京急蒲田駅",
+      "city": "大田区",
+      "category": "station",
+      "lat": 35.56169342658397,
+      "lng": 139.72432931755196,
+      "source": "n02",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "query": "京急蒲田駅",
+      "name": "京急蒲田駅東口交通広場 (バスロータリー)",
+      "city": "江東区",
+      "category": "service_other",
+      "lat": 35.66371,
+      "lng": 139.8131,
+      "source": "overture",
+      "license": "CDLA-Permissive-2.0"
+    },
+    {
+      "query": "蒲田駅",
+      "name": "Jr蒲田駅西口",
+      "city": "横浜市旭区",
+      "category": "station",
+      "lat": 35.4512951666705,
+      "lng": 139.52723648332938,
+      "source": "overture",
+      "license": "CDLA-Permissive-2.0"
+    }
+  ]
+}

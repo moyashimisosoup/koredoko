@@ -41,6 +41,6 @@ jobs:
         with:
           node-version: "24"
       - name: Check syntax
-        run: node --check src/input_review.mjs && node --check tests/input_review.test.mjs
+        run: node --check src/input_review.mjs && node --check src/poi_station_review.mjs && node --check tests/input_review.test.mjs && node --check tests/real_public_listing.test.mjs
       - name: Offline browser input tests
-        run: node --test tests/input_review.test.mjs
+        run: node --test tests/input_review.test.mjs tests/real_public_listing.test.mjs

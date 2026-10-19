@@ -25,6 +25,7 @@
 - [P1 入力MVPの仕様・課題](docs/P1_INPUT_REVIEW_2026-10-19.md)
 - [入力画面（開発中）](index.html)：定型JSONと原文の入力点検。GitHub Pages未公開
 - [2026-10-19 CHECKPOINT（R06・P1）](docs/CHECKPOINT_R06_P1_2026-10-19.md)
+- [実際の公開物件による入力・POI照合試験](docs/REAL_LISTING_TRIAL_2026-10-19.md)（CI合格、URL自動取得・物件位置推定は未実装）
 - [開発・品質管理上のルール](AGENTS.md)
 
 ## 安全と精度
