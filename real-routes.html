@@ -54,8 +54,9 @@ function render(){
   const inp=mk("input");inp.type="number";inp.min=1;inp.max=180;inp.step=1;
   inp.value=String(group.current_minutes??group.minutes_max);
   inp.setAttribute("aria-label",group.label+"の徒歩分数");
-  const v=Number(inp.value);
-  const result=evaluatePublicComplex({...item,conditions:[group]},{[group.place_id]:v}).groups[0];
+  // Keep original advertised time ranges until the user explicitly overrides them.
+  const options=group.current_minutes===undefined?{}:{[group.place_id]:group.current_minutes};
+  const result=evaluatePublicComplex({...item,conditions:[group]},options).groups[0];
   const value=result.outcome==="reference_band_near"?"参考距離帯内":result.outcome==="reference_distance_differs"?"数値差あり":"要確認";
   head.append(mk("span",value,"tag"+(value==="参考距離帯内"?"":" caution")));
   card.append(head);
