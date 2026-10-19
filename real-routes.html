@@ -30,6 +30,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid 
 <p id="source" class="muted"></p></section>
 <section class="panel"><h2>2. 徒歩距離の照合</h2>
 <div class="notice">起点は国土地理院の住所代表点、終点はOpenPOIの駅代表点です。建物入口・駅出口の実測距離ではないため、広告との差があっても物件や広告の誤りとは確定しません。</div>
+<p id="summary" class="muted" aria-live="polite"></p>
 <div id="results" aria-live="polite"></div><p id="status" class="muted" role="status"></p></section>
 <section class="panel"><h2>出典・制約</h2><p class="muted">歩行経路9本は2026-10-19にValhalla公開デモAPIへ実問い合わせした結果。端点の道路吸着量も記録しています。利用者が「再取得」を押した場合だけ1経路を問い合わせます。再取得が通信制限やCORSで失敗しても、保存済み観測値を使った計算は機能します。</p>
 <p class="muted"><a href="https://valhalla.github.io/valhalla/" target="_blank" rel="noopener noreferrer">Valhalla</a> / <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a> / <a href="https://docs.openpoiapi.com/" target="_blank" rel="noopener noreferrer">OpenPOI</a> / <a href="https://msearch.gsi.go.jp/address-search/AddressSearch" target="_blank" rel="noopener noreferrer">国土地理院住所検索</a></p></section>
@@ -43,6 +44,11 @@ const status=s=>el("status").textContent=s;
 function render(){
  if(!selected)return;
  const item=dataset.cases.find(c=>c.case_id===selected);
+ const summaryReport=evaluatePublicComplex(item,Object.fromEntries(item.conditions.filter(g=>g.current_minutes!==undefined).map(g=>[g.place_id,g.current_minutes])));
+ el("summary").textContent="総合：参考距離帯内 "+summaryReport.summary.roughly_consistent+
+   "条件／数値差あり "+summaryReport.summary.distance_differs+
+   "条件／追加確認 "+summaryReport.summary.needs_review+
+   "条件。これは駅・住所の代表点から計算した参考照合で、物件の一致や不一致は確定していません。";
  const root=el("results");root.replaceChildren();
  const source=el("source");source.replaceChildren();
  const link=mk("a",item.complex+"の公式情報");link.href=item.official_url;link.target="_blank";link.rel="noopener noreferrer";

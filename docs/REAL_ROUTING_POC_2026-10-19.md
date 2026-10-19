@@ -43,11 +43,11 @@ API：`https://valhalla1.openstreetmap.de/route`（Valhalla公開デモ、徒歩
 | --- | --- | --- |
 | L01 | 4公開物件の2地点入力・出典を再利用 | 完了 |
 | L02 | 9経路のAPI実取得と縮約結果の記録 | 完了 |
-| L03 | 距離、広告の区間、道路吸着の再計算・異常判定 | CI成功確認待ち |
-| L04 | 実データを選択し、分数を変更できるWeb画面 | CI成功・main確認待ち、実機未検証 |
+| L03 | 距離、広告の区間、道路吸着の再計算・異常判定 | 完了（PR #11 CI成功） |
+| L04 | 実データを選択し、分数を変更できるWeb画面 | コード・CI・main保存済み、実機未検証 |
 | L05 | PC/iPhoneブラウザの実操作、CORS再取得、独立経路API照合 | 未完了 |
 
-CI成功・main読戻し後はL01〜L04の**4/5=80%**までとし、実機未検証を残す。既存P2多条件照合（E01〜E06）の進捗は、実在の複数建物候補を自動収集して競合比較できるまで**5/6=83%のまま**。全体P0〜P5は**1/6=17%**を据え置く。
+[PR #11](https://github.com/moyashimisosoup/koredoko/pull/11) のCI [Actions #39247960877](https://github.com/moyashimisosoup/koredoko/actions/runs/39247960877) にてPython 3.11/3.13各128件、Node.js 78件（新規ルートテスト19件）合格を確認し、mainの[commit 423bdd8](https://github.com/moyashimisosoup/koredoko/commit/423bdd8912c4dab58f7d6b07bad61e887e1fa618)へ統合・読戻し済み。L01〜L04は**4/5=80%**、実機確認・CORS/API再取得はL05未完了として残す。既存P2多条件照合（E01〜E06）の進捗は、実在の複数建物候補を自動収集して競合比較できるまで**5/6=83%のまま**。全体P0〜P5は**1/6=17%**を据え置く。
 
 ## 参照元
 
