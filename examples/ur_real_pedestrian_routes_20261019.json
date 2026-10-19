@@ -1,0 +1,241 @@
+{
+  "schema_version": "public-ur-real-routes-v0.1",
+  "captured_on": "2026-10-19",
+  "method": "Valhalla public demo GET /route costing=pedestrian units=kilometers directions_type=none shape_format=polyline6; 9 successful API 200 responses. Rounded to meters; endpoints snaps based on returned route geometry. Manual observation snapshot for research; not live-guaranteed or version-pinned.",
+  "source_urls": {
+    "route_api": "https://valhalla1.openstreetmap.de/route",
+    "provider_docs": "https://valhalla.github.io/valhalla/",
+    "station_points": "https://docs.openpoiapi.com/",
+    "address_reference": "https://msearch.gsi.go.jp/address-search/AddressSearch",
+    "osm_copyright": "https://www.openstreetmap.org/copyright"
+  },
+  "warnings": [
+    "Public complex descriptions and GSI address representative points only; no particular home or unit geolocation",
+    "N02 station representative points are not station exit coordinates",
+    "Public Valhalla demo graph revision unknown; snapping even 37m at Kamata",
+    "The pairwise measurements are from *different complex locations*, and do not constitute ranked buildings in a common target neighborhood",
+    "All measured routes are provisional and may not reflect officially advertised start/end or exact route"
+  ],
+  "cases": [
+    {
+      "case_id": "C01",
+      "complex": "蒲田駅前ハイツ",
+      "official_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3330.html",
+      "gsi_precision": "街区（号数・入口の特定ではない）",
+      "origin": [
+        35.561253,
+        139.715759
+      ],
+      "conditions": [
+        {
+          "place_id": "jr-kamata",
+          "label": "JR蒲田駅",
+          "minutes_min": 5,
+          "minutes_max": 5,
+          "targets": [
+            {
+              "lat": 35.5621521775779,
+              "lon": 139.71541621040657,
+              "source": "openpoi:n02",
+              "sample": {
+                "road_m": 702,
+                "straight_m": 105,
+                "snap_start_m": 37,
+                "snap_end_m": 7,
+                "time_s": 569
+              }
+            }
+          ]
+        },
+        {
+          "place_id": "keikyu-kamata",
+          "label": "京急蒲田駅",
+          "minutes_min": 10,
+          "minutes_max": 10,
+          "targets": [
+            {
+              "lat": 35.56169342658397,
+              "lon": 139.72432931755196,
+              "source": "openpoi:n02",
+              "sample": {
+                "road_m": 921,
+                "straight_m": 777,
+                "snap_start_m": 37,
+                "snap_end_m": 10,
+                "time_s": 642
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C02",
+      "complex": "目白",
+      "official_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_0541.html",
+      "gsi_precision": "住所ラベル（建物入口ではない）",
+      "origin": [
+        35.724297,
+        139.708817
+      ],
+      "conditions": [
+        {
+          "place_id": "mejiro",
+          "label": "目白駅",
+          "minutes_min": 7,
+          "minutes_max": 7,
+          "targets": [
+            {
+              "lat": 35.720389999999995,
+              "lon": 139.70628,
+              "source": "openpoi:n02",
+              "sample": {
+                "road_m": 590,
+                "straight_m": 491,
+                "snap_start_m": 3,
+                "snap_end_m": 6,
+                "time_s": 437
+              }
+            }
+          ]
+        },
+        {
+          "place_id": "ikebukuro",
+          "label": "池袋駅（代表点2候補）",
+          "minutes_min": 7,
+          "minutes_max": 7,
+          "targets": [
+            {
+              "lat": 35.729984592882076,
+              "lon": 139.71112090565867,
+              "source": "openpoi:n02",
+              "sample": {
+                "road_m": 1002,
+                "straight_m": 666,
+                "snap_start_m": 3,
+                "snap_end_m": 35,
+                "time_s": 772
+              }
+            },
+            {
+              "lat": 35.731480000000005,
+              "lon": 139.70772,
+              "source": "openpoi:n02",
+              "sample": {
+                "road_m": 1103,
+                "straight_m": 805,
+                "snap_start_m": 3,
+                "snap_end_m": 4,
+                "time_s": 860
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C03",
+      "complex": "神田小川町ハイツ",
+      "official_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3820.html",
+      "gsi_precision": "街区（入口特定なし）",
+      "origin": [
+        35.694077,
+        139.765594
+      ],
+      "conditions": [
+        {
+          "place_id": "ogawamachi",
+          "label": "小川町駅",
+          "minutes_min": 2,
+          "minutes_max": 2,
+          "targets": [
+            {
+              "lat": 35.69521394313962,
+              "lon": 139.76686049823263,
+              "source": "openpoi:n02",
+              "sample": {
+                "road_m": 239,
+                "straight_m": 170,
+                "snap_start_m": 12,
+                "snap_end_m": 5,
+                "time_s": 173
+              }
+            }
+          ]
+        },
+        {
+          "place_id": "shin-ochanomizu",
+          "label": "新御茶ノ水駅",
+          "minutes_min": 2,
+          "minutes_max": 2,
+          "targets": [
+            {
+              "lat": 35.696925,
+              "lon": 139.76545,
+              "source": "openpoi:n02",
+              "sample": {
+                "road_m": 339,
+                "straight_m": 317,
+                "snap_start_m": 12,
+                "snap_end_m": 3,
+                "time_s": 256
+              }
+            }
+          ]
+        },
+        {
+          "place_id": "awajicho",
+          "label": "淡路町駅",
+          "minutes_min": 3,
+          "minutes_max": 3,
+          "targets": [
+            {
+              "lat": 35.694869999999995,
+              "lon": 139.76745499999998,
+              "source": "openpoi:n02",
+              "sample": {
+                "road_m": 282,
+                "straight_m": 190,
+                "snap_start_m": 12,
+                "snap_end_m": 2,
+                "time_s": 201
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "C04",
+      "complex": "豊洲四丁目",
+      "official_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3200.html",
+      "gsi_precision": "大型街区・複数住棟、入口は不明",
+      "origin": [
+        35.653416,
+        139.801849
+      ],
+      "conditions": [
+        {
+          "place_id": "toyosu",
+          "label": "豊洲駅（同一駅の複数路線を統合）",
+          "minutes_min": 7,
+          "minutes_max": 12,
+          "targets": [
+            {
+              "lat": 35.65470610993433,
+              "lon": 139.7958213851191,
+              "source": "openpoi:n02",
+              "sample": {
+                "road_m": 799,
+                "straight_m": 563,
+                "snap_start_m": 10,
+                "snap_end_m": 17,
+                "time_s": 585
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
