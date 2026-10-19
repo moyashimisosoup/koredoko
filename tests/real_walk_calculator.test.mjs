@@ -122,3 +122,19 @@ test("blank or oversized dataset must fail closed",()=>{
  const d=fixture();d.cases=Array(21).fill(d.cases[0]);
  assert.throws(()=>evaluateDataset(d),/Invalid dataset/);
 });
+
+test("real-routes UI inline module syntax is parseable",()=>{
+ const html=readFileSync(new URL("../real-routes.html",import.meta.url),"utf8");
+ const code=html.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
+ assert.ok(code,"inline module script should exist");
+ const noImports=code.replace(/^import \{[^}]+\} from "[^"]+";\s*$/m,"");
+ assert.doesNotThrow(()=>new Function(noImports));
+});
+test("real-routes UI exposes aggregate comparison and avoids HTML injection",()=>{
+ const html=readFileSync(new URL("../real-routes.html",import.meta.url),"utf8");
+ assert.ok(html.includes('id="summary"'));
+ assert.ok(html.includes('id="complex"'));
+ assert.ok(html.includes('input type') || html.includes('inp.type="number"'));
+ assert.ok(html.includes("textContent"));
+ assert.equal(html.includes("innerHTML"),false);
+});
