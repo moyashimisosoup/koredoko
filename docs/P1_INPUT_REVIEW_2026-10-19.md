@@ -27,13 +27,13 @@
 | ID | 完了条件 | 現状 |
 | --- | --- | --- |
 | I01 | schema v0.2・架空サンプル準備 | 完了 |
-| I02 | JSON貼付・項目表示UI | CI成功後、実装確認 |
+| I02 | JSON貼付・項目表示UI | CI成功・main統合済み（実機未確認） |
 | I03 | 原文引用・出典参照のfail-closed点検 | CI成功後、実装確認 |
 | I04 | 非JSONの定型文貼付への安全な対応 | 未完了 |
 | I05 | PC・iPhone Safariでの実機操作検証 | 未完了 |
 
-PR CIで I02/I03 を満たせれば **3/5 = 60%** とする。ただしP1全体の出口は未完了で、全体ロードマップの分子は増やさない。
+[PR #4](https://github.com/moyashimisosoup/koredoko/pull/4) のCI成功を確認したため **3/5 = 60%** とする。ただしP1全体の出口は未完了で、全体ロードマップの分子は増やさない。
 
 ## 次の1操作
 
-CIでPython既存107件とNode新16件の成功を確認してmainへ統合する。その後I04で広告の原文フォーマットから安全に下書きJSONを作る機能を設計し、実機で操作性を検証する。GitHub Pagesへのデプロイは別途承認を得る。
+[Actions #39220400963](https://github.com/moyashimisosoup/koredoko/actions/runs/39220400963) でPython既存107件×2環境とNode新16件の成功を確認してmainへ統合済み。その後I04で広告の原文フォーマットから安全に下書きJSONを作る機能を設計し、実機で操作性を検証する。GitHub Pagesへのデプロイは別途承認を得る。
