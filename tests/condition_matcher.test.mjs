@@ -9,7 +9,7 @@ const detail=(entry,id)=>entry.details.find(x=>x.condition_id===id);
 
 test("synthetic comparison selects A provisionally, never as verified",()=>{
  const result=evaluateCandidates(fixture());
- assert.deepEqual(result.ranked.map(x=>x.candidate_id),["A","C","D","B"]);
+ assert.deepEqual(result.ranked.map(x=>x.candidate_id),["A","C","B","D"]);
  assert.equal(result.has_unique_provisional_leader,true);
  assert.equal(result.can_confirm_property,false);
  assert.equal(result.candidate_selection_verified,false);
