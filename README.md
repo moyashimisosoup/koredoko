@@ -38,6 +38,8 @@
 - [2026-10-20 構造条件の最新CHECKPOINT](docs/CHECKPOINT_STRUCTURE_2026-10-20.md)
 - [経路証拠の品質判定・公的赤羽歩行ネットワーク出典調査](docs/EVIDENCE_QUALITY_AND_AKABANE_NETWORK_2026-10-20.md)：入口・出口・道路版が未確認なら参考順位を判定保留。赤羽データはカタログのみ確認
 - [証拠品質ゲートCHECKPOINT](docs/CHECKPOINT_EVIDENCE_QUALITY_2026-10-20.md)
+- [王子神谷3公開物件の事前固定・実経路6本の比較画面](holdout-eval.html)：徒歩Top1/Top2と構造を別評価、Pages未公開
+- [王子神谷・東十条3件の試験結果](docs/OJI_PRELOCKED_VALIDATION_2026-10-20.md)：徒歩のみTop1=1/3、Top2=3/3、構造は同源データなので独立評価でない
 - [実歩行経路・品質検証報告](docs/REAL_ROUTING_POC_2026-10-19.md)
 - [複数条件照合エンジン仕様・検証計画](docs/MULTI_CONDITION_ENGINE_V0.1.md)
 - [開発・品質管理上のルール](AGENTS.md)

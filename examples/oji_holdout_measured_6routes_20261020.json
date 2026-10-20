@@ -1,0 +1,197 @@
+{
+  "schema_version": "public-complex-crosscheck-v0.1",
+  "experiment_id": "OJI-HOLDOUT-PRELOCK-20261020",
+  "created_on": "2026-10-20",
+  "method": "Pre-committed 3 public UR complex candidates × 2 physically distinct station representative points; truth keys excluded; collect exactly six pedestrian network routes before scoring. No supplementary structures or recalibration.",
+  "measurement_policy": "GSI address label to OpenPOI N02 physical station representative point, Valhalla pedestrian. Keep rounded route_m, air_m and both snap distances. Official origins are block/reference points, not building entrances.",
+  "area": "東京都北区・王子神谷〜東十条",
+  "route_graph_revision": "unknown",
+  "stations": [
+    {
+      "id": "oji-kamiya",
+      "name": "王子神谷駅 (N02 representative, not verified exit)",
+      "lat": 35.76529296059715,
+      "lon": 139.73564067365504,
+      "source": "OpenPOI/N02 search 2026-10-20"
+    },
+    {
+      "id": "higashi-jujo",
+      "name": "東十条駅 (N02 representative, not verified exit)",
+      "lat": 35.76384377597073,
+      "lon": 139.72673114777808,
+      "source": "OpenPOI/N02 search 2026-10-20"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "C01",
+      "label": "フレーシェル王子神谷",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_6000.html",
+      "public_address_label": "東京都北区豊島8-27",
+      "lat": 35.768261,
+      "lon": 139.739044,
+      "geocode_precision": "GSI_address_block_label",
+      "distances": [
+        {
+          "place_id": "oji-kamiya",
+          "meters": 560,
+          "air_m": 451,
+          "snap_start_m": 33,
+          "snap_end_m": 1,
+          "seconds": 424,
+          "route_source": "Valhalla public demo pedestrian 2026-10-20",
+          "station_point_source": "OpenPOI N02 representative",
+          "origin_point_source": "GSI address search representative"
+        },
+        {
+          "place_id": "higashi-jujo",
+          "meters": 1539,
+          "air_m": 1215,
+          "snap_start_m": 33,
+          "snap_end_m": 23,
+          "seconds": 1167,
+          "route_source": "Valhalla public demo pedestrian 2026-10-20",
+          "station_point_source": "OpenPOI N02 representative",
+          "origin_point_source": "GSI address search representative"
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "label": "神谷堀公園ハイツ",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_4200.html",
+      "public_address_label": "東京都北区神谷1-3",
+      "lat": 35.768639,
+      "lon": 139.736588,
+      "geocode_precision": "GSI_address_block_label",
+      "distances": [
+        {
+          "place_id": "oji-kamiya",
+          "meters": 598,
+          "air_m": 382,
+          "snap_start_m": 2,
+          "snap_end_m": 1,
+          "seconds": 436,
+          "route_source": "Valhalla public demo pedestrian 2026-10-20",
+          "station_point_source": "OpenPOI N02 representative",
+          "origin_point_source": "GSI address search representative"
+        },
+        {
+          "place_id": "higashi-jujo",
+          "meters": 1315,
+          "air_m": 1037,
+          "snap_start_m": 2,
+          "snap_end_m": 23,
+          "seconds": 992,
+          "route_source": "Valhalla public demo pedestrian 2026-10-20",
+          "station_point_source": "OpenPOI N02 representative",
+          "origin_point_source": "GSI address search representative"
+        }
+      ]
+    },
+    {
+      "id": "C03",
+      "label": "王子五丁目",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_2670.html",
+      "public_address_label": "東京都北区王子5-2",
+      "lat": 35.765038,
+      "lon": 139.732849,
+      "geocode_precision": "GSI_address_block_label",
+      "distances": [
+        {
+          "place_id": "oji-kamiya",
+          "meters": 511,
+          "air_m": 253,
+          "snap_start_m": 12,
+          "snap_end_m": 1,
+          "seconds": 384,
+          "route_source": "Valhalla public demo pedestrian 2026-10-20",
+          "station_point_source": "OpenPOI N02 representative",
+          "origin_point_source": "GSI address search representative"
+        },
+        {
+          "place_id": "higashi-jujo",
+          "meters": 845,
+          "air_m": 568,
+          "snap_start_m": 12,
+          "snap_end_m": 23,
+          "seconds": 630,
+          "route_source": "Valhalla public demo pedestrian 2026-10-20",
+          "station_point_source": "OpenPOI N02 representative",
+          "origin_point_source": "GSI address search representative"
+        }
+      ]
+    }
+  ],
+  "advertisements": [
+    {
+      "id": "H01",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_6000.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "oji-kamiya",
+          "min_minutes": 6,
+          "max_minutes": 7,
+          "label": "王子神谷駅 徒歩6〜7分"
+        },
+        {
+          "kind": "walk",
+          "place_id": "higashi-jujo",
+          "min_minutes": 16,
+          "max_minutes": 17,
+          "label": "東十条駅 徒歩16〜17分"
+        }
+      ]
+    },
+    {
+      "id": "H02",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_4200.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "oji-kamiya",
+          "min_minutes": 5,
+          "max_minutes": 6,
+          "label": "王子神谷駅 徒歩5〜6分"
+        },
+        {
+          "kind": "walk",
+          "place_id": "higashi-jujo",
+          "min_minutes": 12,
+          "max_minutes": 14,
+          "label": "東十条駅 徒歩12〜14分"
+        }
+      ]
+    },
+    {
+      "id": "H03",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_2670.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "oji-kamiya",
+          "min_minutes": 2,
+          "max_minutes": 5,
+          "label": "王子神谷駅 徒歩2〜5分"
+        },
+        {
+          "kind": "walk",
+          "place_id": "higashi-jujo",
+          "min_minutes": 10,
+          "max_minutes": 15,
+          "label": "東十条駅 徒歩10〜15分"
+        }
+      ]
+    }
+  ],
+  "locked_policy": {
+    "algo": "walking-band-gap-v0.1 from existing src/public_building_rank.mjs unchanged",
+    "reference_stability_buffer_m": 100,
+    "no_structure_for_primary": true,
+    "no_calibration_on_holdout": true,
+    "evaluation": "Top1, Top2, Top3, forced ranking, abstention rate; candidate universe exactly 3 named public UR complexes",
+    "limitations": "Selected by proximity and availability, known official complexes: a pre-registered out-of-area check but NOT independent random sample or real blind test; built years and structure not used; broad complex centroid may not match advertised entry distance"
+  },
+  "observation": "2026-10-20 six successful Valhalla pedestrian route responses; route network revision not known; never reported as surveyed entrances"
+}

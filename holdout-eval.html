@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>これどこ｜新地域・公開建物の評価</title>
+<style>
+:root{font:15px/1.6 system-ui,-apple-system,"Yu Gothic",sans-serif;background:#f6f8f5;color:#253b2d}*{box-sizing:border-box}body{margin:0}main{max-width:900px;margin:auto;padding:24px 16px 70px}h1{font-size:clamp(26px,5vw,37px);margin:0}h2{font-size:18px;margin:0 0 10px}p{color:#617366}a{color:#24714c}.panel{background:white;border:1px solid #dce6dc;border-radius:19px;padding:19px;margin:15px 0}.notice{padding:12px;background:#fff3df;border-radius:11px;color:#785d29;font-size:13px}.muted{font-size:12px;color:#66776b}.stats{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.stats span{flex:1;min-width:90px;background:#edf5ef;padding:10px;border-radius:10px;font-weight:700}.item{border:1px solid #e1eae0;border-radius:13px;padding:12px;margin:12px 0}.item strong{display:block;margin-bottom:5px}.item li{display:flex;justify-content:space-between;gap:8px;font-size:13px;border-top:1px solid #eaf0ea;padding:7px 0}.item ol{list-style:none;margin:0;padding:0}button{font:inherit;min-height:44px;border-radius:10px;border:1px solid #b8cbbd;background:white;padding:10px 13px;font-weight:700;color:#286b49;cursor:pointer}button.primary{background:#2f7355;color:white}.toolbar{display:flex;gap:8px;flex-wrap:wrap}button:disabled{opacity:.5}button:focus-visible{outline:3px solid #6ca78a;outline-offset:2px}@media(max-width:640px){main{padding:18px 12px}.panel{padding:13px}.toolbar button{flex:1}}
+</style></head>
+<body><main><p class="muted"><a href="./index.html">入力</a> / <a href="./public-buildings.html">蒲田の開発例</a> / 王子神谷の検証</p><h1>これどこ　新地域の実物件テスト</h1>
+<p>王子神谷・東十条の公開UR住宅3件について、固定した徒歩距離計算で予測し、答え合わせを別操作で行います。</p>
+<section class="panel"><h2>1. 予測を計算</h2><div class="notice">公表済みの3団地に限る、事前固定した小規模な疑似ブラインド試験です。独立無作為抽出ではなく、駅・住棟入口の実測も未確認です。物件を特定できた保証はありません。</div><div id="stats" class="stats"></div><div id="predictions" aria-live="polite"></div></section>
+<section class="panel"><h2>2. 別ファイルで答え合わせ</h2><p class="muted">距離のみの順位を計算した後、必要なときだけ別の公開正解対応表を読み込みます。構造条件での順位は、徒歩だけの採点とは別に表示します。</p><div class="toolbar"><button id="reveal" class="primary" type="button" disabled>正解と照合</button><button id="secondary" type="button" disabled>建物構造も使った参考順位</button></div><div id="graded" aria-live="polite"></div></section>
+<section class="panel"><h2>次の改善</h2><p class="muted">徒歩距離に差があった広告を事後調整するのではなく、駅出入口の複数候補、住棟への入口、異なる駅や独立施設の追加で改善できるか、次の公開物件集合で比較します。</p><p class="muted">出典：<a href="https://www.ur-net.go.jp/chintai/" target="_blank" rel="noopener noreferrer">UR</a>・<a href="https://msearch.gsi.go.jp/address-search/AddressSearch" target="_blank" rel="noopener noreferrer">国土地理院</a>・<a href="https://docs.openpoiapi.com/" target="_blank" rel="noopener noreferrer">OpenPOI</a>・<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a>。Valhalla公開経路APIの6観測値を使用。</p></section>
+<p id="status" class="muted" role="status" aria-live="polite"></p>
+</main><script type="module">
+import {predictPublishedSet,gradePublishedSet} from "./src/holdout_benchmark.mjs";
+import {comparePublicStructure} from "./src/public_structure_compare.mjs";
+const el=id=>document.getElementById(id);
+const t=(tag,value,cls)=>{const n=document.createElement(tag);n.textContent=String(value??"");if(cls)n.className=cls;return n;};
+let dataset=null,structures=null,prediction=null;
+async function init(){
+ try{
+ const rs=await Promise.all([
+ fetch("./examples/oji_holdout_measured_6routes_20261020.json",{cache:"no-store"}),
+ fetch("./examples/oji_secondary_structure_20261020.json",{cache:"no-store"})]);
+ if(rs.some(x=>!x.ok))throw Error("元データの読み込みに失敗");
+ dataset=await rs[0].json();structures=await rs[1].json();
+ prediction=predictPublishedSet(dataset);
+ const stats=el("stats");stats.replaceChildren();
+ for(const [name,n] of [["建物候補",3],["広告",prediction.sample_count],["実経路",6]])stats.append(t("span",name+" "+n));
+ const root=el("predictions");root.replaceChildren();
+ for(const entry of prediction.cases){
+ const card=t("section","","item");
+ card.append(t("strong",entry.advertisement_id+"：徒歩条件2駅"));
+ card.append(t("p",entry.reference_stable_under_stress?"±100mでも参考順位が安定":"±100mでは参考順位が逆転する余地あり","muted"));
+ const list=t("ol");
+ entry.ranked_candidate_ids.forEach((cid,i)=>{
+ const li=t("li");li.append(t("span",(i+1)+"位 "+dataset.candidates.find(c=>c.id===cid).label),t("span","ずれ "+entry.ranked_gap_m[i]+"m"));
+ list.append(li);
+ });card.append(list);root.append(card);
+ }
+ el("reveal").disabled=false;el("secondary").disabled=false;
+ el("status").textContent="徒歩距離だけで予測しました。正解対応表はまだ読み込んでいません。";
+ }catch(e){el("status").textContent=String(e.message);}
+}
+el("reveal").addEventListener("click",async()=>{
+ try{
+ const r=await fetch("./examples/oji_holdout_truth_revealed_20261020.json",{cache:"no-store"});
+ if(!r.ok)throw Error("対応表の読み込みに失敗");
+ const out=gradePublishedSet(prediction,await r.json()),root=el("graded");
+ root.replaceChildren();
+ root.append(t("h2","徒歩条件だけの採点"));
+ root.append(t("p","Top1 "+out.top1_count+"/"+out.evaluated_ads+"、Top2 "+out.top2_count+"/"+out.evaluated_ads+"、判定保留 "+out.abstained_count+"/"+out.evaluated_ads+"。全市場の正解率を示すものではありません。"));
+ const list=t("ul");
+ out.cases.forEach(x=>list.append(t("li",x.advertisement_id+"：公表されている正解建物は "+x.true_candidate_rank+"位")));
+ root.append(list);
+ el("status").textContent="事前固定の徒歩予測と別ファイルの正解対応を照合しました。";
+ }catch(e){el("status").textContent=String(e.message);}
+});
+el("secondary").addEventListener("click",()=>{
+ if(!dataset||!structures)return;
+ const root=el("graded");root.replaceChildren();
+ root.append(t("h2","構造を含めた別の参考順位"));
+ const list=t("ul");
+ dataset.advertisements.forEach(a=>{
+ const out=comparePublicStructure(dataset,structures,a.id,{useStructure:true});
+ list.append(t("li",a.id+"：参考1位 "+dataset.candidates.find(c=>c.id===out.rank0).label));
+ });root.append(list);
+ root.append(t("p","建物構造は同じUR一次出典であり、独立正解率や所在地特定の確信度とは扱いません。","muted"));
+});
+init();
+</script></body></html>
