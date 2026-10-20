@@ -1,0 +1,102 @@
+{
+  "schema_version": "oshima-frozen-predictions-v0.1",
+  "frozen_on": "2026-10-20",
+  "source": "20 actual Valhalla pedestrian routes; prior walking-band-gap-v0.1",
+  "answer_key_in_prediction": false,
+  "preregistered": "examples/oshima_five_preregistered_20261020.json",
+  "measured": "examples/oshima_five_complete_20routes_20261020.json",
+  "population_candidates": 5,
+  "cases": [
+    {
+      "advertisement_id": "OH01",
+      "ranked_candidate_ids": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05"
+      ],
+      "ranked_gap_m": [
+        385,
+        748,
+        1299,
+        1648,
+        1717
+      ],
+      "station_conditions": 2
+    },
+    {
+      "advertisement_id": "OH02",
+      "ranked_candidate_ids": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05"
+      ],
+      "ranked_gap_m": [
+        0,
+        348,
+        842,
+        1129,
+        1317
+      ],
+      "station_conditions": 1
+    },
+    {
+      "advertisement_id": "OH03",
+      "ranked_candidate_ids": [
+        "C03",
+        "C04",
+        "C05",
+        "C02",
+        "C01"
+      ],
+      "ranked_gap_m": [
+        103,
+        246,
+        275,
+        532,
+        1108
+      ],
+      "station_conditions": 2
+    },
+    {
+      "advertisement_id": "OH04",
+      "ranked_candidate_ids": [
+        "C04",
+        "C03",
+        "C05",
+        "C02",
+        "C01"
+      ],
+      "ranked_gap_m": [
+        0,
+        207,
+        435,
+        692,
+        1268
+      ],
+      "station_conditions": 2
+    },
+    {
+      "advertisement_id": "OH05",
+      "ranked_candidate_ids": [
+        "C05",
+        "C04",
+        "C03",
+        "C02",
+        "C01"
+      ],
+      "ranked_gap_m": [
+        0,
+        212,
+        597,
+        779,
+        1012
+      ],
+      "station_conditions": 2
+    }
+  ],
+  "independent_verified_accuracy": false
+}
