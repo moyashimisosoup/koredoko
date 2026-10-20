@@ -37,6 +37,7 @@
 - [公開建物の構造と徒歩距離の併用試験](docs/PUBLIC_STRUCTURE_COMPARISON_2026-10-20.md)：4建物の構造情報を導入し、徒歩のみの誤順位が変わることを開発用データで検証。外部正解率は未測定
 - [2026-10-20 構造条件の最新CHECKPOINT](docs/CHECKPOINT_STRUCTURE_2026-10-20.md)
 - [経路証拠の品質判定・公的赤羽歩行ネットワーク出典調査](docs/EVIDENCE_QUALITY_AND_AKABANE_NETWORK_2026-10-20.md)：入口・出口・道路版が未確認なら参考順位を判定保留。赤羽データはカタログのみ確認
+- [証拠品質ゲートCHECKPOINT](docs/CHECKPOINT_EVIDENCE_QUALITY_2026-10-20.md)
 - [実歩行経路・品質検証報告](docs/REAL_ROUTING_POC_2026-10-19.md)
 - [複数条件照合エンジン仕様・検証計画](docs/MULTI_CONDITION_ENGINE_V0.1.md)
 - [開発・品質管理上のルール](AGENTS.md)
