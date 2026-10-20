@@ -65,6 +65,8 @@ R01〜R05 は研究上の完了記録あり。R06（駅出入口座標の独立�
 
 [事前固定した大島5住宅・20経路の取得状況](OSHIMA_FIVE_PUBLIC_HOLDOUT_2026-10-20.md)。新しい公開住宅候補5件・駅4地点を固定してから歩行APIを測定。20本のうち17本を実測、3本は取得環境のレート制限により未取得。`src/locked_cohort_readiness.mjs`で候補・徒歩条件の改変や欠測を検査し、**20本が揃うまでTop1/Top3や正解率の報告を保留**。追加経路を架空値で埋めない。全体P0〜P5は依然1/6＝17%。
 
+[複数駅出口計算・大島5住宅 CHECKPOINT](CHECKPOINT_MULTIPLE_EXITS_OSHIMA_2026-10-20.md)：[PR #23](https://github.com/moyashimisosoup/koredoko/pull/23)（Node177/Python128×2）、[PR #24](https://github.com/moyashimisosoup/koredoko/pull/24)（Node187/Python128×2）はCI成功・main統合・読戻し済み。研究用実経路は35本、ただし大島の5物件評価は3本欠測のため採点保留。全体17%・位置推定の精度未測定は維持。
+
 ## 精度ゲート
 
 - 正解位置を判定するには、入力原文・位置データ・道路グラフ・建物候補の出所と確認日時を記録する。
