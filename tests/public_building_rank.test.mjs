@@ -104,5 +104,5 @@ test("UI is module-driven and never uses raw JSON as HTML",()=>{
  assert.match(html,/textContent/);
  const js=html.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
  assert.ok(js);
- assert.doesNotThrow(()=>new Function(js.replace(/^import \{[^}]+\} from "[^"]+";\s*$/m,"")));
+ assert.doesNotThrow(()=>new Function(js.replace(/^import .*? from "[^"]+";\s*$/gm,"")));
 });
