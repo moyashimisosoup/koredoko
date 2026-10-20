@@ -35,6 +35,7 @@
 - [徒歩経路の感度分析と誤順位検証](docs/ROUTE_SENSITIVITY_2026-10-20.md)：既存公開4建物で±100m/±200mの参考順位の入替可能性を検査
 - [感度分析CHECKPOINT・出入口情報源と残課題](docs/CHECKPOINT_ROUTE_SENSITIVITY_2026-10-20.md)
 - [公開建物の構造と徒歩距離の併用試験](docs/PUBLIC_STRUCTURE_COMPARISON_2026-10-20.md)：4建物の構造情報を導入し、徒歩のみの誤順位が変わることを開発用データで検証。外部正解率は未測定
+- [2026-10-20 構造条件の最新CHECKPOINT](docs/CHECKPOINT_STRUCTURE_2026-10-20.md)
 - [実歩行経路・品質検証報告](docs/REAL_ROUTING_POC_2026-10-19.md)
 - [複数条件照合エンジン仕様・検証計画](docs/MULTI_CONDITION_ENGINE_V0.1.md)
 - [開発・品質管理上のルール](AGENTS.md)
