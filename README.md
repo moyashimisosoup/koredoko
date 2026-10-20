@@ -29,6 +29,8 @@
 - [公開UR4物件の擬似ブラインド検証](docs/BLIND_TRIAL_RESULTS_2026-10-19.md)：GSI住所参照点包含2/4件、駅代表点だけでは候補除外に不十分
 - [複数徒歩条件の総合照合画面（PoC）](compare.html)：架空の4候補で徒歩条件3件＋建物属性2件を比較。Pages未公開
 - [実データ歩行距離の計算画面](real-routes.html)：公開UR4物件・歩行者ルート9件を照合。Pages未公開
+- [蒲田の公開UR4建物の比較画面](public-buildings.html)：共通3駅への実道路経路12本から条件別の参考順位を計算。Pages未公開
+- [蒲田4建物・12経路の検証レポート](docs/KAMATA_REAL_CANDIDATES_2026-10-20.md)
 - [実歩行経路・品質検証報告](docs/REAL_ROUTING_POC_2026-10-19.md)
 - [複数条件照合エンジン仕様・検証計画](docs/MULTI_CONDITION_ENGINE_V0.1.md)
 - [開発・品質管理上のルール](AGENTS.md)

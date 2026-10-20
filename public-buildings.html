@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>これどこ | 公開建物4件の多条件比較</title>
+<style>
+:root{font:15px/1.56 system-ui,-apple-system,"Yu Gothic",sans-serif;background:#f6f8f6;color:#253930}
+*{box-sizing:border-box}body{margin:0}main{max-width:920px;margin:auto;padding:28px 16px 70px}
+h1{margin:4px 0;font-size:clamp(27px,5vw,36px);letter-spacing:-.045em}h2{margin:0 0 10px;font-size:18px}
+p{color:#62756b;margin:10px 0 16px}
+nav{font-size:12px;margin:0 0 19px}a{color:#28715a}
+small,.small{font-size:12px;color:#65776b}.eyebrow{letter-spacing:.12em;font-weight:800;font-size:11px;color:#4d856e}
+.panel{background:white;border-radius:19px;border:1px solid #dce7dd;padding:19px;margin:16px 0}
+.warning{border-radius:12px;background:#fff2dc;padding:13px;color:#715a2b;font-size:13px}
+select{display:block;width:100%;font:inherit;min-height:44px;padding:11px;border:1px solid #a9c3b5;border-radius:11px;background:white}
+select:focus-visible,input:focus-visible{outline:3px solid #7ba98b;outline-offset:2px}
+.options{display:flex;flex-wrap:wrap;gap:10px;margin-top:13px}
+.options label{display:flex;gap:7px;align-items:center;background:#eef5f0;padding:10px 12px;border-radius:9px;cursor:pointer;font-weight:600;font-size:13px}
+input[type=checkbox]{accent-color:#327a62;width:17px;height:17px}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:18px 0}
+.metric{background:#eef4ef;border-radius:12px;padding:11px}
+.metric span{display:block;font-size:11px;color:#6b7f71}.metric b{font-size:24px;letter-spacing:-.025em}
+.rank{border:1px solid #dde6dd;border-radius:13px;padding:15px;margin:12px 0;background:#fff}
+.rank:first-child{border-color:#8eb7a0;background:#fcfffc}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.rankno{font-size:12px;font-weight:800;color:#54856c;margin-right:7px}
+.name{font-weight:760;font-size:17px}.value{font-weight:800;font-size:19px;font-variant-numeric:tabular-nums}
+.evidence{list-style:none;padding:0;margin:10px 0 0}
+.evidence li{display:grid;grid-template-columns:1.1fr 1fr;gap:8px;padding:9px 0;border-top:1px solid #e9eee9;font-size:12px}
+.quality{color:#846432}
+.note{font-size:12px;color:#65786e}.status{margin-top:12px;font-size:12px;color:#58705c}
+@media(max-width:610px){main{padding:18px 12px 50px}.panel{padding:15px}.metric{padding:8px}.metric b{font-size:19px}.evidence li{grid-template-columns:1fr}.value{font-size:17px}}
+</style></head><body><main>
+<nav><a href="./index.html">入力</a>　/　<a href="./compare.html">架空データ比較</a>　/　<a href="./real-routes.html">個別実経路</a></nav>
+<div class="eyebrow">APP-023 / REAL MULTI-BUILDING EVALUATION</div>
+<h1>これどこ　公開建物の比較</h1>
+<p>蒲田地域で公式に公開されたUR住宅4件に対して、3駅への<strong>実際の歩行経路12本</strong>を使い、徒歩条件を合成して比較します。</p>
+<section class="panel">
+<h2>1. 比較する広告を選ぶ</h2>
+<select id="ad" disabled aria-label="公開物件の徒歩広告を選択"><option>読み込み中</option></select>
+<div class="options" id="placeFilters" aria-label="比較する駅を選択"></div>
+<p id="adSource" class="small"></p>
+</section>
+<section class="panel">
+<h2>2. 複数条件の比較</h2>
+<div class="warning">**注意：参考順位です。** 測定地点は建物入口・駅出口ではなく住所／駅の代表点です。順位1位を所在地の確定や正解確率として扱わず、誤順位も検証結果に残します。</div>
+<div class="metrics">
+<div class="metric"><span>候補建物</span><b id="nBuildings">-</b></div>
+<div class="metric"><span>比較した物理駅</span><b id="nStations">-</b></div>
+<div class="metric"><span>同一駅の重複統合</span><b id="deduplicates">-</b></div>
+</div>
+<p class="small">指標は駅ごとの「歩行経路距離と広告上の距離帯とのずれ」の合計です。小さいほど広告の参考条件に近いことを示します。</p>
+<div id="results" aria-live="polite"></div>
+<p id="status" class="status" role="status"></p>
+</section>
+<section class="panel">
+<h2>データの限界</h2>
+<p class="small">すべて名称・所在地をUR公式サイトが公開している建物です。住所代表点は国土地理院、駅代表点はOpenPOI N02、歩行経路はValhalla公開デモを使用。鉄道出口と建物入口を確認した正式距離ではなく、道路データの版も固定されていません。公式住所を推定したり非公開の住戸を探索したりはしません。</p>
+<p class="small">出典：<a href="https://www.ur-net.go.jp/chintai/" target="_blank" rel="noopener noreferrer">UR賃貸住宅</a>、<a href="https://msearch.gsi.go.jp/address-search/AddressSearch" target="_blank" rel="noopener noreferrer">国土地理院</a>、<a href="https://docs.openpoiapi.com/" target="_blank" rel="noopener noreferrer">OpenPOI</a>、<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a>。</p>
+</section>
+</main>
+<script type="module">
+import {comparePublicCandidates,combinePhysicalStations} from "./src/public_building_rank.mjs";
+const el=id=>document.getElementById(id);
+let data=null;
+const t=(tag,str,cls)=>{const n=document.createElement(tag);n.textContent=String(str??"");if(cls)n.className=cls;return n};
+function render(){
+ if(!data)return;
+ const id=el("ad").value;
+ const chosen=[...el("placeFilters").querySelectorAll("input:checked")].map(x=>x.value);
+ try{
+  const report=comparePublicCandidates(data,id,chosen);
+  el("nBuildings").textContent=String(report.candidate_count);
+  el("nStations").textContent=String(report.station_condition_count);
+  el("deduplicates").textContent=String(report.duplicate_line_constraints);
+  const box=el("results");box.replaceChildren();
+  report.ranked.forEach((r,index)=>{
+   const card=t("article","","rank"),head=t("div","","row");
+   const name=t("div","","name");name.append(t("span",String(index+1)+"位 ","rankno"),t("span",r.label));
+   head.append(name,t("div",r.total_absolute_gap_m===null?"距離不足":r.total_absolute_gap_m+"m","value"));
+   card.append(head);
+   card.append(t("div","実歩行経路の代表点照合に基づく参考順序。正式出口位置・建物入口は未確認。","note"));
+   const list=t("ul","","evidence");
+   r.evidence.forEach(e=>{
+    const li=t("li");
+    li.append(t("span",e.label),t("span",e.status==="missing"?"経路未測定":e.measured_m+"m（広告換算距離帯との差 "+(e.difference_signed_m>0?"+":"")+e.difference_signed_m+"m）"+(e.quality==="endpoint_snap_review"?" ※吸着位置要確認":"")));
+    list.append(li);
+   });
+   card.append(list);
+   const link=t("a","UR公式情報");link.href=r.official_url;link.target="_blank";link.rel="noopener noreferrer";link.className="small";card.append(link);
+   box.append(card);
+  });
+  el("status").textContent="比較結果は4件の公表名称付きUR住宅の研究用データに限定しています。場所を確定する判定ではありません。";
+ }catch(e){el("results").replaceChildren();el("status").textContent="確認が必要です："+String(e.message)}
+}
+async function load(){
+ try{
+  const r=await fetch("./examples/kamata_public_4complex_12routes_20261020.json",{cache:"no-store"});
+  if(!r.ok)throw Error("HTTP "+r.status);data=await r.json();
+  const select=el("ad");select.replaceChildren();
+  for(const a of data.advertisements){
+   const op=t("option",a.id+" / "+a.conditions.map(c=>c.label).join("・"));op.value=a.id;select.append(op);
+  }
+  select.disabled=false;
+  function refresh(){
+   const ad=data.advertisements.find(a=>a.id===select.value);
+   const sets=combinePhysicalStations(ad.conditions).stations;
+   const box=el("placeFilters");box.replaceChildren();
+   for(const s of sets){
+    const label=t("label",""),check=t("input");check.type="checkbox";check.value=s.place_id;check.checked=true;
+    check.addEventListener("change",render);
+    label.append(check,t("span",data.stations.find(x=>x.id===s.place_id)?.name||s.place_id));box.append(label);
+   }
+   const sr=el("adSource");sr.replaceChildren();const link=t("a","元広告（UR公式）");link.href=ad.source_url;link.target="_blank";link.rel="noopener noreferrer";sr.append(link);
+   render();
+  }
+  select.addEventListener("change",refresh);refresh();
+ }catch(e){el("status").textContent="データを読み込めません。Webサーバー経由で開いてください："+String(e.message)}
+}
+load();
+</script></body></html>

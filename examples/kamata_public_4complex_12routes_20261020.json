@@ -1,0 +1,264 @@
+{
+  "schema_version": "public-complex-crosscheck-v0.1",
+  "created_on": "2026-10-20",
+  "method": "Three station representative points (OpenPOI N02), four public UR complex addresses (GSI geocoder), and 12 Valhalla pedestrian route observations. Public named buildings ONLY, no dwelling/unit coordinates; station exits and building entrances are not independently confirmed.",
+  "attributes": {
+    "routing_provider": "Valhalla public demo pedestrian route, graph revision unknown",
+    "station_source": "OpenPOI N02 representative railway station point",
+    "building_source": "GSI AddressSearch reference point",
+    "licensing": "Map routing © OpenStreetMap contributors; attribution https://www.openstreetmap.org/copyright; other upstream source licenses must be checked before bulk reuse"
+  },
+  "routing_date": "2026-10-20",
+  "stations": [
+    {
+      "id": "jr-kamata",
+      "name": "蒲田駅（JR代表点）",
+      "lat": 35.5621521775779,
+      "lon": 139.71541621040657,
+      "source": "openpoi-n02"
+    },
+    {
+      "id": "keikyu-kamata",
+      "name": "京急蒲田駅（代表点）",
+      "lat": 35.56169342658397,
+      "lon": 139.72432931755196,
+      "source": "openpoi-n02"
+    },
+    {
+      "id": "yaguchinowatashi",
+      "name": "矢口渡駅（代表点）",
+      "lat": 35.56245,
+      "lon": 139.70034,
+      "source": "openpoi-n02"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "ur-kamata-ekimae",
+      "label": "蒲田駅前ハイツ",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3330.html",
+      "public_address_label": "蒲田五丁目13番（街区代表点）",
+      "lat": 35.561253,
+      "lon": 139.715759,
+      "geocode_precision": "block",
+      "distances": [
+        {
+          "place_id": "jr-kamata",
+          "meters": 702,
+          "air_m": 105,
+          "snap_start_m": 37,
+          "snap_end_m": 7
+        },
+        {
+          "place_id": "keikyu-kamata",
+          "meters": 921,
+          "air_m": 777,
+          "snap_start_m": 37,
+          "snap_end_m": 10
+        },
+        {
+          "place_id": "yaguchinowatashi",
+          "meters": 1832,
+          "air_m": 1401,
+          "snap_start_m": 37,
+          "snap_end_m": 20
+        }
+      ]
+    },
+    {
+      "id": "ur-kamata-honcho",
+      "label": "蒲田本町一丁目",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3110.html",
+      "public_address_label": "蒲田本町一丁目1番（街区代表点）",
+      "lat": 35.558037,
+      "lon": 139.714935,
+      "geocode_precision": "block",
+      "distances": [
+        {
+          "place_id": "jr-kamata",
+          "meters": 984,
+          "air_m": 460,
+          "snap_start_m": 54,
+          "snap_end_m": 7
+        },
+        {
+          "place_id": "keikyu-kamata",
+          "meters": 1358,
+          "air_m": 942,
+          "snap_start_m": 54,
+          "snap_end_m": 10
+        },
+        {
+          "place_id": "yaguchinowatashi",
+          "meters": 1920,
+          "air_m": 1408,
+          "snap_start_m": 54,
+          "snap_end_m": 20
+        }
+      ]
+    },
+    {
+      "id": "ur-shareru-shinkamata",
+      "label": "シャレール新蒲田",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_5480.html",
+      "public_address_label": "新蒲田二丁目12番18号（住所検索点）",
+      "lat": 35.560272,
+      "lon": 139.7034,
+      "geocode_precision": "address_match_not_entrance",
+      "distances": [
+        {
+          "place_id": "jr-kamata",
+          "meters": 1341,
+          "air_m": 1107,
+          "snap_start_m": 3,
+          "snap_end_m": 7
+        },
+        {
+          "place_id": "keikyu-kamata",
+          "meters": 2186,
+          "air_m": 1900,
+          "snap_start_m": 3,
+          "snap_end_m": 10
+        },
+        {
+          "place_id": "yaguchinowatashi",
+          "meters": 411,
+          "air_m": 368,
+          "snap_start_m": 3,
+          "snap_end_m": 20
+        }
+      ]
+    },
+    {
+      "id": "ur-patio-shinkamata",
+      "label": "パティオ新蒲田三丁目",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_4430.html",
+      "public_address_label": "新蒲田三丁目7番6号（住所検索点）",
+      "lat": 35.557625,
+      "lon": 139.704605,
+      "geocode_precision": "address_match_not_entrance",
+      "distances": [
+        {
+          "place_id": "jr-kamata",
+          "meters": 1485,
+          "air_m": 1100,
+          "snap_start_m": 5,
+          "snap_end_m": 7
+        },
+        {
+          "place_id": "keikyu-kamata",
+          "meters": 2214,
+          "air_m": 1841,
+          "snap_start_m": 5,
+          "snap_end_m": 10
+        },
+        {
+          "place_id": "yaguchinowatashi",
+          "meters": 782,
+          "air_m": 661,
+          "snap_start_m": 5,
+          "snap_end_m": 20
+        }
+      ]
+    }
+  ],
+  "advertisements": [
+    {
+      "id": "AD-K1",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3330.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "jr-kamata",
+          "min_minutes": 5,
+          "max_minutes": 5,
+          "label": "蒲田駅 徒歩5分"
+        },
+        {
+          "kind": "walk",
+          "place_id": "keikyu-kamata",
+          "min_minutes": 10,
+          "max_minutes": 10,
+          "label": "京急蒲田駅 徒歩10分"
+        }
+      ]
+    },
+    {
+      "id": "AD-K2",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3110.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "jr-kamata",
+          "min_minutes": 6,
+          "max_minutes": 8,
+          "label": "蒲田駅 徒歩6〜8分（JR）"
+        },
+        {
+          "kind": "walk",
+          "place_id": "jr-kamata",
+          "min_minutes": 8,
+          "max_minutes": 9,
+          "label": "蒲田駅 徒歩8〜9分（東急・同一物理駅）",
+          "duplicate_physical_station": true
+        },
+        {
+          "kind": "walk",
+          "place_id": "keikyu-kamata",
+          "min_minutes": 11,
+          "max_minutes": 13,
+          "label": "京急蒲田駅 徒歩11〜13分"
+        }
+      ]
+    },
+    {
+      "id": "AD-K3",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_5480.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "jr-kamata",
+          "min_minutes": 15,
+          "max_minutes": 15,
+          "label": "蒲田駅 徒歩15分"
+        },
+        {
+          "kind": "walk",
+          "place_id": "yaguchinowatashi",
+          "min_minutes": 6,
+          "max_minutes": 6,
+          "label": "矢口渡駅 徒歩6分"
+        }
+      ]
+    },
+    {
+      "id": "AD-K4",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_4430.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "jr-kamata",
+          "min_minutes": 18,
+          "max_minutes": 18,
+          "label": "蒲田駅 徒歩18分（バス5分+徒歩3分は除外）"
+        },
+        {
+          "kind": "walk",
+          "place_id": "yaguchinowatashi",
+          "min_minutes": 12,
+          "max_minutes": 12,
+          "label": "矢口渡駅 徒歩12分"
+        }
+      ]
+    }
+  ],
+  "rank_method": "comparison of absolute deviations from 80m/min advertised bands, capped reference penalties; NOT calibrated accuracy",
+  "limitations": [
+    "No public-building entrances or official station exits",
+    "Public demo routing graph not version pinned",
+    "Two geocoded origins are block centroids",
+    "Measurements reused from 2026-10-19 for the two Kamata-ekimae station routes",
+    "Reference comparison may give an incorrect top-ranked complex even with a true publicly named target",
+    "No residential unit identification"
+  ]
+}
