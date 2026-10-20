@@ -116,7 +116,7 @@ async function init(){
  const select=el("ad");select.replaceChildren();
  dataset.advertisements.forEach(a=>{
   const op=t("option",a.id+"： "+a.conditions.map(x=>x.label).join("・"));op.value=a.id;select.append(op);
- });select.disabled=false;
+ });select.value="OH05";select.disabled=false;
  const root=el("facilities");root.replaceChildren();
  registry.facilities.forEach((f,i)=>{
   const item=t("section","","landmark"),top=t("label","","check");
@@ -124,7 +124,7 @@ async function init(){
   top.append(check,t("span",f.name+"（"+f.category+"）","name"));item.append(top);
   const form=t("div","","form");
   const blocks=[
-   ["metric-"+f.id,"距離の種類",i===0?"straight_m":"straight_m"],
+   ["metric-"+f.id,"距離の種類",i===0?"walk_m":"straight_m"],
    ["min-"+f.id,"下限 m",0],
    ["max-"+f.id,"上限 m",i===0?500:600]
   ];
