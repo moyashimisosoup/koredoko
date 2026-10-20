@@ -80,6 +80,7 @@ export function evaluatePublishedLocationFusion(doc,registry,adId,{
  if(!Array.isArray(facilityRoutes)||facilityRoutes.length>2000)throw Error("Invalid facility route list");
  const publicIds=new Set(doc.candidates.map(x=>x.id));
  const facIds=new Set(registry.facilities.map(x=>x.id));
+ const facPhysical=new Map(registry.facilities.map(x=>[x.id,x.physical_id]));
  const routeIndex=new Map();
  for(const obs of facilityRoutes){
   if(!isObj(obs)||!publicIds.has(obs.candidate_id)||!facIds.has(obs.facility_id)||
@@ -89,7 +90,7 @@ export function evaluatePublishedLocationFusion(doc,registry,adId,{
      !ok(obs.snap_start_m)||!ok(obs.snap_end_m)||
      obs.snap_start_m<0||obs.snap_end_m<0)
     throw Error("Invalid documented pedestrian facility route");
-  const key=obs.candidate_id+"|"+obs.facility_id;
+  const key=obs.candidate_id+"|"+facPhysical.get(obs.facility_id);
   if(routeIndex.has(key))throw Error("Duplicate observed facility route");
   routeIndex.set(key,obs);
  }
@@ -127,7 +128,7 @@ export function evaluatePublishedLocationFusion(doc,registry,adId,{
       gap_m:score,scored:true,status:score===0?"possible_reference_overlap":"reference_range_differs",
       quality_warning:"approximate_facility_and_building_points",can_confirm:false};
    }
-   const route=routeIndex.get(candidate.id+"|"+f.id);
+   const route=routeIndex.get(candidate.id+"|"+f.physical_id);
    if(!route){
     missing++;const tension=straightRange[0]>max_m;
     return {key:x.key,label:x.label,metric:"walking_route",source:"not_measured",
