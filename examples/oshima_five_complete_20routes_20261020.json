@@ -1,0 +1,370 @@
+{
+  "schema_version": "public-complex-crosscheck-v0.1",
+  "experiment_id": "OSHIMA-5-PRELOCK-20261020",
+  "created_on": "2026-10-20",
+  "status": "observed_20_of_20_ready_for_frozen_prediction",
+  "area": "東京都江東区大島・東大島・亀戸",
+  "method": "Five public UR complex names/address reference points, four N02 station representative coordinates, published walking advertisements preregistered before route distances. No true-label object or route observations in this registration.",
+  "routing_date": "2026-10-20",
+  "station_source": "OpenPOI N02 station representatives",
+  "origin_source": "GSI AddressSearch reference points",
+  "graph_revision": "unknown",
+  "stations": [
+    {
+      "id": "higashi-oshima",
+      "name": "東大島駅",
+      "lat": 35.689868051243984,
+      "lon": 139.84730206369267,
+      "source": "OpenPOI N02 2026-10-20 Tokyo Koto ward match, station reference not exit"
+    },
+    {
+      "id": "oshima",
+      "name": "大島駅",
+      "lat": 35.68976262652513,
+      "lon": 139.8343603971694,
+      "source": "OpenPOI N02 2026-10-20 Tokyo Koto ward match, station reference not exit"
+    },
+    {
+      "id": "nishi-oshima",
+      "name": "西大島駅",
+      "lat": 35.689347317385014,
+      "lon": 139.82632006207837,
+      "source": "OpenPOI N02 2026-10-20 Tokyo Koto ward match, station reference not exit"
+    },
+    {
+      "id": "kameido",
+      "name": "亀戸駅",
+      "lat": 35.697449367875755,
+      "lon": 139.8267716276794,
+      "source": "OpenPOI N02 2026-10-20 Tokyo Koto ward match, station reference not exit"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "C01",
+      "label": "東大島駅前ハイツ",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3460.html",
+      "public_address_label": "東京都江東区大島7-39",
+      "lat": 35.692024,
+      "lon": 139.843384,
+      "geocode_precision": "GSI_address_reference_not_entrance",
+      "distances": [
+        {
+          "place_id": "higashi-oshima",
+          "meters": 648,
+          "air_m": 427,
+          "snap_start_m": 12,
+          "snap_end_m": 4,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "oshima",
+          "meters": 1017,
+          "air_m": 853,
+          "snap_start_m": 12,
+          "snap_end_m": 2,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "nishi-oshima",
+          "meters": 1755,
+          "air_m": 1570,
+          "snap_start_m": 12,
+          "snap_end_m": 2,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "kameido",
+          "meters": 2091,
+          "air_m": 1617,
+          "snap_start_m": 12,
+          "snap_end_m": 10,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "label": "大島七丁目",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_2500.html",
+      "public_address_label": "東京都江東区大島7-28-1",
+      "lat": 35.692932,
+      "lon": 139.839783,
+      "geocode_precision": "GSI_address_reference_not_entrance",
+      "distances": [
+        {
+          "place_id": "higashi-oshima",
+          "meters": 1068,
+          "air_m": 760,
+          "snap_start_m": 4,
+          "snap_end_m": 4,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "oshima",
+          "meters": 841,
+          "air_m": 603,
+          "snap_start_m": 4,
+          "snap_end_m": 2,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "nishi-oshima",
+          "meters": 1579,
+          "air_m": 1280,
+          "snap_start_m": 4,
+          "snap_end_m": 2,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "kameido",
+          "meters": 1691,
+          "air_m": 1278,
+          "snap_start_m": 4,
+          "snap_end_m": 10,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        }
+      ]
+    },
+    {
+      "id": "C03",
+      "label": "シティコート大島",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_5900.html",
+      "public_address_label": "東京都江東区大島6-14",
+      "lat": 35.692703,
+      "lon": 139.83638,
+      "geocode_precision": "GSI_address_reference_not_entrance",
+      "distances": [
+        {
+          "place_id": "higashi-oshima",
+          "meters": 1562,
+          "air_m": 1036,
+          "snap_start_m": 29,
+          "snap_end_m": 4,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "oshima",
+          "meters": 663,
+          "air_m": 374,
+          "snap_start_m": 29,
+          "snap_end_m": 2,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "nishi-oshima",
+          "meters": 1397,
+          "air_m": 982,
+          "snap_start_m": 29,
+          "snap_end_m": 2,
+          "source": "Valhalla pedestrian 2026-10-20 official demo, station and address representative endpoints; road graph not pinned"
+        },
+        {
+          "place_id": "kameido",
+          "meters": 1384,
+          "air_m": 1016,
+          "snap_start_m": 29,
+          "snap_end_m": 10,
+          "source": "Valhalla pedestrian 2026-10-20 official demo, station and address representative endpoints; road graph not pinned"
+        }
+      ]
+    },
+    {
+      "id": "C04",
+      "label": "大島六丁目",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_1920.html",
+      "public_address_label": "東京都江東区大島6-1",
+      "lat": 35.69347,
+      "lon": 139.832291,
+      "geocode_precision": "GSI_address_reference_not_entrance",
+      "distances": [
+        {
+          "place_id": "oshima",
+          "meters": 601,
+          "air_m": 453,
+          "snap_start_m": 25,
+          "snap_end_m": 2,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "nishi-oshima",
+          "meters": 1012,
+          "air_m": 708,
+          "snap_start_m": 25,
+          "snap_end_m": 2,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "kameido",
+          "meters": 915,
+          "air_m": 666,
+          "snap_start_m": 25,
+          "snap_end_m": 10,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "higashi-oshima",
+          "meters": 1849,
+          "air_m": 1414,
+          "snap_start_m": 25,
+          "snap_end_m": 4,
+          "source": "Valhalla pedestrian 2026-10-20 official demo, station and address representative endpoints; road graph not pinned"
+        }
+      ]
+    },
+    {
+      "id": "C05",
+      "label": "大島四丁目",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_1780.html",
+      "public_address_label": "東京都江東区大島4-1",
+      "lat": 35.687229,
+      "lon": 139.829117,
+      "geocode_precision": "GSI_address_reference_not_entrance",
+      "distances": [
+        {
+          "place_id": "higashi-oshima",
+          "meters": 2037,
+          "air_m": 1668,
+          "snap_start_m": 49,
+          "snap_end_m": 4,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "oshima",
+          "meters": 758,
+          "air_m": 551,
+          "snap_start_m": 49,
+          "snap_end_m": 2,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "nishi-oshima",
+          "meters": 451,
+          "air_m": 345,
+          "snap_start_m": 49,
+          "snap_end_m": 2,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        },
+        {
+          "place_id": "kameido",
+          "meters": 1517,
+          "air_m": 1156,
+          "snap_start_m": 49,
+          "snap_end_m": 10,
+          "source": "Valhalla public pedestrian demo 2026-10-20; geometry endpoint snapping approximated, road graph revision unpinned"
+        }
+      ]
+    }
+  ],
+  "advertisements": [
+    {
+      "id": "OH01",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3460.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "higashi-oshima",
+          "min_minutes": 3,
+          "max_minutes": 4,
+          "label": "東大島駅 徒歩3〜4分"
+        },
+        {
+          "kind": "walk",
+          "place_id": "oshima",
+          "min_minutes": 10,
+          "max_minutes": 12,
+          "label": "大島駅 徒歩10〜12分"
+        }
+      ]
+    },
+    {
+      "id": "OH02",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_2500.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "higashi-oshima",
+          "min_minutes": 9,
+          "max_minutes": 9,
+          "label": "東大島駅 徒歩9分"
+        }
+      ]
+    },
+    {
+      "id": "OH03",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_5900.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "oshima",
+          "min_minutes": 3,
+          "max_minutes": 7,
+          "label": "大島駅 徒歩3〜7分"
+        },
+        {
+          "kind": "walk",
+          "place_id": "kameido",
+          "min_minutes": 15,
+          "max_minutes": 18,
+          "label": "亀戸駅 徒歩15〜18分"
+        }
+      ]
+    },
+    {
+      "id": "OH04",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_1920.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "oshima",
+          "min_minutes": 3,
+          "max_minutes": 8,
+          "label": "大島駅 徒歩3〜8分"
+        },
+        {
+          "kind": "walk",
+          "place_id": "kameido",
+          "min_minutes": 10,
+          "max_minutes": 15,
+          "label": "亀戸駅 徒歩10〜15分"
+        }
+      ]
+    },
+    {
+      "id": "OH05",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_1780.html",
+      "conditions": [
+        {
+          "kind": "walk",
+          "place_id": "nishi-oshima",
+          "min_minutes": 5,
+          "max_minutes": 10,
+          "label": "西大島駅 徒歩5〜10分"
+        },
+        {
+          "kind": "walk",
+          "place_id": "oshima",
+          "min_minutes": 7,
+          "max_minutes": 12,
+          "label": "大島駅 徒歩7〜12分"
+        }
+      ]
+    }
+  ],
+  "locked_policy": {
+    "algorithm": "walking-band-gap-v0.1",
+    "meters_per_minute": 80,
+    "top1": true,
+    "top3": true,
+    "abstention_metric": true,
+    "sensitivity_buffer_m": 100,
+    "primary_features": "walk-only",
+    "secondary_structure": "separately reported, same UR source correlated",
+    "do_not_change_thresholds_after_observation": true,
+    "route_scope": "5 named public complexes x 4 station reference coordinates = 20 pedestrian observations; ads with a single station are retained and separately reported",
+    "limitations": "Convenience-chosen nonrandom public UR cohort, one ad has one named walking condition; accuracy is dataset-specific only."
+  },
+  "missing_pairs": [],
+  "study_result": "Distances complete; do NOT infer accuracy before frozen prediction and separate truth grading",
+  "observation_completed_on": "2026-10-20"
+}
