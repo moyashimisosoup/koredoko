@@ -43,6 +43,7 @@
 - [王子神谷公開住宅の疑似ブラインド評価CHECKPOINT](docs/CHECKPOINT_OJI_HOLDOUT_2026-10-20.md)
 - [複数駅出口・住棟アクセス点の距離計算UI](endpoint-lab.html)：現行の実経路6本と仮の追加経路を厳密に区別して比較
 - [複数出入口計算PoCと精度検証計画](docs/MULTI_ENDPOINT_DISTANCE_POC_2026-10-20.md)：従来の実データ・予測を保護し、次の新地域で前後比較
+- [大島地区・公開UR5物件の次期検証](docs/OSHIMA_FIVE_PUBLIC_HOLDOUT_2026-10-20.md)：20経路の登録条件を事前固定、実取得17本・レート制限で3本欠測。採点保留
 - [実歩行経路・品質検証報告](docs/REAL_ROUTING_POC_2026-10-19.md)
 - [複数条件照合エンジン仕様・検証計画](docs/MULTI_CONDITION_ENGINE_V0.1.md)
 - [開発・品質管理上のルール](AGENTS.md)
