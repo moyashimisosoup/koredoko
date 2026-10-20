@@ -89,7 +89,7 @@ function render(){
     :audit.rank_state==="stress_rank_ambiguous"
     ?"この変動幅では順位1位が逆転する可能性があり、順位は判定保留です。"
     :"距離データ不足または同点のため、順位は判定保留です。";
-  el("stressStatus").textContent="距離変動 ±"+audit.buffer_m+"m： "+stressText;
+  el("stressStatus").textContent="徒歩距離のみの順位感度（建物構造の順位付けは含まない） ±"+audit.buffer_m+"m： "+stressText;
   el("nBuildings").textContent=String(report.candidate_count);
   el("nStations").textContent=String(report.station_condition_count);
   el("deduplicates").textContent=String(report.duplicate_line_constraints);
