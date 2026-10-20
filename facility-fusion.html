@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>これどこ | 施設と駅の距離を重ねる</title>
+<style>
+:root{font:15px/1.6 system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#2d3934;background:#f6f7f3}
+*{box-sizing:border-box}body{margin:0}
+main{max-width:960px;margin:0 auto;padding:28px 16px 70px}
+header p{margin:7px 0 14px;color:#6b796c}
+h1{font-size:clamp(26px,5vw,40px);line-height:1.25;letter-spacing:-.04em;margin:5px 0}
+h2{font-size:18px;margin:0 0 10px}
+a{color:#2a7256}nav{font-size:12px}
+.panel{background:#fff;border:1px solid #dce6dd;border-radius:19px;padding:18px;margin:16px 0}
+.caution{font-size:13px;background:#fff5e6;border:1px solid #eedcc0;color:#745b32;border-radius:11px;padding:12px}
+label{font-weight:650;font-size:13px;display:block;margin:8px 0 4px}
+select,input{font:inherit;border:1px solid #aebfb3;border-radius:10px;padding:10px;min-height:44px;background:#fff;color:#2b4233;max-width:100%}
+select{width:100%}input[type=checkbox]{width:19px;height:19px;min-height:0;accent-color:#357458}
+.check{display:flex;align-items:center;gap:10px;cursor:pointer}
+.form{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;align-items:end}
+.hint{font-size:12px;color:#687a6d;margin:5px 0 13px}
+.landmark{padding:14px 0;border-bottom:1px solid #e4ebe4}
+.landmark:last-child{border:0}
+.name{font-weight:750}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{padding:7px 11px;background:#eff5ee;border-radius:9px;color:#48694f;font-size:12px}
+.item{border:1px solid #dfe8de;border-radius:13px;padding:13px;margin:11px 0}
+.item:first-child{border-color:#9dbfa9}
+.itemhead{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+.itemhead b{font-size:17px}.metric{font-variant-numeric:tabular-nums;font-weight:750}
+.lines{margin:10px 0;padding:0;list-style:none}.lines li{border-top:1px solid #e9eee9;padding:8px 0;font-size:13px}
+.small{font-size:12px;color:#657769}
+.step{font-size:13px;margin:7px 0;display:flex;gap:10px;justify-content:space-between}
+.notice{font-size:12px;color:#72683e}
+@media(max-width:620px){main{padding:18px 12px}.panel{padding:13px}.form{grid-template-columns:1fr 1fr}.form>div:first-child{grid-column:1/-1}}
+</style></head><body><main>
+<nav><a href="./index.html">入力</a>　/　<a href="./holdout-eval.html">既存の公開物件評価</a>　/　施設横断の距離計算</nav>
+<header><h1>これどこ　距離の手がかりを重ねる</h1>
+<p>駅だけでなく、行政施設・学校・公園との距離条件を合わせ、公開住宅候補5件の比較結果がどう変わるか試せます。</p></header>
+<div class="caution"><strong>実験用画面</strong>：候補は住所がすでに公式公開されたUR住宅のみです。施設の距離条件は、この画面で自由に入力する<strong>仮の広告条件</strong>であり、特定のUR広告の記述ではありません。施設の現在の数値は代表点間の<strong>直線距離</strong>です。駅への徒歩は実際に取得した道路経路ですが駅出口は未確認です。非公開の住宅住所を特定しません。</div>
+<section class="panel">
+<h2>1. 比較の出発点</h2>
+<label for="ad">公式の公開広告（駅徒歩条件）</label>
+<select id="ad" disabled><option>データを読み込んでいます</option></select>
+<label class="check"><input id="includeStations" type="checkbox" checked>駅への徒歩条件も照合に含める</label>
+<p class="hint">駅徒歩条件は既存の公式広告に基づくものです。チェックを外せば施設の距離条件だけを比較できます。</p>
+</section>
+<section class="panel">
+<h2>2. 施設の距離条件</h2><p class="hint">追加したい施設を選んで距離範囲を設定します。入力例の「0〜500m」は公式の広告文から抽出したものではありません。</p>
+<div id="facilities"></div>
+</section>
+<section class="panel">
+<h2>3. 5つの公開建物候補を照合</h2>
+<div id="summary" class="chips" aria-live="polite"></div>
+<h2>条件ごとの絞り込み</h2><div id="steps" aria-live="polite"></div>
+<h2 style="margin-top:21px">公開候補の参考順位</h2>
+<div id="results" aria-live="polite"></div>
+<p id="status" class="small" role="status"></p>
+</section>
+<section class="panel"><h2>計算と結果の読み方</h2>
+<p class="small">駅徒歩は80m/分換算の広告範囲と道路経路を照合します。施設の直線距離は緯度経度から計算し、住所代表点＋施設代表点の<strong>例示的な誤差幅</strong>を重ねた範囲で照合します。徒歩の施設距離に切り替えた場合は経路実測値がなければ不明として保留し、直線距離を徒歩距離に流用しません。</p>
+<p class="small">同じ建物に入る図書館と窓口など、物理的に同じ施設は重複加点しません。距離条件から外れても住棟入口等が未確認なら確定除外せず、参考順位のみ表示します。参照地点の互換性・候補数・欠測を明示し、確率や絶対住所は算出しません。</p>
+<p class="small">出典：<a href="https://www.ur-net.go.jp/chintai/" target="_blank" rel="noopener noreferrer">UR賃貸住宅</a>／<a href="https://www.city.koto.lg.jp/060305/shisetsuannai/kokyo/omonashisetsu/shisetsu/16793.html" target="_blank" rel="noopener noreferrer">江東区総合区民センター</a>／<a href="https://nlftp.mlit.go.jp/ksj/" target="_blank" rel="noopener noreferrer">国土数値情報の学校データ</a>／<a href="https://www.tokyo-park.or.jp/" target="_blank" rel="noopener noreferrer">東京都立公園</a>／<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a>。</p>
+</section>
+</main>
+<script type="module">
+import {evaluatePublishedLocationFusion} from "./src/facility_distance_fusion.mjs";
+const el=id=>document.getElementById(id);
+const t=(tag,value,cls)=>{const n=document.createElement(tag);n.textContent=String(value??"");if(cls)n.className=cls;return n};
+let dataset=null,registry=null;
+function render(){
+ if(!dataset||!registry)return;
+ const items=[];
+ for(const f of registry.facilities){
+  const checked=el("on-"+f.id).checked;
+  if(!checked)continue;
+  const min=Number(el("min-"+f.id).value),max=Number(el("max-"+f.id).value);
+  items.push({facility_id:f.id,metric:el("metric-"+f.id).value,min_m:min,max_m:max});
+ }
+ try{
+  const report=evaluatePublishedLocationFusion(dataset,registry,el("ad").value,{includeStations:el("includeStations").checked,facilityConditions:items});
+  const summary=el("summary");summary.replaceChildren();
+  for(const [label,num] of [["公開住宅候補",report.candidate_count],["独立した物理的手がかり",report.independent_physical_clues],["距離帯と両立する参考候補",report.reference_compatible_candidates.length]]){
+   summary.append(t("span",label+" "+num,"chip"));
+  }
+  const steps=el("steps");steps.replaceChildren();
+  report.narrowing_steps.forEach((s,i)=>{
+   const p=t("p","","step");p.append(t("span",(i+1)+". "+s.condition),
+       t("b",s.remaining_reference_compatible+" / "+report.candidate_count+" 件"));steps.append(p);
+  });
+  const target=el("results");target.replaceChildren();
+  report.ranked.forEach((x,i)=>{
+   const card=t("article","","item"),head=t("div","","itemhead");
+   head.append(t("b",(i+1)+"位　"+x.name),t("span","参考距離帯との差 "+x.observed_gap_total_m+"m","metric"));
+   card.append(head);
+   card.append(t("p",x.missing_conditions?"経路未取得が "+x.missing_conditions+"件。順位の比較には注意してください。":"全入力条件を参照計算済み。建物位置の確定ではありません。","small"));
+   const ul=t("ul","","lines");
+   x.evidence.forEach(e=>{
+    const li=t("li");
+    const distance=e.observed_m===undefined?"施設までの徒歩経路未取得":e.observed_m+"m";
+    li.append(t("span",e.label+" ／ "+(e.metric==="straight_distance"?"直線距離":"道路距離")+" "+distance+" ／ "+(e.scored?"差 "+e.gap_m+"m":"照合保留")));
+    ul.append(li);
+   });
+   card.append(ul);target.append(card);
+  });
+  el("status").textContent="参考順位のみ。距離の誤差幅は統計的に校正されておらず、出入口・公開住宅の入口位置も独立検証していません。";
+ }catch(e){el("steps").replaceChildren();el("results").replaceChildren();el("summary").replaceChildren();el("status").textContent="条件を確認してください："+String(e.message)}
+}
+async function init(){
+ try{
+ const files=await Promise.all([
+ fetch("./examples/oshima_five_complete_20routes_20261020.json",{cache:"no-store"}),
+ fetch("./examples/oshima_public_facilities_20261020.json",{cache:"no-store"})]);
+ if(files.some(x=>!x.ok))throw Error("データの取得失敗");
+ dataset=await files[0].json();registry=await files[1].json();
+ const select=el("ad");select.replaceChildren();
+ dataset.advertisements.forEach(a=>{
+  const op=t("option",a.id+"： "+a.conditions.map(x=>x.label).join("・"));op.value=a.id;select.append(op);
+ });select.disabled=false;
+ const root=el("facilities");root.replaceChildren();
+ registry.facilities.forEach((f,i)=>{
+  const item=t("section","","landmark"),top=t("label","","check");
+  const check=t("input");check.type="checkbox";check.id="on-"+f.id;check.checked=i===0;check.addEventListener("change",render);
+  top.append(check,t("span",f.name+"（"+f.category+"）","name"));item.append(top);
+  const form=t("div","","form");
+  const blocks=[
+   ["metric-"+f.id,"距離の種類",i===0?"straight_m":"straight_m"],
+   ["min-"+f.id,"下限 m",0],
+   ["max-"+f.id,"上限 m",i===0?500:600]
+  ];
+  blocks.forEach(([id,label,defaultValue],index)=>{
+   const wrapper=t("div"),lab=t("label",label);lab.htmlFor=id;
+   const inp=index===0?t("select"):t("input");inp.id=id;
+   if(index===0){
+    for(const [value,name] of [["straight_m","直線距離（代表点）"],["walk_m","徒歩の道路距離（未実測は保留）"]]){
+     const opt=t("option",name);opt.value=value;inp.append(opt);
+    }inp.value=defaultValue;
+   }else{inp.type="number";inp.min="0";inp.max="20000";inp.step="10";inp.value=String(defaultValue);}
+   inp.addEventListener("change",render);
+   wrapper.append(lab,inp);form.append(wrapper);
+  });
+  item.append(form,t("p","代表点の精度は未測量。入力値は自分で編集する仮の距離条件です。","hint"));
+  root.append(item);
+ });
+ el("includeStations").addEventListener("change",render);
+ select.addEventListener("change",render);render();
+ }catch(e){el("status").textContent="入力データを読めません："+String(e.message)}
+}
+init();
+</script></body></html>
