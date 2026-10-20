@@ -32,6 +32,7 @@
 - [蒲田の公開UR4建物の比較画面](public-buildings.html)：共通3駅への実道路経路12本から条件別の参考順位を計算。Pages未公開
 - [蒲田4建物・12経路の検証レポート](docs/KAMATA_REAL_CANDIDATES_2026-10-20.md)
 - [2026-10-20 開発CHECKPOINT](docs/CHECKPOINT_KAMATA_2026-10-20.md)
+- [徒歩経路の感度分析と誤順位検証](docs/ROUTE_SENSITIVITY_2026-10-20.md)：既存公開4建物で±100m/±200mの参考順位の入替可能性を検査
 - [実歩行経路・品質検証報告](docs/REAL_ROUTING_POC_2026-10-19.md)
 - [複数条件照合エンジン仕様・検証計画](docs/MULTI_CONDITION_ENGINE_V0.1.md)
 - [開発・品質管理上のルール](AGENTS.md)
