@@ -38,7 +38,7 @@ input[type=checkbox]{accent-color:#327a62;width:17px;height:17px}
 <h2>1. 比較する広告を選ぶ</h2>
 <select id="ad" disabled aria-label="公開物件の徒歩広告を選択"><option>読み込み中</option></select>
 <div class="options" id="placeFilters" aria-label="比較する駅を選択"></div>
-<label class="options" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="structureToggle" checked> 公式掲載の建物構造を参考順位に追加する</label>
+<label class="options" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="structureToggle"> 公式掲載の建物構造を参考順位に追加する</label>
 <div id="structureStatus" class="warning" style="margin-top:12px" role="status">公式構造情報を読み込んでいます。</div>
 <p id="adSource" class="small"></p>
 </section>
@@ -54,6 +54,7 @@ input[type=checkbox]{accent-color:#327a62;width:17px;height:17px}
 <label for="stressBuffer" class="small">距離の変動幅を変えて順位の安定性を調べる（精度保証ではありません）</label>
 <select id="stressBuffer" aria-label="経路距離の変動幅"><option value="0">±0m：元の計算</option><option value="50">±50m</option><option value="100" selected>±100m</option><option value="200">±200m</option><option value="400">±400m</option></select>
 <div id="stressStatus" class="warning" role="status" aria-live="polite" style="margin:12px 0"></div>
+<div id="qualityStatus" class="warning" role="status" aria-live="polite" style="margin:12px 0"></div>
 <div id="results" aria-live="polite"></div>
 <p id="status" class="status" role="status"></p>
 </section>
@@ -67,6 +68,7 @@ input[type=checkbox]{accent-color:#327a62;width:17px;height:17px}
 import {comparePublicCandidates,combinePhysicalStations} from "./src/public_building_rank.mjs";
 import {auditPublicRankStability} from "./src/route_sensitivity.mjs";
 import {comparePublicStructure} from "./src/public_structure_compare.mjs";
+import {auditPublicCandidateQuality} from "./src/evidence_quality_gate.mjs";
 const el=id=>document.getElementById(id);
 let data=null;let structureData=null;
 const t=(tag,str,cls)=>{const n=document.createElement(tag);n.textContent=String(str??"");if(cls)n.className=cls;return n};
@@ -84,6 +86,12 @@ function render(){
       "徒歩条件だけで比較中。構造データの利用をオフにしています。";
   }
   const audit=auditPublicRankStability(data,id,Number(el("stressBuffer").value),chosen);
+  const quality=auditPublicCandidateQuality(data,structureData,id,{
+    useStructure:el("structureToggle").checked,places:chosen});
+  el("qualityStatus").textContent=quality.gate==="withhold_identity_decision"
+    ?"位置判定：保留。駅・建物の独立確認済み経路 "+quality.verified_route_evidence_count+"/"+quality.route_checks_total+
+    " 件。道路端点補正が大きい経路 "+quality.large_snap_route_count+" 件。順位は参考計算のみです。":
+    "経路の形式上の品質条件を満たしましたが、別の公開物件による独立評価が必要です。確定判定はしません。";
   const stressText=audit.rank_state==="stress_stable_reference_rank"
     ?"この変動幅の中では参考順位1位が逆転しません。ただし入口・出口未確認のため建物は確定できません。"
     :audit.rank_state==="stress_rank_ambiguous"
@@ -101,6 +109,8 @@ function render(){
    card.append(head);
    const interval=audit.candidates.find(x=>x.candidate_id===r.candidate_id);
    card.append(t("div","距離変動時のずれ合計 "+(interval.min_total_gap_m===null?"計算不可":interval.min_total_gap_m+"〜"+interval.max_total_gap_m+"m")+"。"+(interval.snap_review?"道路への吸着が25mを超えるため要確認。":"駅出入口・建物入口・道路グラフは未検証。"),"note"));
+   const cq=quality.per_candidate.find(x=>x.candidate_id===r.candidate_id);
+   card.append(t("div","経路品質 "+cq.qualified_routes+"/"+cq.route_conditions+"件確認。未確認の位置・経路情報があるため、参考順位を正解とは扱いません。","note"));
    if(structures){card.append(t("div","構造条件（管理物件全体）：広告 "+r.advertised_structure+"／候補 "+(r.candidate_structure??"未確認")+" ／ "+(r.structure_status==="same"?"掲載構造が一致":r.structure_status==="different"?"掲載構造が異なる":"未確認")+"。UR同一出典のため確定証拠ではありません。","note"));}
    const list=t("ul","","evidence");
    r.evidence.forEach(e=>{
