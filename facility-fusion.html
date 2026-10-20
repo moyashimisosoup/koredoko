@@ -36,7 +36,7 @@ select{width:100%}input[type=checkbox]{width:19px;height:19px;min-height:0;accen
 <nav><a href="./index.html">入力</a>　/　<a href="./holdout-eval.html">既存の公開物件評価</a>　/　施設横断の距離計算</nav>
 <header><h1>これどこ　距離の手がかりを重ねる</h1>
 <p>駅だけでなく、行政施設・学校・公園との距離条件を合わせ、公開住宅候補5件の比較結果がどう変わるか試せます。</p></header>
-<div class="caution"><strong>実験用画面</strong>：候補は住所がすでに公式公開されたUR住宅のみです。施設の距離条件は、この画面で自由に入力する<strong>仮の広告条件</strong>であり、特定のUR広告の記述ではありません。施設の現在の数値は代表点間の<strong>直線距離</strong>です。駅への徒歩は実際に取得した道路経路ですが駅出口は未確認です。非公開の住宅住所を特定しません。</div>
+<div class="caution"><strong>実験用画面</strong>：候補は住所がすでに公式公開されたUR住宅のみです。施設の距離条件は、この画面で自由に入力する<strong>仮の広告条件</strong>であり、特定のUR広告の記述ではありません。施設についても15本の<strong>実際の歩行経路</strong>を取得しましたが、起終点は代表点です。駅や施設の入口は未確認です。直線距離と歩行距離を切り替えて違いを確認できます。非公開の住宅住所を特定しません。</div>
 <section class="panel">
 <h2>1. 比較の出発点</h2>
 <label for="ad">公式の公開広告（駅徒歩条件）</label>
@@ -45,7 +45,7 @@ select{width:100%}input[type=checkbox]{width:19px;height:19px;min-height:0;accen
 <p class="hint">駅徒歩条件は既存の公式広告に基づくものです。チェックを外せば施設の距離条件だけを比較できます。</p>
 </section>
 <section class="panel">
-<h2>2. 施設の距離条件</h2><p class="hint">追加したい施設を選んで距離範囲を設定します。入力例の「0〜500m」は公式の広告文から抽出したものではありません。</p>
+<h2>2. 施設の距離条件</h2><p class="hint">追加したい施設を選び距離範囲を設定します。3施設×5公開住宅の15歩行経路を保存済みです。入力例の「0〜500m」は実広告から抽出した条件ではありません。</p>
 <div id="facilities"></div>
 </section>
 <section class="panel">
@@ -57,7 +57,7 @@ select{width:100%}input[type=checkbox]{width:19px;height:19px;min-height:0;accen
 <p id="status" class="small" role="status"></p>
 </section>
 <section class="panel"><h2>計算と結果の読み方</h2>
-<p class="small">駅徒歩は80m/分換算の広告範囲と道路経路を照合します。施設の直線距離は緯度経度から計算し、住所代表点＋施設代表点の<strong>例示的な誤差幅</strong>を重ねた範囲で照合します。徒歩の施設距離に切り替えた場合は経路実測値がなければ不明として保留し、直線距離を徒歩距離に流用しません。</p>
+<p class="small">駅徒歩は80m/分換算の広告範囲と道路経路を照合します。施設の直線距離は緯度経度から計算し、住所代表点＋施設代表点の<strong>例示的な誤差幅</strong>を重ねた範囲で照合します。今回の公開住宅5件×3施設には実歩行経路15本がありますが、施設の入口・住棟入口は未確認です。未測定の施設への徒歩距離を、直線距離で代用することはありません。</p>
 <p class="small">同じ建物に入る図書館と窓口など、物理的に同じ施設は重複加点しません。距離条件から外れても住棟入口等が未確認なら確定除外せず、参考順位のみ表示します。参照地点の互換性・候補数・欠測を明示し、確率や絶対住所は算出しません。</p>
 <p class="small">出典：<a href="https://www.ur-net.go.jp/chintai/" target="_blank" rel="noopener noreferrer">UR賃貸住宅</a>／<a href="https://www.city.koto.lg.jp/060305/shisetsuannai/kokyo/omonashisetsu/shisetsu/16793.html" target="_blank" rel="noopener noreferrer">江東区総合区民センター</a>／<a href="https://nlftp.mlit.go.jp/ksj/" target="_blank" rel="noopener noreferrer">国土数値情報の学校データ</a>／<a href="https://www.tokyo-park.or.jp/" target="_blank" rel="noopener noreferrer">東京都立公園</a>／<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a>。</p>
 </section>
@@ -66,7 +66,7 @@ select{width:100%}input[type=checkbox]{width:19px;height:19px;min-height:0;accen
 import {evaluatePublishedLocationFusion} from "./src/facility_distance_fusion.mjs";
 const el=id=>document.getElementById(id);
 const t=(tag,value,cls)=>{const n=document.createElement(tag);n.textContent=String(value??"");if(cls)n.className=cls;return n};
-let dataset=null,registry=null;
+let dataset=null,registry=null,walkObservations=null;
 function render(){
  if(!dataset||!registry)return;
  const items=[];
@@ -77,7 +77,7 @@ function render(){
   items.push({facility_id:f.id,metric:el("metric-"+f.id).value,min_m:min,max_m:max});
  }
  try{
-  const report=evaluatePublishedLocationFusion(dataset,registry,el("ad").value,{includeStations:el("includeStations").checked,facilityConditions:items});
+  const report=evaluatePublishedLocationFusion(dataset,registry,el("ad").value,{includeStations:el("includeStations").checked,facilityConditions:items,facilityRoutes:walkObservations?.observations??[]});
   const summary=el("summary");summary.replaceChildren();
   for(const [label,num] of [["公開住宅候補",report.candidate_count],["独立した物理的手がかり",report.independent_physical_clues],["距離帯と両立する参考候補",report.reference_compatible_candidates.length]]){
    summary.append(t("span",label+" "+num,"chip"));
@@ -109,9 +109,10 @@ async function init(){
  try{
  const files=await Promise.all([
  fetch("./examples/oshima_five_complete_20routes_20261020.json",{cache:"no-store"}),
- fetch("./examples/oshima_public_facilities_20261020.json",{cache:"no-store"})]);
+ fetch("./examples/oshima_public_facilities_20261020.json",{cache:"no-store"}),
+ fetch("./examples/oshima_three_facilities_pedestrian_routes_20261020.json",{cache:"no-store"})]);
  if(files.some(x=>!x.ok))throw Error("データの取得失敗");
- dataset=await files[0].json();registry=await files[1].json();
+ dataset=await files[0].json();registry=await files[1].json();walkObservations=await files[2].json();
  const select=el("ad");select.replaceChildren();
  dataset.advertisements.forEach(a=>{
   const op=t("option",a.id+"： "+a.conditions.map(x=>x.label).join("・"));op.value=a.id;select.append(op);
