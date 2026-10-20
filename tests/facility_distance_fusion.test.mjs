@@ -164,3 +164,43 @@ test("UI is functional with facility controls and no raw HTML string injection",
  assert.ok(code);
  assert.doesNotThrow(()=>new Function(code.replace(/^import .*? from "[^"]+";\s*$/gm,"")));
 });
+
+
+test("15 real public-facility pedestrian observations, five candidates × three POIs",()=>{
+ const x=load("oshima_three_facilities_pedestrian_routes_20261020.json");
+ assert.equal(x.observations.length,15);assert.equal(x.unmeasured.length,0);
+ assert.deepEqual(new Set(x.observations.map(o=>o.candidate_id)).size,5);
+ assert.deepEqual(new Set(x.observations.map(o=>o.facility_id)).size,3);
+ assert.ok(x.observations.every(o=>o.mode==="pedestrian_observed"&&o.source_url.startsWith("https://")));
+});
+test("actual civic-center walking distances distinguish 300m straight and 389m pedestrian reference",()=>{
+ const routes=load("oshima_three_facilities_pedestrian_routes_20261020.json").observations;
+ const a=evaluatePublishedLocationFusion(data(),registry(),"OH05",{includeStations:false,facilityConditions:[facility("koto-civic-center",500,"walk_m")],facilityRoutes:routes});
+ assert.deepEqual(a.reference_compatible_candidates,["C05"]);
+ assert.equal(a.fully_observed_across_candidates,true);
+ assert.equal(a.ranked[0].evidence[0].observed_m,389);
+ const b=evaluatePublishedLocationFusion(data(),registry(),"OH05",{includeStations:false,facilityConditions:[facility("koto-civic-center",500)],facilityRoutes:routes});
+ assert.equal(b.ranked[0].evidence[0].observed_m,300);
+});
+test("actual school and large park route distances and large endpoint snap warnings retained",()=>{
+ const routes=load("oshima_three_facilities_pedestrian_routes_20261020.json").observations;
+ const a=evaluatePublishedLocationFusion(data(),registry(),"OH05",{includeStations:false,facilityConditions:[facility("oshima-nanou-school",600,"walk_m")],facilityRoutes:routes});
+ assert.deepEqual(a.reference_compatible_candidates,["C05"]);
+ const b=evaluatePublishedLocationFusion(data(),registry(),"OH01",{includeStations:false,facilityConditions:[facility("oshima-komatsugawa-park",1000,"walk_m")],facilityRoutes:routes});
+ assert.deepEqual(b.reference_compatible_candidates,["C01"]);
+ assert.equal(b.ranked[0].evidence[0].quality_warning,"endpoint_snap_review");
+ assert.ok(routes.filter(x=>x.facility_id==="oshima-komatsugawa-park").every(x=>x.snap_end_m>=100));
+});
+test("all facility route observations remain public reference points, not doors or an accuracy study",()=>{
+ const routes=load("oshima_three_facilities_pedestrian_routes_20261020.json").observations;
+ const r=evaluatePublishedLocationFusion(data(),registry(),"OH05",{
+  facilityConditions:[facility("koto-civic-center",500,"walk_m"),facility("oshima-nanou-school",600,"walk_m")],facilityRoutes:routes});
+ assert.equal(r.fully_observed_across_candidates,true);
+ assert.equal(r.confirmed_identity,false);assert.equal(r.statistical_accuracy,null);
+ assert.ok(r.ranked.every(x=>x.identity_verified===false));
+});
+test("browser prototype loads real facility route fixture when available",()=>{
+ const html=readFileSync(new URL("../facility-fusion.html",import.meta.url),"utf8");
+ assert.ok(html.includes("oshima_three_facilities_pedestrian_routes_20261020.json"));
+ assert.ok(html.includes("facilityRoutes:walkObservations?.observations??[]"));
+});
