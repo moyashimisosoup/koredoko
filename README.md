@@ -46,7 +46,8 @@
 - [大島地区・公開UR5物件の次期検証](docs/OSHIMA_FIVE_PUBLIC_HOLDOUT_2026-10-20.md)：20経路の登録条件を事前固定、実取得17本・レート制限で3本欠測。採点保留
 - [複数駅出口計算・大島5住宅 CHECKPOINT](docs/CHECKPOINT_MULTIPLE_EXITS_OSHIMA_2026-10-20.md)
 - [施設と駅の距離を統合するWeb画面](facility-fusion.html)：公表施設3件と大島5公開住宅の距離帯・参考順位・候補の絞り込みを対話操作
-- [施設横断距離統合 PoC](docs/FACILITY_FUSION_POC_2026-10-20.md)：20経路の固定評価、POI出典、徒歩と直線の分離、非公開住戸の除外
+- [施設横断距離統合 PoC](docs/FACILITY_FUSION_POC_2026-10-20.md)：20駅経路＋15施設歩行経路を統合し、POI出典、徒歩と直線を分離、非公開住戸を対象から除外
+- [2026-10-20 施設横断計算CHECKPOINT](docs/CHECKPOINT_FACILITY_FUSION_2026-10-20.md)
 - [実歩行経路・品質検証報告](docs/REAL_ROUTING_POC_2026-10-19.md)
 - [複数条件照合エンジン仕様・検証計画](docs/MULTI_CONDITION_ENGINE_V0.1.md)
 - [開発・品質管理上のルール](AGENTS.md)
