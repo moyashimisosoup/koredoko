@@ -1,0 +1,62 @@
+{
+  "schema_version": "public-structure-v0.1",
+  "collected_at": "2026-10-20",
+  "provenance_policy": "Both target advertised structure and candidate attribute were taken from the same UR official listing page per complex. This is an IN-SAMPLE, SOURCE-CORRELATED diagnostic. Do not label as independent confirmation, blind validation, or generalization.",
+  "units_note": "UR page labels structure as managed complex overview; this is not proof every individual block has that structure.",
+  "candidates": [
+    {
+      "candidate_id": "ur-kamata-ekimae",
+      "structure": "SRC",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3330.html",
+      "verbatim": "構造  | 鉄骨鉄筋コンクリート造",
+      "scope": "managed_complex"
+    },
+    {
+      "candidate_id": "ur-kamata-honcho",
+      "structure": "RC",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3110.html",
+      "verbatim": "構造  | 鉄筋コンクリート造",
+      "scope": "managed_complex"
+    },
+    {
+      "candidate_id": "ur-shareru-shinkamata",
+      "structure": "SRC",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_5480.html",
+      "verbatim": "構造  | 鉄骨鉄筋コンクリート造",
+      "scope": "managed_complex"
+    },
+    {
+      "candidate_id": "ur-patio-shinkamata",
+      "structure": "RC",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_4430.html",
+      "verbatim": "構造  | 鉄筋コンクリート造",
+      "scope": "managed_complex"
+    }
+  ],
+  "ads": [
+    {
+      "advertisement_id": "AD-K1",
+      "structure": "SRC",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3330.html",
+      "source_relation": "same_UR_primary_as_candidate"
+    },
+    {
+      "advertisement_id": "AD-K2",
+      "structure": "RC",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_3110.html",
+      "source_relation": "same_UR_primary_as_candidate"
+    },
+    {
+      "advertisement_id": "AD-K3",
+      "structure": "SRC",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_5480.html",
+      "source_relation": "same_UR_primary_as_candidate"
+    },
+    {
+      "advertisement_id": "AD-K4",
+      "structure": "RC",
+      "source_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_4430.html",
+      "source_relation": "same_UR_primary_as_candidate"
+    }
+  ]
+}
