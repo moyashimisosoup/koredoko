@@ -38,6 +38,8 @@ input[type=checkbox]{accent-color:#327a62;width:17px;height:17px}
 <h2>1. 比較する広告を選ぶ</h2>
 <select id="ad" disabled aria-label="公開物件の徒歩広告を選択"><option>読み込み中</option></select>
 <div class="options" id="placeFilters" aria-label="比較する駅を選択"></div>
+<label class="options" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="structureToggle" checked> 公式掲載の建物構造を参考順位に追加する</label>
+<div id="structureStatus" class="warning" style="margin-top:12px" role="status">公式構造情報を読み込んでいます。</div>
 <p id="adSource" class="small"></p>
 </section>
 <section class="panel">
@@ -64,8 +66,9 @@ input[type=checkbox]{accent-color:#327a62;width:17px;height:17px}
 <script type="module">
 import {comparePublicCandidates,combinePhysicalStations} from "./src/public_building_rank.mjs";
 import {auditPublicRankStability} from "./src/route_sensitivity.mjs";
+import {comparePublicStructure} from "./src/public_structure_compare.mjs";
 const el=id=>document.getElementById(id);
-let data=null;
+let data=null;let structureData=null;
 const t=(tag,str,cls)=>{const n=document.createElement(tag);n.textContent=String(str??"");if(cls)n.className=cls;return n};
 function render(){
  if(!data)return;
@@ -73,6 +76,13 @@ function render(){
  const chosen=[...el("placeFilters").querySelectorAll("input:checked")].map(x=>x.value);
  try{
   const report=comparePublicCandidates(data,id,chosen);
+  const structures=structureData?comparePublicStructure(data,structureData,id,{
+    useStructure:el("structureToggle").checked,places:chosen}):null;
+  if(structures){
+    el("structureStatus").textContent=el("structureToggle").checked?
+      "UR公式の建物構造を参考照合に追加。徒歩単独の順位と比較できます。ただし広告と候補構造は同じUR一次資料が出典であり、独立した正解検証ではありません。":
+      "徒歩条件だけで比較中。構造データの利用をオフにしています。";
+  }
   const audit=auditPublicRankStability(data,id,Number(el("stressBuffer").value),chosen);
   const stressText=audit.rank_state==="stress_stable_reference_rank"
     ?"この変動幅の中では参考順位1位が逆転しません。ただし入口・出口未確認のため建物は確定できません。"
@@ -84,13 +94,14 @@ function render(){
   el("nStations").textContent=String(report.station_condition_count);
   el("deduplicates").textContent=String(report.duplicate_line_constraints);
   const box=el("results");box.replaceChildren();
-  report.ranked.forEach((r,index)=>{
+  (structures?.ranked??report.ranked).forEach((r,index)=>{
    const card=t("article","","rank"),head=t("div","","row");
    const name=t("div","","name");name.append(t("span",String(index+1)+"位 ","rankno"),t("span",r.label));
    head.append(name,t("div",r.total_absolute_gap_m===null?"距離不足":r.total_absolute_gap_m+"m","value"));
    card.append(head);
    const interval=audit.candidates.find(x=>x.candidate_id===r.candidate_id);
    card.append(t("div","距離変動時のずれ合計 "+(interval.min_total_gap_m===null?"計算不可":interval.min_total_gap_m+"〜"+interval.max_total_gap_m+"m")+"。"+(interval.snap_review?"道路への吸着が25mを超えるため要確認。":"駅出入口・建物入口・道路グラフは未検証。"),"note"));
+   if(structures){card.append(t("div","構造条件（管理物件全体）：広告 "+r.advertised_structure+"／候補 "+(r.candidate_structure??"未確認")+" ／ "+(r.structure_status==="same"?"掲載構造が一致":r.structure_status==="different"?"掲載構造が異なる":"未確認")+"。UR同一出典のため確定証拠ではありません。","note"));}
    const list=t("ul","","evidence");
    r.evidence.forEach(e=>{
     const li=t("li");
@@ -106,8 +117,11 @@ function render(){
 }
 async function load(){
  try{
-  const r=await fetch("./examples/kamata_public_4complex_12routes_20261020.json",{cache:"no-store"});
-  if(!r.ok)throw Error("HTTP "+r.status);data=await r.json();
+  const [r,structResp]=await Promise.all([
+    fetch("./examples/kamata_public_4complex_12routes_20261020.json",{cache:"no-store"}),
+    fetch("./examples/kamata_public_structures_20261020.json",{cache:"no-store"})]);
+  if(!r.ok||!structResp.ok)throw Error("HTTP data fetch error");
+  data=await r.json();structureData=await structResp.json();
   const select=el("ad");select.replaceChildren();
   for(const a of data.advertisements){
    const op=t("option",a.id+" / "+a.conditions.map(c=>c.label).join("・"));op.value=a.id;select.append(op);
@@ -126,6 +140,7 @@ async function load(){
    render();
   }
   el("stressBuffer").addEventListener("change",render);
+  el("structureToggle").addEventListener("change",render);
   select.addEventListener("change",refresh);refresh();
  }catch(e){el("status").textContent="データを読み込めません。Webサーバー経由で開いてください："+String(e.message)}
 }
