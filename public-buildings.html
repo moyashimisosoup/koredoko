@@ -42,13 +42,16 @@ input[type=checkbox]{accent-color:#327a62;width:17px;height:17px}
 </section>
 <section class="panel">
 <h2>2. 複数条件の比較</h2>
-<div class="warning">**注意：参考順位です。** 測定地点は建物入口・駅出口ではなく住所／駅の代表点です。順位1位を所在地の確定や正解確率として扱わず、誤順位も検証結果に残します。</div>
+<div class="warning"><strong>注意：参考順位です。</strong> 測定地点は建物入口・駅出口ではなく住所／駅の代表点です。順位1位を所在地の確定や正解確率として扱わず、誤順位も検証結果に残します。</div>
 <div class="metrics">
 <div class="metric"><span>候補建物</span><b id="nBuildings">-</b></div>
 <div class="metric"><span>比較した物理駅</span><b id="nStations">-</b></div>
 <div class="metric"><span>同一駅の重複統合</span><b id="deduplicates">-</b></div>
 </div>
 <p class="small">指標は駅ごとの「歩行経路距離と広告上の距離帯とのずれ」の合計です。小さいほど広告の参考条件に近いことを示します。</p>
+<label for="stressBuffer" class="small">距離の変動幅を変えて順位の安定性を調べる（精度保証ではありません）</label>
+<select id="stressBuffer" aria-label="経路距離の変動幅"><option value="0">±0m：元の計算</option><option value="50">±50m</option><option value="100" selected>±100m</option><option value="200">±200m</option><option value="400">±400m</option></select>
+<div id="stressStatus" class="warning" role="status" aria-live="polite" style="margin:12px 0"></div>
 <div id="results" aria-live="polite"></div>
 <p id="status" class="status" role="status"></p>
 </section>
@@ -60,6 +63,7 @@ input[type=checkbox]{accent-color:#327a62;width:17px;height:17px}
 </main>
 <script type="module">
 import {comparePublicCandidates,combinePhysicalStations} from "./src/public_building_rank.mjs";
+import {auditPublicRankStability} from "./src/route_sensitivity.mjs";
 const el=id=>document.getElementById(id);
 let data=null;
 const t=(tag,str,cls)=>{const n=document.createElement(tag);n.textContent=String(str??"");if(cls)n.className=cls;return n};
@@ -69,6 +73,13 @@ function render(){
  const chosen=[...el("placeFilters").querySelectorAll("input:checked")].map(x=>x.value);
  try{
   const report=comparePublicCandidates(data,id,chosen);
+  const audit=auditPublicRankStability(data,id,Number(el("stressBuffer").value),chosen);
+  const stressText=audit.rank_state==="stress_stable_reference_rank"
+    ?"この変動幅の中では参考順位1位が逆転しません。ただし入口・出口未確認のため建物は確定できません。"
+    :audit.rank_state==="stress_rank_ambiguous"
+    ?"この変動幅では順位1位が逆転する可能性があり、順位は判定保留です。"
+    :"距離データ不足または同点のため、順位は判定保留です。";
+  el("stressStatus").textContent="距離変動 ±"+audit.buffer_m+"m： "+stressText;
   el("nBuildings").textContent=String(report.candidate_count);
   el("nStations").textContent=String(report.station_condition_count);
   el("deduplicates").textContent=String(report.duplicate_line_constraints);
@@ -78,7 +89,8 @@ function render(){
    const name=t("div","","name");name.append(t("span",String(index+1)+"位 ","rankno"),t("span",r.label));
    head.append(name,t("div",r.total_absolute_gap_m===null?"距離不足":r.total_absolute_gap_m+"m","value"));
    card.append(head);
-   card.append(t("div","実歩行経路の代表点照合に基づく参考順序。正式出口位置・建物入口は未確認。","note"));
+   const interval=audit.candidates.find(x=>x.candidate_id===r.candidate_id);
+   card.append(t("div","距離変動時のずれ合計 "+(interval.min_total_gap_m===null?"計算不可":interval.min_total_gap_m+"〜"+interval.max_total_gap_m+"m")+"。"+(interval.snap_review?"道路への吸着が25mを超えるため要確認。":"駅出入口・建物入口・道路グラフは未検証。"),"note"));
    const list=t("ul","","evidence");
    r.evidence.forEach(e=>{
     const li=t("li");
@@ -113,6 +125,7 @@ async function load(){
    const sr=el("adSource");sr.replaceChildren();const link=t("a","元広告（UR公式）");link.href=ad.source_url;link.target="_blank";link.rel="noopener noreferrer";sr.append(link);
    render();
   }
+  el("stressBuffer").addEventListener("change",render);
   select.addEventListener("change",refresh);refresh();
  }catch(e){el("status").textContent="データを読み込めません。Webサーバー経由で開いてください："+String(e.message)}
 }
