@@ -1,0 +1,54 @@
+{
+  "schema_version": "oji-walk-predictions-v0.1",
+  "captured_on": "2026-10-20",
+  "baseline": "walking-band-gap-v0.1 (unchanged from Kamata)",
+  "precedence": "Generated and stored before answer key fixture in this branch. Prediction code reads only distance and advertised walking bands, not a labeled truth map.",
+  "source": "src/holdout_benchmark.mjs and tests/holdout_benchmark.test.mjs",
+  "dataset": "examples/oji_holdout_measured_6routes_20261020.json",
+  "candidate_universe": 3,
+  "cases": [
+    {
+      "advertisement_id": "H01",
+      "ranked_ids": [
+        "C02",
+        "C01",
+        "C03"
+      ],
+      "ranked_outside_band_gap_m": [
+        38,
+        179,
+        355
+      ],
+      "stress_100m": "stress_rank_ambiguous"
+    },
+    {
+      "advertisement_id": "H02",
+      "ranked_ids": [
+        "C03",
+        "C02",
+        "C01"
+      ],
+      "ranked_outside_band_gap_m": [
+        66,
+        313,
+        499
+      ],
+      "stress_100m": "stress_rank_ambiguous"
+    },
+    {
+      "advertisement_id": "H03",
+      "ranked_ids": [
+        "C03",
+        "C02",
+        "C01"
+      ],
+      "ranked_outside_band_gap_m": [
+        111,
+        313,
+        499
+      ],
+      "stress_100m": "stress_rank_ambiguous"
+    }
+  ],
+  "warning": "These are reference rankings of already publicly named UR buildings, NOT confirmed matches or calibrated probabilities."
+}
