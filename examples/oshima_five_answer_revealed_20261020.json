@@ -1,0 +1,61 @@
+{
+  "schema_version": "oshima-five-public-answer-v0.1",
+  "frozen_prediction_file": "examples/oshima_five_frozen_predictions_20261020.json",
+  "source": "official publicly named UR complex listing; source titles were known at selection, not a fully independent blind study",
+  "revealed_on": "2026-10-20",
+  "answers": [
+    {
+      "advertisement_id": "OH01",
+      "correct_candidate_id": "C01"
+    },
+    {
+      "advertisement_id": "OH02",
+      "correct_candidate_id": "C02"
+    },
+    {
+      "advertisement_id": "OH03",
+      "correct_candidate_id": "C03"
+    },
+    {
+      "advertisement_id": "OH04",
+      "correct_candidate_id": "C04"
+    },
+    {
+      "advertisement_id": "OH05",
+      "correct_candidate_id": "C05"
+    }
+  ],
+  "grading_observed": {
+    "n": 5,
+    "top1": 4,
+    "top3": 5,
+    "ranked_cases": [
+      {
+        "ad": "OH01",
+        "true_rank": 1,
+        "score_gap_m": 385
+      },
+      {
+        "ad": "OH02",
+        "true_rank": 2,
+        "score_gap_m": 348
+      },
+      {
+        "ad": "OH03",
+        "true_rank": 1,
+        "score_gap_m": 103
+      },
+      {
+        "ad": "OH04",
+        "true_rank": 1,
+        "score_gap_m": 0
+      },
+      {
+        "ad": "OH05",
+        "true_rank": 1,
+        "score_gap_m": 0
+      }
+    ]
+  },
+  "limitations": "Five hand-selected named UR complexes; all station distance points representative only; probability/market accuracy not established."
+}
