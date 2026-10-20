@@ -26,9 +26,9 @@
       "lon": 139.83176768402603,
       "coordinate_uncertainty_m": 80,
       "source_kind": "OpenPOI_N02_P29_school_representative",
-      "source_url": "https://nlftp.mlit.go.jp/ksj/",
+      "source_url": "https://www.city.koto.lg.jp/581101/shisetsuannai/kyoiku/shogaku/kuritsushogaku/17211.html",
       "public_address": "東京都江東区大島4-18-5",
-      "source_note": "OpenPOI P29 school; no entrance coordinate, official primary URL not checked"
+      "source_note": "school public address corroborated by Koto City 2026-03-24; coordinate is OpenPOI P29, not a measured gate"
     },
     {
       "id": "oshima-komatsugawa-park",
@@ -39,9 +39,9 @@
       "lon": 139.85117965902995,
       "coordinate_uncertainty_m": 160,
       "source_kind": "OpenPOI_overture_Koto_named_park",
-      "source_url": "https://www.tokyo-park.or.jp/park/oshima-komatsugawa/",
+      "source_url": "https://www.tokyo-park.or.jp/park/ojima-komatsugawa/",
       "public_address": "江東区大島・江戸川区小松川",
-      "source_note": "named park extends across large area; this is only one candidate representative point, not park entrance or polygon boundary; same named park also occurs outside target municipality"
+      "source_note": "official park confirms site spanning Koto and Edogawa, Overture Koto-labeled POI is a representative point not boundary or entrance"
     }
   ],
   "license_notes": [
