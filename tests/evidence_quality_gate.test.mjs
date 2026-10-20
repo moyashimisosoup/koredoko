@@ -155,3 +155,22 @@ test("same provider metadata cannot make new independently verified answer",()=>
  assert.equal(r.same_primary_source_for_structure,true);
  assert.equal(r.independently_verified_identification,false);
 });
+
+
+test("official Akabane network manifest distinguishes catalog discovery from data import",()=>{
+ const manifest=JSON.parse(readFileSync(new URL(
+   "../examples/akabane_official_network_manifest_20261020.json",import.meta.url),"utf8"));
+ assert.equal(manifest.publisher,"国土交通省");
+ assert.equal(manifest.area,"赤羽駅周辺");
+ assert.equal(manifest.dataset_updated_on,"2026-03-19");
+ assert.equal(manifest.resources.length,4);
+ assert.equal(manifest.ready_for_route_qa,false);
+ assert.equal(manifest.network_structure_reviewed,false);
+ assert.equal(manifest.station_exit_coordinates_reviewed,false);
+ assert.equal(manifest.building_entrances_reviewed,false);
+ for(const row of manifest.resources){
+  assert.match(row.url,/^https:\/\/ckan\.hokonavi\.go\.jp/);
+  assert.ok(row.size_bytes>0);
+  assert.ok(["nodes","links"].includes(row.role));
+ }
+});
