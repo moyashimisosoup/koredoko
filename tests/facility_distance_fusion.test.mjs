@@ -204,3 +204,15 @@ test("browser prototype loads real facility route fixture when available",()=>{
  assert.ok(html.includes("oshima_three_facilities_pedestrian_routes_20261020.json"));
  assert.ok(html.includes("facilityRoutes:walkObservations?.observations??[]"));
 });
+
+
+test("walking route to a facility resolves via physical identity even if its public name is aliased",()=>{
+ const reg=registry(),center=reg.facilities[0],alias={...center,id:"civic-center-internal-library",name:"同じセンターの図書館"};
+ reg.facilities.push(alias);
+ const measured=load("oshima_three_facilities_pedestrian_routes_20261020.json").observations;
+ const result=evaluatePublishedLocationFusion(data(),reg,"OH05",{
+  includeStations:false,facilityConditions:[facility(alias.id,500,"walk_m")],facilityRoutes:measured});
+ assert.equal(result.ranked[0].candidate_id,"C05");
+ assert.equal(result.ranked[0].evidence[0].observed_m,389);
+ assert.equal(result.fully_observed_across_candidates,true);
+});
