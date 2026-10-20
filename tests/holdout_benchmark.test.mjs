@@ -93,3 +93,30 @@ test("two candidates sharing similar station distance require competing station 
  assert.ok(r.ranked_gap_m[0]<r.ranked_gap_m[1]);
  assert.equal(r.rank_state,"stress_rank_ambiguous");
 });
+
+
+test("frozen pre-answer prediction matches runtime scorer",()=>{
+ const saved=load("oji_walk_predictions_locked_20261020.json");
+ const p=predictPublishedSet(measured());
+ assert.deepEqual(p.cases.map(x=>x.nominal_top1),saved.cases.map(x=>x.ranked_ids[0]));
+ assert.deepEqual(p.cases.map(x=>x.ranked_candidate_ids),saved.cases.map(x=>x.ranked_ids));
+ assert.deepEqual(p.cases.map(x=>x.ranked_gap_m),saved.cases.map(x=>x.ranked_outside_band_gap_m));
+});
+test("answer key is separate from route-only scoring fixture",()=>{
+ const d=measured(),truth=load("oji_holdout_truth_revealed_20261020.json");
+ assert.equal("answers" in d,false);
+ assert.equal(truth.prediction_snapshot,"examples/oji_walk_predictions_locked_20261020.json");
+ assert.equal(truth.answers.length,3);
+ assert.deepEqual(gradePublishedSet(predictPublishedSet(d),truth).cases.map(x=>x.true_candidate_rank),[2,2,1]);
+});
+test("trial screen parses as module and contains separate reveal action",()=>{
+ const html=readFileSync(new URL("../holdout-eval.html",import.meta.url),"utf8");
+ assert.ok(html.includes('id="reveal"'));
+ assert.ok(html.includes('id="secondary"'));
+ assert.ok(html.includes("holdout_benchmark.mjs"));
+ assert.ok(html.includes("holdout_truth_revealed"));
+ assert.equal(html.includes("innerHTML"),false);
+ const js=html.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
+ assert.ok(js);
+ assert.doesNotThrow(()=>new Function(js.replace(/^import .*? from "[^"]+";\s*$/gm,"")));
+});
