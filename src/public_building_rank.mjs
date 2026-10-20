@@ -84,7 +84,7 @@ function evaluateCandidate(candidate,stations){
   const measurement=candidate.distances.find(x=>x.place_id===st.place_id);
   if(!measurement)return {place_id:st.place_id,label:st.labels.join(" / "),
     status:"missing",absolute_distance_gap_m:null,reason:"walking_route_not_measured"};
-  const compare=comparison(st,measurement);
+  const compare=comparison(st,measurement.meters);
   const quality=measurement.snap_start_m>25||measurement.snap_end_m>25 ?
     "endpoint_snap_review":"station_exit_and_graph_unverified";
   return {place_id:st.place_id,label:st.labels.join(" / "),
