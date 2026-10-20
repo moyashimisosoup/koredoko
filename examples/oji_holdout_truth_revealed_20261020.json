@@ -1,0 +1,23 @@
+{
+  "schema_version": "public-official-truth-v0.1",
+  "revealed_on": "2026-10-20",
+  "prediction_snapshot": "examples/oji_walk_predictions_locked_20261020.json",
+  "note": "Published UR complex title establishes the label only after the walking-only prediction snapshot has been written. These labels are public and correlated with candidate source URLs, so this is preregistered pseudo-blind, not independent randomized blind.",
+  "answers": [
+    {
+      "advertisement_id": "H01",
+      "correct_candidate_id": "C01",
+      "public_UR_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_6000.html"
+    },
+    {
+      "advertisement_id": "H02",
+      "correct_candidate_id": "C02",
+      "public_UR_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_4200.html"
+    },
+    {
+      "advertisement_id": "H03",
+      "correct_candidate_id": "C03",
+      "public_UR_url": "https://www.ur-net.go.jp/chintai/kanto/tokyo/20_2670.html"
+    }
+  ]
+}
