@@ -1,0 +1,71 @@
+{
+  "schema_version": "public-facility-pedestrian-observations-v0.1",
+  "observed_date": "2026-10-20",
+  "facility_source": "https://www.city.koto.lg.jp/060305/shisetsuannai/kokyo/omonashisetsu/shisetsu/16793.html",
+  "routing_source": "Valhalla FOSSGIS public demo pedestrian routing; version unpinned",
+  "scope": "Public named UR complexes and public municipal civic center only",
+  "claimed_precision": "representative point to representative point",
+  "observations": [
+    {
+      "candidate_id": "C01",
+      "facility_id": "koto-civic-center",
+      "meters": 1774,
+      "air_m": 1562,
+      "snap_start_m": 12,
+      "snap_end_m": 4,
+      "mode": "pedestrian_observed",
+      "source_url": "https://valhalla1.openstreetmap.de/route",
+      "observed_date": "2026-10-20",
+      "source_note": "Public demo pedestrian route; GSI address reference to civic-center address reference, NOT surveyed doors, graph version unknown."
+    },
+    {
+      "candidate_id": "C02",
+      "facility_id": "koto-civic-center",
+      "meters": 1598,
+      "air_m": 1278,
+      "snap_start_m": 4,
+      "snap_end_m": 4,
+      "mode": "pedestrian_observed",
+      "source_url": "https://valhalla1.openstreetmap.de/route",
+      "observed_date": "2026-10-20",
+      "source_note": "Public demo pedestrian route; GSI address reference to civic-center address reference, NOT surveyed doors, graph version unknown."
+    },
+    {
+      "candidate_id": "C03",
+      "facility_id": "koto-civic-center",
+      "meters": 1416,
+      "air_m": 985,
+      "snap_start_m": 29,
+      "snap_end_m": 4,
+      "mode": "pedestrian_observed",
+      "source_url": "https://valhalla1.openstreetmap.de/route",
+      "observed_date": "2026-10-20",
+      "source_note": "Public demo pedestrian route; GSI address reference to civic-center address reference, NOT surveyed doors, graph version unknown."
+    },
+    {
+      "candidate_id": "C04",
+      "facility_id": "koto-civic-center",
+      "meters": 1071,
+      "air_m": 727,
+      "snap_start_m": 25,
+      "snap_end_m": 4,
+      "mode": "pedestrian_observed",
+      "source_url": "https://valhalla1.openstreetmap.de/route",
+      "observed_date": "2026-10-20",
+      "source_note": "Public demo pedestrian route; GSI address reference to civic-center address reference, NOT surveyed doors, graph version unknown."
+    },
+    {
+      "candidate_id": "C05",
+      "facility_id": "koto-civic-center",
+      "meters": 389,
+      "air_m": 300,
+      "snap_start_m": 49,
+      "snap_end_m": 4,
+      "mode": "pedestrian_observed",
+      "source_url": "https://valhalla1.openstreetmap.de/route",
+      "observed_date": "2026-10-20",
+      "source_note": "Public demo pedestrian route; GSI address reference to civic-center address reference, NOT surveyed doors, graph version unknown."
+    }
+  ],
+  "unmeasured": []
+}

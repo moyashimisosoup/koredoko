@@ -1,0 +1,53 @@
+{
+  "schema_version": "public-facility-registry-v0.1",
+  "created_on": "2026-10-20",
+  "area": "東京都江東区・大島",
+  "notes": "Coordinates are published geocoder/POI representative points, never doors or surveyed boundary. Reported precision tolerances are illustrative user-visible uncertainty widths, not statistically calibrated.",
+  "facilities": [
+    {
+      "id": "koto-civic-center",
+      "physical_id": "facility:koto-civic-center",
+      "name": "江東区総合区民センター",
+      "category": "civic",
+      "lat": 35.688911,
+      "lon": 139.826523,
+      "coordinate_uncertainty_m": 60,
+      "source_kind": "GSI_geocoded_official_address",
+      "source_url": "https://www.city.koto.lg.jp/060305/shisetsuannai/kokyo/omonashisetsu/shisetsu/16793.html",
+      "public_address": "東京都江東区大島4丁目5番1号",
+      "source_note": "official location/address confirmed; geocoded point is approximate, not entrance"
+    },
+    {
+      "id": "oshima-nanou-school",
+      "physical_id": "facility:oshima-nanou-school",
+      "name": "江東区立大島南央小学校",
+      "category": "school",
+      "lat": 35.68726151148294,
+      "lon": 139.83176768402603,
+      "coordinate_uncertainty_m": 80,
+      "source_kind": "OpenPOI_N02_P29_school_representative",
+      "source_url": "https://www.city.koto.lg.jp/581101/shisetsuannai/kyoiku/shogaku/kuritsushogaku/17211.html",
+      "public_address": "東京都江東区大島4-18-5",
+      "source_note": "school public address corroborated by Koto City 2026-03-24; coordinate is OpenPOI P29, not a measured gate"
+    },
+    {
+      "id": "oshima-komatsugawa-park",
+      "physical_id": "facility:oshima-komatsugawa-park",
+      "name": "大島小松川公園（江東区側の参考点）",
+      "category": "park",
+      "lat": 35.69302682890895,
+      "lon": 139.85117965902995,
+      "coordinate_uncertainty_m": 160,
+      "source_kind": "OpenPOI_overture_Koto_named_park",
+      "source_url": "https://www.tokyo-park.or.jp/park/ojima-komatsugawa/",
+      "public_address": "江東区大島・江戸川区小松川",
+      "source_note": "official park confirms site spanning Koto and Edogawa, Overture Koto-labeled POI is a representative point not boundary or entrance"
+    }
+  ],
+  "license_notes": [
+    "GSI address search source attribution required",
+    "School OpenPOI P29 uses MLIT school records under original source conditions",
+    "Park Overture POI derived data requires original notice/ODbL review before bulk redistribution"
+  ],
+  "privacy_scope": "named public facilities only; no private dwellings or students"
+}
