@@ -41,6 +41,8 @@
 - [王子神谷3公開物件の事前固定・実経路6本の比較画面](holdout-eval.html)：徒歩Top1/Top2と構造を別評価、Pages未公開
 - [王子神谷・東十条3件の試験結果](docs/OJI_PRELOCKED_VALIDATION_2026-10-20.md)：徒歩のみTop1=1/3、Top2=3/3、構造は同源データなので独立評価でない
 - [王子神谷公開住宅の疑似ブラインド評価CHECKPOINT](docs/CHECKPOINT_OJI_HOLDOUT_2026-10-20.md)
+- [複数駅出口・住棟アクセス点の距離計算UI](endpoint-lab.html)：現行の実経路6本と仮の追加経路を厳密に区別して比較
+- [複数出入口計算PoCと精度検証計画](docs/MULTI_ENDPOINT_DISTANCE_POC_2026-10-20.md)：従来の実データ・予測を保護し、次の新地域で前後比較
 - [実歩行経路・品質検証報告](docs/REAL_ROUTING_POC_2026-10-19.md)
 - [複数条件照合エンジン仕様・検証計画](docs/MULTI_CONDITION_ENGINE_V0.1.md)
 - [開発・品質管理上のルール](AGENTS.md)

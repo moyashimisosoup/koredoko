@@ -1,0 +1,71 @@
+{
+  "schema_version": "public-station-access-catalog-v0.1",
+  "checked_on": "2026-10-20",
+  "purpose": "Numbered/official exit identifiers for subsequent licensed geocoding and pedestrian routing, NOT coordinate proof. No unverified lat/lon added.",
+  "coordinate_status": "not_geocoded",
+  "stations": [
+    {
+      "place_id": "oji-kamiya",
+      "operator": "東京メトロ",
+      "guide_url": "https://www.tokyometro.jp/station/oji-kamiya/yardmap/index_print.html",
+      "guide_revision": "2020-06",
+      "exits": [
+        {
+          "id": "oji-1",
+          "label": "1番出口",
+          "lat": null,
+          "lon": null
+        },
+        {
+          "id": "oji-2",
+          "label": "2番出口",
+          "lat": null,
+          "lon": null
+        },
+        {
+          "id": "oji-3",
+          "label": "3番出口",
+          "lat": null,
+          "lon": null
+        },
+        {
+          "id": "oji-elevator",
+          "label": "エレベーター出口",
+          "lat": null,
+          "lon": null
+        }
+      ]
+    },
+    {
+      "place_id": "higashi-jujo",
+      "operator": "JR東日本",
+      "guide_url": "https://www.jorudan.co.jp/eki/eki_%E6%9D%B1%E5%8D%81%E6%9D%A1_map.html",
+      "exits": [
+        {
+          "id": "higashi-north-east",
+          "label": "北口（東側）",
+          "lat": null,
+          "lon": null
+        },
+        {
+          "id": "higashi-north-west",
+          "label": "北口（西側）",
+          "lat": null,
+          "lon": null
+        },
+        {
+          "id": "higashi-south",
+          "label": "南口",
+          "lat": null,
+          "lon": null
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "all_physical_exits_checked": false,
+    "licensed_exit_coordinates_available": false,
+    "independent_survey_verified": false,
+    "ready_for_valhalla": false
+  }
+}

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>これどこ | 複数駅出口ルート試験</title>
+<style>
+:root{font:15px/1.6 system-ui,-apple-system,"Yu Gothic",sans-serif;color:#2d3a33;background:#f5f7f5}*{box-sizing:border-box}body{margin:0}main{max-width:940px;margin:auto;padding:26px 16px 70px}h1{margin:0;font-size:clamp(27px,5vw,37px)}h2{font-size:18px;margin:0 0 12px}p{color:#5c7163}.panel{padding:18px;background:white;border:1px solid #dce6dc;border-radius:18px;margin:16px 0}.warn{border:1px solid #eadbbc;background:#fff3dd;color:#746030;border-radius:11px;padding:12px 13px;font-size:13px}a{color:#23694e}.small{font-size:12px;color:#68796f}label{font-size:12px;font-weight:750;display:block;margin:9px 0 4px}select,input{font:inherit;min-height:44px;width:100%;border:1px solid #aec4b4;border-radius:11px;background:white;padding:10px;color:#274a35}button{font:inherit;min-height:44px;border:1px solid #b8c8b8;border-radius:10px;background:#fff;padding:10px 15px;color:#2f6d4e;font-weight:700;cursor:pointer}button.primary{background:#337456;color:white;border-color:#337456}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #79a892;outline-offset:2px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.result{border:1px solid #e0e8df;border-radius:13px;padding:13px;margin:10px 0}.result strong{font-size:16px}.row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}.value{font-weight:750;font-variant-numeric:tabular-nums}ul{padding-left:20px}.score{margin:8px 0 0;color:#697a6d;font-size:12px}.sim{border-color:#e5cb86;background:#fffdfa}@media(max-width:620px){main{padding:18px 12px}.panel{padding:14px}.grid{grid-template-columns:1fr}.toolbar button{flex:1}}
+</style></head><body><main>
+<p class="small"><a href="./index.html">入力</a>　/　<a href="./holdout-eval.html">実物件の固定評価</a>　/　複数出口の試作</p>
+<h1>これどこ　複数の駅出口を考慮する</h1>
+<p>単一の駅代表点ではなく、住棟のアクセス位置と駅出口ごとの道路距離を複数保存して、**最短の歩行経路**で比較するための試作です。</p>
+<section class="panel"><h2>1. 実取得した参考距離で比較</h2>
+<div class="warn"><strong>実際の駅出口の道路距離は未取得です。</strong> 現在登録されているのは、公開UR住宅3件から駅代表点への6経路です。東京メトロ公式の出口番号と、東十条駅の改札口案内は確認しましたが、出口座標の利用許諾と精度が未確認のため、測定値として入力していません。</div>
+<label for="ad">公開広告の徒歩条件</label><select id="ad" disabled><option>データを読み込み中</option></select>
+<div id="baseline" aria-live="polite"></div>
+</section>
+<section class="panel"><h2>2. 仮の追加経路で計算を試す</h2>
+<p class="small">ここは<strong>計算エンジンだけを試す実験</strong>です。仮の距離は実測ではなく、精度改善や実物件の正解として採点・保存しません。駅出口の正式な道路距離を取得できた段階で、その観測値に置き換えます。</p>
+<div class="grid">
+<div><label for="candidate">建物を選ぶ</label><select id="candidate" disabled></select></div>
+<div><label for="place">目的駅を選ぶ</label><select id="place" disabled></select></div>
+<div><label for="meters">架空の経路距離（m）</label><input id="meters" type="number" min="50" max="9999" step="1" value="450"></div>
+</div>
+<div class="toolbar"><button id="simulate" class="primary" disabled>仮の経路を追加して再計算</button><button id="reset" disabled>実測のみへ戻す</button></div>
+<div id="simulated" aria-live="polite"></div>
+</section>
+<section class="panel"><h2>計算方法</h2><ul class="small">
+<li>駅出口の候補が複数ある場合、その建物からの道路経路で**最も短い距離**を採用します。広告に近い経路だけを選ぶ方式にはしません。</li>
+<li>複数経路の最小～最大距離と、その幅で広告との一致度がどう変わるかを併記します。</li>
+<li>駅出口・住棟入口・歩行道路の独立確認はまだ未了。候補順位や模擬計算で住戸所在地を特定しません。</li>
+</ul><p class="small">出典：<a href="https://www.tokyometro.jp/station/oji-kamiya/yardmap/index_print.html" target="_blank" rel="noopener noreferrer">東京メトロ王子神谷駅案内</a>、<a href="https://www.jorudan.co.jp/eki/eki_%E6%9D%B1%E5%8D%81%E6%9D%A1_map.html" target="_blank" rel="noopener noreferrer">東十条駅出入口案内</a>、<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a>。</p></section><p id="status" class="small" role="status"></p>
+</main>
+<script type="module">
+import {asSinglePointRoutes,evaluateExitAwarePublicCandidates} from "./src/multi_endpoint_routes.mjs";
+const el=id=>document.getElementById(id),t=(tag,content,cls)=>{const n=document.createElement(tag);n.textContent=String(content??"");if(cls)n.className=cls;return n};
+let data=null,baseline=null,trial=null;
+function report(root,measurements,simulation=false){
+ const r=evaluateExitAwarePublicCandidates(data,measurements,el("ad").value);
+ root.replaceChildren();
+ const heading=t("p",simulation?"架空の追加ルートを含む比較。これは位置精度の検証結果ではありません。":"実際にAPI取得した駅代表点6経路だけの参考順位","small");
+ root.append(heading);
+ r.rows.forEach((c,i)=>{
+ const row=t("section","","result"+(simulation?" sim":"")),line=t("div","","row");
+ line.append(t("strong",(i+1)+"位　"+c.label),t("span",c.nominal_gap_m===null?"経路不足":c.nominal_gap_m+"m","value"));
+ row.append(line);
+ const bits=c.evidence.map(e=>e.place_id+" "+(e.nominal_m===null?"欠測":e.nominal_m+"m")+
+ (e.alternative_routes>1?"（"+e.alternative_routes+"本、"+e.observed_range_m[0]+"～"+e.observed_range_m[1]+"m）":""));
+ row.append(t("div",bits.join(" / "),"score"));root.append(row);
+ });
+ root.append(t("p",r.rank_reference_robust_across_supplied_routes?
+   "登録された経路の範囲では参考順位が入れ替わりません。正しい所在地を示す意味ではありません。":
+   "登録された経路の範囲では参考順位が入れ替わる可能性があります。確定判定はしません。","small"));
+}
+async function init(){
+ try{
+ const response=await fetch("./examples/oji_holdout_measured_6routes_20261020.json",{cache:"no-store"});
+ if(!response.ok)throw Error("HTTP "+response.status);
+ data=await response.json();baseline=asSinglePointRoutes(data);trial=baseline;
+ const ad=el("ad"),candidate=el("candidate"),place=el("place");
+ ad.replaceChildren();candidate.replaceChildren();place.replaceChildren();
+ for(const a of data.advertisements){const op=t("option",a.id+" / "+a.conditions.map(x=>x.label).join("・"));op.value=a.id;ad.append(op)}
+ for(const c of data.candidates){const op=t("option",c.label);op.value=c.id;candidate.append(op)}
+ for(const s of data.stations){const op=t("option",s.name);op.value=s.id;place.append(op)}
+ ad.disabled=false;candidate.disabled=false;place.disabled=false;
+ el("simulate").disabled=false;el("reset").disabled=false;
+ ad.addEventListener("change",()=>{report(el("baseline"),baseline);report(el("simulated"),trial,trial!==baseline)});
+ report(el("baseline"),baseline);el("status").textContent="測定した参考経路を計算しました。出口地点の実測はまだありません。";
+ }catch(e){el("status").textContent=String(e.message)}
+}
+el("simulate").addEventListener("click",()=>{
+ const m=Number(el("meters").value);
+ if(!Number.isInteger(m)||m<50||m>9999){el("status").textContent="50～9999mの整数を入力してください";return}
+ const c=el("candidate").value,p=el("place").value;
+ trial={...baseline,routes:[...baseline.routes,{
+ candidate_id:c,place_id:p,origin_id:c+":gsi-address-reference",exit_id:p+":hypothetical-extra-exit",
+ origin_type:"address_reference",exit_type:"station_exit",exit_source_url:"https://www.tokyometro.jp/station/oji-kamiya/",
+ meters:m,snap_start_m:0,snap_end_m:0,provenance:"USER_TYPED_HYPOTHESIS_NOT_MEASURED",
+ route_source:"SIMULATED_DISTANCE_NOT_ACTUAL_WALKING_ROUTE",identity_independent:false}]};
+ report(el("simulated"),trial,true);
+ el("status").textContent="入力した距離は架空の経路です。正解率検証や実測データの保存には使用しません。";
+});
+el("reset").addEventListener("click",()=>{
+ trial=baseline;el("simulated").replaceChildren();
+ el("status").textContent="仮の経路を取り消し、元の6実測経路へ戻しました。";
+});
+init();
+</script></body></html>
