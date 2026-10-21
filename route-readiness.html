@@ -45,15 +45,15 @@ th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #e8ece9;white-sp
 <h2>観測状況</h2>
 <div class="metrics">
 <div class="metric"><strong id="planned">—</strong><span>計測予定組</span></div>
-<div class="metric"><strong id="observed">—</strong><span>証拠付き観測</span></div>
+<div class="metric"><strong id="observed">—</strong><span>提出された経路記録</span></div>
 <div class="metric"><strong id="missing">—</strong><span>未測定</span></div>
 </div>
-<p class="note">出入口を裏付けていない参考経路は正式な位置同定に利用できません。合成データは観測数から除外します。</p>
+<p class="note">提出されたURL・座標・距離はこの画面だけでは独立検証されません。出入口未確認の参考経路は正式な位置同定に利用できず、合成データは記録数から除外します。</p>
 <div id="status" role="status">読み込み前です。</div>
 </section>
 <section class="panel">
 <h2>候補×目的地の一覧</h2>
-<div class="scroller"><table><thead><tr><th>匿名候補</th><th>目的地</th><th>計測値</th><th>状態</th></tr></thead><tbody id="rows"></tbody></table></div>
+<div class="scroller"><table><thead><tr><th>匿名候補</th><th>目的地</th><th>計測値</th><th>状態</th><th>根拠</th></tr></thead><tbody id="rows"></tbody></table></div>
 </section>
 <p class="note">プログラムの自動検査・GitHub CIと、実GPS測量・歩行経路API取得・PC/iPhone実機動作確認は別の工程です。公開住棟のみを対象とし、非公開住戸や個人の位置は扱いません。</p>
 </main>
@@ -92,6 +92,10 @@ async function render(){
     const td=document.createElement("td");td.textContent=str;tr.append(td);
    }
    tr.lastChild.className=x.observed?"matched":x.record_class==="synthetic_test_only"?"synthetic":"missing";
+   const source=document.createElement("td");
+   if(x.observed&&x.route_source_url){const a=document.createElement("a");a.href=x.route_source_url;a.textContent="経路出典";a.rel="noopener noreferrer";a.target="_blank";source.append(a);}
+   else source.textContent="—";
+   tr.append(source);
    $("rows").append(tr);
   }
  }catch(e){
