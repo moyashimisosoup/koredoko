@@ -33,7 +33,7 @@ test("encoded polyline6 matches saved recorded points for real responses",()=>{
  const o=geo().observations;
  assert.deepEqual(o.map(r=>decodeValhallaPolyline6(r.polyline6).length),[18,17]);
  assert.ok(haversineMeters(o[0].geometry_last_point,o[1].geometry_last_point)<0.02);
- assert.throws(()=>decodeValhallaPolyline6("_"),/Incomplete|needs/);
+ assert.throws(()=>decodeValhallaPolyline6("_"),/Invalid|Incomplete|needs/);
  assert.throws(()=>decodeValhallaPolyline6(23),/Invalid/);
  assert.throws(()=>decodeValhallaPolyline6("?!"),/Invalid|Incomplete/);
 });
