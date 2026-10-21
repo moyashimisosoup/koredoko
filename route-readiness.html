@@ -51,6 +51,12 @@ th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #e8ece9;white-sp
 <p class="note">提出されたURL・座標・距離はこの画面だけでは独立検証されません。出入口未確認の参考経路は正式な位置同定に利用できず、合成データは記録数から除外します。</p>
 <div id="status" role="status">読み込み前です。</div>
 </section>
+<section class="panel" aria-label="実際に取得した参考歩行経路">
+<h2>参考歩行経路（実API取得・採点対象外）</h2>
+<p class="note">住居表示の番号参照点から歩行ルートAPIに照会した結果です。経路網から距離が返りましたが、建物入口・駅出入口・道路吸着量は未確認なので、上の採点用記録数には加えません。</p>
+<div id="pilotStatus" class="status" role="status">参考経路を読み込んでいます。</div>
+<div class="scroller"><table><thead><tr><th>匿名公開候補</th><th>目的地</th><th>参考距離</th><th>経路出典</th></tr></thead><tbody id="pilotRows"></tbody></table></div>
+</section>
 <section class="panel">
 <h2>候補×目的地の一覧</h2>
 <div class="scroller"><table><thead><tr><th>匿名候補</th><th>目的地</th><th>計測値</th><th>状態</th><th>根拠</th></tr></thead><tbody id="rows"></tbody></table></div>
@@ -60,6 +66,7 @@ th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #e8ece9;white-sp
 <script type="module">
 import {buildHibariRouteCoverage} from "./src/hibari_reference_point_plan.mjs";
 import {auditHibariRouteObservations} from "./src/hibari_route_observation_audit.mjs";
+import {summarizeHibariReferenceWalkPilot} from "./src/hibari_v2_reference_pilot.mjs";
 const $=id=>document.getElementById(id);
 const read=async file=>{const resp=await fetch("./examples/"+file,{cache:"no-store"});if(!resp.ok)throw Error("公開根拠台帳の読込失敗: "+file);return resp.json();};
 let inputs=null;
@@ -83,6 +90,23 @@ async function render(){
   $("missing").textContent=audit.missing_route_pairs;
   $("status").textContent="出入口の品質確認が必要な経路："+audit.entrance_review_needed_pairs+
    "組。 合成試験のみ："+audit.synthetic_test_pairs+"組。\n独立正解率：未測定。予測順位：未確定。";
+  const [pilot,refs]=await Promise.all([
+   read("hibari_v2_exploratory_walks_20261022.json"),
+   read("hibari_geolonia_v2_address_number_20261022.json")]);
+  const preview=summarizeHibariReferenceWalkPilot(pilot,refs,plan);
+  $("pilotStatus").textContent="実際のAPI応答："+preview.exploratory_observed_pairs+
+   "組／予定"+preview.planned_pairs+"組。品質確認済み："+preview.quality_qualified_routes+
+   "組。入口・経路グラフ・道路吸着は未確認。正解率には使用不可。";
+  $("pilotRows").replaceChildren();
+  for(const pilotRow of preview.evidence){
+   const tr=document.createElement("tr");
+   for(const value of [pilotRow.candidate_id,"ひばりヶ丘駅",pilotRow.reported_distance_m+"m"]){
+    const td=document.createElement("td");td.textContent=value;tr.append(td);
+   }
+   const source=document.createElement("td");
+   const a=document.createElement("a");a.href=pilotRow.source_url;a.textContent="取得した経路";a.target="_blank";a.rel="noopener noreferrer";
+   source.append(a);tr.append(source);$("pilotRows").append(tr);
+  }
   $("rows").replaceChildren();
   const labels=new Map(plan.destinations.map(d=>[d.destination_key,d.name]));
   for(const x of audit.rows){
