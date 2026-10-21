@@ -1,0 +1,122 @@
+{
+  "schema_version": "app023-public-building-address-sources-v0.1",
+  "app_id": "APP-023",
+  "cohort_id": "hibarigaoka-20261021",
+  "recorded_on_jst": "2026-10-21",
+  "scope": "Named and publicly advertised apartment buildings; building addresses only, no unit, resident, room or entrance coordinates",
+  "purpose": "Answer-key-separated evidence acquisition and later GSI address-reference geocoding; never use building label/address or website identifier in advertisement feature input",
+  "original_advertisement_input": "examples/hibari_real_ads_prelocked_20261021.json",
+  "coordinates_evaluated": false,
+  "route_measurements_observed": 0,
+  "facility_ledger": "examples/hibari_poi_identities_20261021.json",
+  "buildings": [
+    {
+      "candidate_id": "H01",
+      "public_building_name": "グランフォーレひばりが丘",
+      "public_building_address": "東京都西東京市ひばりが丘1丁目16番17号",
+      "source_url": "https://www.sumai1.com/buyers/mansion/library/mns_29235",
+      "source_kind": "real_estate_company_public_building_library",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "H02",
+      "public_building_name": "ひばりヶ丘プラザ",
+      "public_building_address": "東京都西東京市谷戸町3丁目27番24号",
+      "source_url": "https://www.city.nishitokyo.lg.jp/kurasi/jutaku/index/72311420230714134133611.files/kannrikeikaku_251119.pdf",
+      "source_kind": "municipal_mansion_management_certification_list",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "H03",
+      "public_building_name": "HIBARI TOWER",
+      "public_building_address": "東京都西東京市住吉町3丁目10番25号",
+      "source_url": "https://d2aeq1ide5ayuy.cloudfront.net/building/TO00040895",
+      "source_kind": "real_estate_company_public_building_library",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "H04",
+      "public_building_name": "ザ・レジデンスひばりが丘",
+      "public_building_address": "東京都西東京市谷戸町2丁目6番9号",
+      "source_url": "https://d2aeq1ide5ayuy.cloudfront.net/building/TO00117127",
+      "source_kind": "real_estate_company_public_building_library",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "H05",
+      "public_building_name": "プレミストひばりが丘",
+      "public_building_address": "東京都西東京市ひばりが丘3丁目2番53号",
+      "source_url": "https://sumikae.ttfuhan.co.jp/database/real_estate/daiwahouse/city/707.html",
+      "source_kind": "real_estate_company_public_building_library",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "H06",
+      "public_building_name": "ヌーベルヴィラージュひばり",
+      "public_building_address": "東京都西東京市谷戸町2丁目8番27号",
+      "source_url": "https://library.smtrc.jp/mansion/32107.html",
+      "source_kind": "real_estate_company_public_building_library",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "H07",
+      "public_building_name": "グランジオ武蔵野",
+      "public_building_address": "東京都西東京市谷戸町2丁目1番24号",
+      "source_url": "https://ggio-musashino.mansion-press.com/outline/",
+      "source_kind": "real_estate_company_public_building_profile",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    }
+  ],
+  "station": {
+    "place_id": "seibu-hibarigaoka",
+    "name": "ひばりヶ丘駅",
+    "address": "東京都西東京市住吉町3丁目9番19号",
+    "source_url": "https://www.seiburailway.jp/railway/station/hibarigaoka/",
+    "source_kind": "railway_operator_official_station_info",
+    "coordinate": null,
+    "coordinate_source_status": "not_retrieved",
+    "station_exit_status": "unverified"
+  },
+  "notices": [
+    "H02 address corroborated by Nishitokyo City official management-certified apartment list. Location is public building level only.",
+    "Third-party building overview station walk-minute estimates differ from frozen sale ad estimates. Do not overwrite advertisement values.",
+    "H07 includes multiple towers within one large estate; address representative point is not a specific building gate.",
+    "GSI address search may return a city block representative, not house number/building entrance.",
+    "Do not leak candidate_id/ground truth mapping into ad-only feature encoding. Candidate registry is evaluation data."
+  ]
+}
