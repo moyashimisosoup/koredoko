@@ -3,7 +3,7 @@
  * Run from repository root:
  *   node scripts/hibari_geocode_probe.mjs                   (NO network)
  *   node scripts/hibari_geocode_probe.mjs --live --limit=2 (max 2 slow GET)
- *   node scripts/hibari_geocode_probe.mjs --live --limit=13 (13 slow GET)
+ *   node scripts/hibari_geocode_probe.mjs --live --offset=2 --limit=2 (next 2 GET)
  * Prints a record for review, never marks public housing entrances as verified.
  * This script DOES NOT call Valhalla, score ads, or publish coordinates to GitHub.
  */
@@ -11,16 +11,19 @@ import {readFileSync} from "node:fs";
 import {buildHibariGeocodeManifest,interpretGsiAddressFeatures} from "../src/hibari_reference_point_plan.mjs";
 const load=s=>JSON.parse(readFileSync(new URL("../examples/"+s,import.meta.url),"utf8"));
 const opts=new Set(process.argv.slice(2));
+const offsetArg=[...opts].find(x=>x.startsWith("--offset="));
+const offset=offsetArg?Number(offsetArg.split("=")[1]):0;
+if(!Number.isInteger(offset)||offset<0||offset>17)throw Error("--offset must be 0 to 17");
 const limitArg=[...opts].find(x=>x.startsWith("--limit="));
 const limit=limitArg?Number(limitArg.split("=")[1]):2;
 if(!Number.isInteger(limit)||limit<1||limit>18)throw Error("--limit must be 1 to 18");
 const manifest=buildHibariGeocodeManifest(
  load("hibari_public_building_addresses_20261021.json"),
  load("hibari_poi_identities_20261021.json"),{directOnly:!opts.has("--all")});
-const live=opts.has("--live"),selected=manifest.requests.slice(0,limit);
+const live=opts.has("--live"),selected=manifest.requests.slice(offset,offset+limit);
 const result={schema_version:"app023-gsi-probe-v0.1",cohort_id:manifest.cohort_id,
  mode:live?"live_manual_research":"offline_manifest_only",created_at:new Date().toISOString(),
- planned_requests:manifest.requests.length,attempted:0,records:[],
+ planned_requests:manifest.requests.length,offset,requested_limit:limit,attempted:0,records:[],
  privacy:"named public facilities and apartment buildings only; no private units; address points are not doors"};
 for(let i=0;i<selected.length;i++){
  const q=selected[i];
