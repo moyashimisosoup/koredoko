@@ -38,6 +38,15 @@ th{background:#f5f8f6}tr{vertical-align:top}
 </div>
 <p class="small">出典：<a href="https://github.com/geolonia/japanese-addresses" target="_blank" rel="noopener noreferrer">Geolonia 住所データ</a>（CC BY 4.0）。原データは国土交通省位置参照情報に由来し、独立した地図測量ではありません。</p>
 </section>
+<section class="panel" aria-label="住所番号参照点の取得結果">
+<h2>0B. 取得済みの番・号レベルの参照点</h2>
+<p class="small">Geolonia住所データv2（デジタル庁アドレス・ベース・レジストリ由来）の西東京市住居表示情報と、名前が公開されている建物・公共施設の住所を照合したものです。<strong>番号まで一致しても、玄関・校門・改札・園路の出入口を示すものではありません。</strong></p>
+<div class="status" id="numberStatus" role="status">取得済みの住所番号参照データを確認しています。</div>
+<div class="scroll" id="numberArea" hidden>
+<table><thead><tr><th>公開対象ID</th><th>住所番号の一致</th><th>町丁目点との差</th><th>出入口・実徒歩</th></tr></thead><tbody id="numberRows"></tbody></table>
+</div>
+<p class="small">出典：<a href="https://github.com/geolonia/japanese-addresses-v2" target="_blank" rel="noopener noreferrer">Geolonia住所データv2</a>（CC BY 4.0）。西東京市データの記録された更新時点は2024年12月。形式・出典・更新日を確認してください。</p>
+</section>
 <section class="panel">
 <h2>1. CSVを選択</h2>
 <p class="small"><a href="https://nlftp.mlit.go.jp/isj/agreement.html" target="_blank" rel="noopener noreferrer">国土交通省の利用約款</a>を確認・同意したうえで、公式ダウンロードした東京都の街区レベルCSVを選んでください。大字・町丁目データではありません。ファイルはこのブラウザ内だけで処理され、サーバーにアップロードしません。</p>
@@ -59,6 +68,7 @@ th{background:#f5f8f6}tr{vertical-align:top}
 <script type="module">
 import {parseIsjBlocks,matchPublicBlockAddresses} from "./src/hibari_offline_isj_match.mjs";
 import {auditHibariTownReferenceCoverage} from "./src/hibari_town_reference_coverage.mjs";
+import {auditHibariV2NumberReferences} from "./src/hibari_v2_number_quality.mjs";
 const $=id=>document.getElementById(id);let last=null;
 async function showRetrievedTownReferences(){
  try{
@@ -88,7 +98,35 @@ async function showRetrievedTownReferences(){
   $("townArea").hidden=false;
  }catch(e){$("townStatus").textContent="町丁目データの読込・照合に失敗："+String(e?.message||e);}
 }
+async function showNumberReferenceEvidence(){
+ try{
+  const names=["hibari_geolonia_v2_address_number_20261022.json",
+   "hibari_public_building_addresses_20261021.json","hibari_poi_identities_20261021.json"];
+  const docs=await Promise.all(names.map(async n=>{
+   const r=await fetch("./examples/"+n,{cache:"no-store"});
+   if(!r.ok)throw Error("番号参照根拠が読めません: "+n);
+   return r.json();
+  }));
+  const r=auditHibariV2NumberReferences(...docs);
+  $("numberStatus").textContent="公開住所18件：番・号まで一致 "+r.number_matched_targets+
+   "件、該当番号なし "+r.number_not_found+"件、番までの住所 "+r.block_only_addresses+
+   "件。町丁目点との代表点の距離差 "+r.minimum_shift_from_town_reference_m+
+   "〜"+r.maximum_shift_from_town_reference_m+"m。入口確認0件・経路採点0件。";
+  $("numberRows").replaceChildren();
+  for(const item of r.rows){
+   const tr=document.createElement("tr");
+   for(const t of [item.target_id,item.status,
+    item.compared_to_legacy_town_point_m===null?"—":item.compared_to_legacy_town_point_m+"m",
+    "未検証"]){
+    const td=document.createElement("td");td.textContent=t;tr.append(td);
+   }
+   $("numberRows").append(tr);
+  }
+  $("numberArea").hidden=false;
+ }catch(e){$("numberStatus").textContent="住所番号参照の検査に失敗："+String(e?.message||e);}
+}
 showRetrievedTownReferences();
+showNumberReferenceEvidence();
 
 $("run").addEventListener("click",async()=>{
  const file=$("csv").files[0],year=Number($("year").value);
