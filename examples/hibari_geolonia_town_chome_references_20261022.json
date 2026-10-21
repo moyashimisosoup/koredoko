@@ -1,0 +1,79 @@
+{
+  "schema_version": "app023-town-chome-reference-snapshot-v0.1",
+  "app_id": "APP-023",
+  "cohort_id": "hibarigaoka-20261021",
+  "retrieved_on_jst": "2026-10-22",
+  "publisher": "Geolonia",
+  "dataset": "Geolonia Japanese Addresses (legacy, updates ended)",
+  "upstream_derived_from": "MLIT published 町丁目 level location reference data; not an independent site survey",
+  "source_url": "https://github.com/geolonia/japanese-addresses",
+  "source_commit": "384a5b52472363416275ac6c3e30a678b6b1252d",
+  "source_file_path": "api/ja/東京都/西東京市.json",
+  "source_raw_url": "https://raw.githubusercontent.com/geolonia/japanese-addresses/384a5b52472363416275ac6c3e30a678b6b1252d/api/ja/%E6%9D%B1%E4%BA%AC%E9%83%BD/%E8%A5%BF%E6%9D%B1%E4%BA%AC%E5%B8%82.json",
+  "source_total_municipal_records": 114,
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "changes": "8 town-chome reference records selected without coordinate changes from pinned upstream municipal JSON; no interpolation or entrance coordinates.",
+  "source_precision": "town_chome_representative_only",
+  "road_routing_allowed": false,
+  "identity_accuracy": null,
+  "entrance_quality": "not_verified",
+  "records": [
+    {
+      "town": "ひばりが丘一丁目",
+      "lat": 35.750959,
+      "lon": 139.542175,
+      "coordinate_kind": "town_chome_representative_not_building_or_entrance",
+      "usable_for_walking_route": false
+    },
+    {
+      "town": "ひばりが丘二丁目",
+      "lat": 35.747571,
+      "lon": 139.538924,
+      "coordinate_kind": "town_chome_representative_not_building_or_entrance",
+      "usable_for_walking_route": false
+    },
+    {
+      "town": "ひばりが丘三丁目",
+      "lat": 35.744534,
+      "lon": 139.535246,
+      "coordinate_kind": "town_chome_representative_not_building_or_entrance",
+      "usable_for_walking_route": false
+    },
+    {
+      "town": "谷戸町一丁目",
+      "lat": 35.741477,
+      "lon": 139.545413,
+      "coordinate_kind": "town_chome_representative_not_building_or_entrance",
+      "usable_for_walking_route": false
+    },
+    {
+      "town": "谷戸町二丁目",
+      "lat": 35.746005,
+      "lon": 139.541284,
+      "coordinate_kind": "town_chome_representative_not_building_or_entrance",
+      "usable_for_walking_route": false
+    },
+    {
+      "town": "谷戸町三丁目",
+      "lat": 35.746786,
+      "lon": 139.544765,
+      "coordinate_kind": "town_chome_representative_not_building_or_entrance",
+      "usable_for_walking_route": false
+    },
+    {
+      "town": "住吉町三丁目",
+      "lat": 35.74952,
+      "lon": 139.547868,
+      "coordinate_kind": "town_chome_representative_not_building_or_entrance",
+      "usable_for_walking_route": false
+    },
+    {
+      "town": "緑町三丁目",
+      "lat": 35.741017,
+      "lon": 139.540832,
+      "coordinate_kind": "town_chome_representative_not_building_or_entrance",
+      "usable_for_walking_route": false
+    }
+  ]
+}
