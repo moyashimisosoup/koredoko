@@ -11,59 +11,7 @@
   "facility_ledger": "examples/hibari_poi_identities_20261021.json",
   "buildings": [
     {
-      "candidate_id": "H01",
-      "public_building_name": "グランフォーレひばりが丘",
-      "public_building_address": "東京都西東京市ひばりが丘1丁目16番17号",
-      "source_url": "https://www.sumai1.com/buyers/mansion/library/mns_29235",
-      "source_kind": "real_estate_company_public_building_library",
-      "coordinate": null,
-      "coordinate_source_status": "not_retrieved",
-      "entrance_status": "unverified",
-      "building_parts": "undetermined_not_unit_level",
-      "reference_point_restriction": "GSI address reference is not an entrance",
-      "advertisement_as_ground_truth": "not_a_scoring_feature"
-    },
-    {
-      "candidate_id": "H02",
-      "public_building_name": "ひばりヶ丘プラザ",
-      "public_building_address": "東京都西東京市谷戸町3丁目27番24号",
-      "source_url": "https://www.city.nishitokyo.lg.jp/kurasi/jutaku/index/72311420230714134133611.files/kannrikeikaku_251119.pdf",
-      "source_kind": "municipal_mansion_management_certification_list",
-      "coordinate": null,
-      "coordinate_source_status": "not_retrieved",
-      "entrance_status": "unverified",
-      "building_parts": "undetermined_not_unit_level",
-      "reference_point_restriction": "GSI address reference is not an entrance",
-      "advertisement_as_ground_truth": "not_a_scoring_feature"
-    },
-    {
-      "candidate_id": "H03",
-      "public_building_name": "HIBARI TOWER",
-      "public_building_address": "東京都西東京市住吉町3丁目10番25号",
-      "source_url": "https://d2aeq1ide5ayuy.cloudfront.net/building/TO00040895",
-      "source_kind": "real_estate_company_public_building_library",
-      "coordinate": null,
-      "coordinate_source_status": "not_retrieved",
-      "entrance_status": "unverified",
-      "building_parts": "undetermined_not_unit_level",
-      "reference_point_restriction": "GSI address reference is not an entrance",
-      "advertisement_as_ground_truth": "not_a_scoring_feature"
-    },
-    {
-      "candidate_id": "H04",
-      "public_building_name": "ザ・レジデンスひばりが丘",
-      "public_building_address": "東京都西東京市谷戸町2丁目6番9号",
-      "source_url": "https://d2aeq1ide5ayuy.cloudfront.net/building/TO00117127",
-      "source_kind": "real_estate_company_public_building_library",
-      "coordinate": null,
-      "coordinate_source_status": "not_retrieved",
-      "entrance_status": "unverified",
-      "building_parts": "undetermined_not_unit_level",
-      "reference_point_restriction": "GSI address reference is not an entrance",
-      "advertisement_as_ground_truth": "not_a_scoring_feature"
-    },
-    {
-      "candidate_id": "H05",
+      "candidate_id": "KK1",
       "public_building_name": "プレミストひばりが丘",
       "public_building_address": "東京都西東京市ひばりが丘3丁目2番53号",
       "source_url": "https://sumikae.ttfuhan.co.jp/database/real_estate/daiwahouse/city/707.html",
@@ -76,7 +24,59 @@
       "advertisement_as_ground_truth": "not_a_scoring_feature"
     },
     {
-      "candidate_id": "H06",
+      "candidate_id": "KK2",
+      "public_building_name": "グランジオ武蔵野",
+      "public_building_address": "東京都西東京市谷戸町2丁目1番24号",
+      "source_url": "https://ggio-musashino.mansion-press.com/outline/",
+      "source_kind": "real_estate_company_public_building_profile",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "KK3",
+      "public_building_name": "ひばりヶ丘プラザ",
+      "public_building_address": "東京都西東京市谷戸町3丁目27番24号",
+      "source_url": "https://www.city.nishitokyo.lg.jp/kurasi/jutaku/index/72311420230714134133611.files/kannrikeikaku_251119.pdf",
+      "source_kind": "municipal_mansion_management_certification_list",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "KK4",
+      "public_building_name": "ザ・レジデンスひばりが丘",
+      "public_building_address": "東京都西東京市谷戸町2丁目6番9号",
+      "source_url": "https://d2aeq1ide5ayuy.cloudfront.net/building/TO00117127",
+      "source_kind": "real_estate_company_public_building_library",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "KK5",
+      "public_building_name": "グランフォーレひばりが丘",
+      "public_building_address": "東京都西東京市ひばりが丘1丁目16番17号",
+      "source_url": "https://www.sumai1.com/buyers/mansion/library/mns_29235",
+      "source_kind": "real_estate_company_public_building_library",
+      "coordinate": null,
+      "coordinate_source_status": "not_retrieved",
+      "entrance_status": "unverified",
+      "building_parts": "undetermined_not_unit_level",
+      "reference_point_restriction": "GSI address reference is not an entrance",
+      "advertisement_as_ground_truth": "not_a_scoring_feature"
+    },
+    {
+      "candidate_id": "KK6",
       "public_building_name": "ヌーベルヴィラージュひばり",
       "public_building_address": "東京都西東京市谷戸町2丁目8番27号",
       "source_url": "https://library.smtrc.jp/mansion/32107.html",
@@ -89,11 +89,11 @@
       "advertisement_as_ground_truth": "not_a_scoring_feature"
     },
     {
-      "candidate_id": "H07",
-      "public_building_name": "グランジオ武蔵野",
-      "public_building_address": "東京都西東京市谷戸町2丁目1番24号",
-      "source_url": "https://ggio-musashino.mansion-press.com/outline/",
-      "source_kind": "real_estate_company_public_building_profile",
+      "candidate_id": "KK7",
+      "public_building_name": "HIBARI TOWER",
+      "public_building_address": "東京都西東京市住吉町3丁目10番25号",
+      "source_url": "https://d2aeq1ide5ayuy.cloudfront.net/building/TO00040895",
+      "source_kind": "real_estate_company_public_building_library",
       "coordinate": null,
       "coordinate_source_status": "not_retrieved",
       "entrance_status": "unverified",
@@ -117,6 +117,7 @@
     "Third-party building overview station walk-minute estimates differ from frozen sale ad estimates. Do not overwrite advertisement values.",
     "H07 includes multiple towers within one large estate; address representative point is not a specific building gate.",
     "GSI address search may return a city block representative, not house number/building entrance.",
-    "Do not leak candidate_id/ground truth mapping into ad-only feature encoding. Candidate registry is evaluation data."
+    "Do not leak candidate_id/ground truth mapping into ad-only feature encoding. Candidate registry is evaluation data.",
+    "Candidate IDs K01-K07 are deliberately assigned independently of advertisement IDs H01-H07 and scrambled in building order; matching answer key is not part of scoring/route manifest."
   ]
 }
