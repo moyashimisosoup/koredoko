@@ -37,6 +37,12 @@ node scripts/hibari_isj_offline_review.mjs path/to/tokyo_block.csv 2025 > hibari
 
 ※`2025`は例。実際の整備年度を使用し、混同しない。CSVはShift-JISであり、テスト用合成ファイルとは区別する。**元CSVは本Publicリポジトリに複製しない**。必要最低限の街区代表点を出典付きで結果へ採用する場合も、公式利用条件と精度注記を維持する。
 
+## ブラウザ内CSV照合画面（PC・iPhone向けの試作）
+
+[`isj-review.html`](../isj-review.html)を追加して[`index.html`](../index.html)から参照できるようにした。ブラウザで**利用者が自ら選んだShift-JIS CSVと整備年度**を読み込み、公開住所台帳の7建物・駅1・POI10の計18地点と照合できる。出力結果のJSONは利用者の端末に保存し、CSVを外部サーバーに送信しない。データは画面の一時メモリ上だけで保持する。ブラウザでのファイル読込には100MB制限。
+
+[`tests/hibari_offline_isj_browser.test.mjs`](../tests/hibari_offline_isj_browser.test.mjs)でモジュール参照・静的構文・画面からの第三者送信防止・ホームリンクを試験する。ただし**実際のiPhone Safari手動操作試験および実CSVでの試験は未実施**。
+
 ## 計測・採点の出口条件
 
 1. ISJ公式ファイル（または別の一次ソース）の実データと更新年度を取得して、候補7棟・駅1・施設5の住所について街区参照点の一致度と欠測を集計。
