@@ -43,3 +43,12 @@ test("actual published Geolonia town evidence appears separately from user-suppl
  assert.ok(html.includes("街区一致：0件"));
  assert.ok(!html.includes("18地点の住所への完全位置一致"));
 });
+
+test("finer actual residence-number references remain separate from historical towns and official ISJ CSV",()=>{
+ const html=page();
+ assert.ok(html.includes('id="numberStatus"'));
+ assert.ok(html.includes('id="numberRows"'));
+ assert.ok(html.includes("hibari_geolonia_v2_address_number_20261022.json"));
+ assert.ok(html.includes("auditHibariV2NumberReferences"));
+ assert.ok(html.includes("入口確認0件・経路採点0件"));
+});
