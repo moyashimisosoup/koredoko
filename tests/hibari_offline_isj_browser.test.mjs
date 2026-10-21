@@ -32,3 +32,14 @@ test("home page makes review UI discoverable without changing public-location di
  assert.ok(home.includes("./isj-review.html"));
  assert.ok(home.includes("現時点では所在地の推定や地図照合を行いません。"));
 });
+test("actual published Geolonia town evidence appears separately from user-supplied ISJ block CSV",()=>{
+ const html=page();
+ assert.ok(html.includes('id="townStatus"'));
+ assert.ok(html.includes('id="townRows"'));
+ assert.ok(html.includes("hibari_geolonia_town_chome_references_20261022.json"));
+ assert.ok(html.includes("auditHibariTownReferenceCoverage"));
+ assert.ok(html.includes("Geolonia 住所データ"));
+ assert.ok(html.includes("CC BY 4.0"));
+ assert.ok(html.includes("街区一致：0件"));
+ assert.ok(!html.includes("18地点の住所への完全位置一致"));
+});
