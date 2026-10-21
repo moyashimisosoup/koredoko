@@ -29,6 +29,15 @@ th{background:#f5f8f6}tr{vertical-align:top}
 <p class="small"><a href="./index.html">← これどこ</a> / APP-023・研究用PoC</p>
 <h1>公開住所の街区照合</h1>
 <p>公式の「街区レベル位置参照情報」を読み込んで、公開集合住宅7件・駅1件・公開施設10件の住所と街区代表点を照合します。<strong>地図上の建物入口の特定や、歩行経路の確定は行いません。</strong></p>
+<section class="panel" aria-label="公開済みの町丁目参照点">
+<h2>0. 取得できた町丁目代表点（参考資料）</h2>
+<p class="small">Geolonia旧版の西東京市データから取得した8町丁目の代表座標を利用します。データの更新は終了しており、<strong>街区・建物・施設入口の位置ではありません</strong>。住所との一致件数は、公式街区CSVの実測確認とは別に表示します。</p>
+<div class="status" id="townStatus" role="status">公開済みの町丁目参照データを確認しています。</div>
+<div class="scroll" id="townArea" hidden>
+<table><thead><tr><th>町丁目</th><th>緯度・経度（町丁目代表点）</th><th>該当する公開住所</th></tr></thead><tbody id="townRows"></tbody></table>
+</div>
+<p class="small">出典：<a href="https://github.com/geolonia/japanese-addresses" target="_blank" rel="noopener noreferrer">Geolonia 住所データ</a>（CC BY 4.0）。原データは国土交通省位置参照情報に由来し、独立した地図測量ではありません。</p>
+</section>
 <section class="panel">
 <h2>1. CSVを選択</h2>
 <p class="small"><a href="https://nlftp.mlit.go.jp/isj/agreement.html" target="_blank" rel="noopener noreferrer">国土交通省の利用約款</a>を確認・同意したうえで、公式ダウンロードした東京都の街区レベルCSVを選んでください。大字・町丁目データではありません。ファイルはこのブラウザ内だけで処理され、サーバーにアップロードしません。</p>
@@ -49,7 +58,38 @@ th{background:#f5f8f6}tr{vertical-align:top}
 </main>
 <script type="module">
 import {parseIsjBlocks,matchPublicBlockAddresses} from "./src/hibari_offline_isj_match.mjs";
+import {auditHibariTownReferenceCoverage} from "./src/hibari_town_reference_coverage.mjs";
 const $=id=>document.getElementById(id);let last=null;
+async function showRetrievedTownReferences(){
+ try{
+  const names=["hibari_geolonia_town_chome_references_20261022.json",
+   "hibari_public_building_addresses_20261021.json","hibari_poi_identities_20261021.json"];
+  const data=await Promise.all(names.map(async name=>{
+   const r=await fetch("./examples/"+name,{cache:"no-store"});
+   if(!r.ok)throw Error("参照元ファイルを読めません："+name);
+   return r.json();
+  }));
+  const report=auditHibariTownReferenceCoverage(...data);
+  $("townStatus").textContent="町丁目の代表点：公開住所"+report.public_target_count+"件中"+
+   report.matched_town_reference_targets+"件と名称照合。異なる町丁目"+report.unique_referenced_towns+
+   "件。入口座標：0件。歩行経路：0本。街区一致：0件（町丁目止まり）。";
+  $("townRows").replaceChildren();
+  const counts=new Map();
+  for(const row of report.rows)if(row.reference_town)
+   counts.set(row.reference_town,(counts.get(row.reference_town)||0)+1);
+  for(const source of data[0].records){
+   const tr=document.createElement("tr");
+   for(const t of [source.town,source.lat.toFixed(6)+", "+source.lon.toFixed(6),
+     String(counts.get(source.town)||0)]){
+    const td=document.createElement("td");td.textContent=t;tr.append(td);
+   }
+   $("townRows").append(tr);
+  }
+  $("townArea").hidden=false;
+ }catch(e){$("townStatus").textContent="町丁目データの読込・照合に失敗："+String(e?.message||e);}
+}
+showRetrievedTownReferences();
+
 $("run").addEventListener("click",async()=>{
  const file=$("csv").files[0],year=Number($("year").value);
  if(!file){$("status").textContent="CSVファイルを選択してください。";return;}
