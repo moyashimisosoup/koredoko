@@ -1,0 +1,41 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const html=()=>readFileSync(new URL("../route-readiness.html",import.meta.url),"utf8");
+test("route audit webpage exposes both 42 and 70 pair planning scopes",()=>{
+ const s=html();
+ assert.ok(s.includes("最大42経路"));
+ assert.ok(s.includes("最大70経路"));
+ assert.ok(s.includes('id="observations"'));
+ assert.ok(s.includes('id="planned"'));
+ assert.ok(s.includes('id="observed"'));
+ assert.ok(s.includes('id="missing"'));
+});
+test("page uses evidence-only audit and does not compute fake routes or upload local JSON",()=>{
+ const s=html();
+ assert.ok(s.includes("auditHibariRouteObservations"));
+ assert.ok(s.includes("buildHibariRouteCoverage"));
+ assert.ok(s.includes('fetch("./examples/"+file'));
+ assert.ok(s.includes("file.text()"));
+ assert.ok(!s.includes("innerHTML"));
+ assert.ok(!s.includes("<form"));
+ assert.ok(!s.includes("valhalla1.openstreetmap.de"));
+ assert.ok(!s.includes("msearch.gsi.go.jp"));
+ assert.ok(!s.includes("fetch(\"https:"));
+});
+test("module source parses after removing static imports; home links to route audit page",()=>{
+ const s=html();
+ const code=s.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
+ assert.ok(code);
+ assert.doesNotThrow(()=>new Function(code.replace(/^import .*? from "[^"]+";\s*$/gm,"")));
+ const home=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ assert.ok(home.includes("./route-readiness.html"));
+});
+test("publicly known building names and correct advertisement mappings are not in audit screen",()=>{
+ const s=html();
+ assert.ok(!s.includes("グランフォーレひばりが丘"));
+ assert.ok(!s.includes("HIBARI TOWER"));
+ assert.ok(!s.includes("ひばりヶ丘プラザ"));
+ assert.ok(!s.includes("K03=H02"));
+ assert.ok(s.includes("独立正解率：未測定"));
+});
