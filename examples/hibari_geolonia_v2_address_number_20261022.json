@@ -1,0 +1,476 @@
+{
+  "schema_version": "app023-geolonia-v2-address-number-references-v0.1",
+  "app_id": "APP-023",
+  "cohort_id": "hibarigaoka-20261021",
+  "retrieved_on_jst": "2026-10-22",
+  "source": "Geolonia Japanese Addresses v2",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "dataset_origin": "Digital Agency address base registry processed by Geolonia",
+  "source_index_url": "https://japanese-addresses-v2.geoloniamaps.com/api/ja/%E6%9D%B1%E4%BA%AC%E9%83%BD/%E8%A5%BF%E6%9D%B1%E4%BA%AC%E5%B8%82.json",
+  "source_residence_url": "https://japanese-addresses-v2.geoloniamaps.com/api/ja/%E6%9D%B1%E4%BA%AC%E9%83%BD/%E8%A5%BF%E6%9D%B1%E4%BA%AC%E5%B8%82-%E4%BD%8F%E5%B1%85%E8%A1%A8%E7%A4%BA.txt",
+  "source_meta_updated_unix": 1735102670,
+  "source_meta_updated_utc": "2024-12-25T04:57:50.000Z",
+  "source_index_towns": 114,
+  "source_residence_record_count": 41807,
+  "source_endpoint_version": "unpinned_public_service",
+  "source_quality": "address_display_number_reference_not_surveyed_building_or_access",
+  "selected_public_address_count": 18,
+  "match_counts": {
+    "exact_number_absent": 1,
+    "address_number_unique": 13,
+    "address_only_block": 4
+  },
+  "source_data_redistribution": "attributed_18_public_target_extract_only",
+  "router_use_authorized": false,
+  "independent_accuracy": null,
+  "observed_pedestrian_routes": 0,
+  "references": [
+    {
+      "target_id": "building:K01",
+      "target_type": "public_named_building",
+      "normalized_town": "ひばりが丘3丁目",
+      "requested_block": 2,
+      "requested_number": 53,
+      "status": "exact_number_absent",
+      "block_record_count": 25,
+      "source_row_matches": 0,
+      "point": null,
+      "source_row": null,
+      "legacy_town_reference": {
+        "latitude": 35.744534,
+        "longitude": 139.535246
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "building:K02",
+      "target_type": "public_named_building",
+      "normalized_town": "谷戸町2丁目",
+      "requested_block": 1,
+      "requested_number": 24,
+      "status": "address_number_unique",
+      "block_record_count": 99,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.742368158,
+        "longitude": 139.539332906,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 1,
+        "rsdt_num": 24,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.746005,
+        "longitude": 139.541284
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "building:K03",
+      "target_type": "public_named_building",
+      "normalized_town": "谷戸町3丁目",
+      "requested_block": 27,
+      "requested_number": 24,
+      "status": "address_number_unique",
+      "block_record_count": 26,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.749908039000005,
+        "longitude": 139.5437929,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 27,
+        "rsdt_num": 24,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.746786,
+        "longitude": 139.544765
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "building:K04",
+      "target_type": "public_named_building",
+      "normalized_town": "谷戸町2丁目",
+      "requested_block": 6,
+      "requested_number": 9,
+      "status": "address_number_unique",
+      "block_record_count": 26,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.746321272,
+        "longitude": 139.540106736,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 6,
+        "rsdt_num": 9,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.746005,
+        "longitude": 139.541284
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "building:K05",
+      "target_type": "public_named_building",
+      "normalized_town": "ひばりが丘1丁目",
+      "requested_block": 16,
+      "requested_number": 17,
+      "status": "address_number_unique",
+      "block_record_count": 24,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.752760122,
+        "longitude": 139.542337389,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 16,
+        "rsdt_num": 17,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.750959,
+        "longitude": 139.542175
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "building:K06",
+      "target_type": "public_named_building",
+      "normalized_town": "谷戸町2丁目",
+      "requested_block": 8,
+      "requested_number": 27,
+      "status": "address_number_unique",
+      "block_record_count": 31,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.745290636,
+        "longitude": 139.542969894,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 8,
+        "rsdt_num": 27,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.746005,
+        "longitude": 139.541284
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "building:K07",
+      "target_type": "public_named_building",
+      "normalized_town": "住吉町3丁目",
+      "requested_block": 10,
+      "requested_number": 25,
+      "status": "address_number_unique",
+      "block_record_count": 31,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.751150167,
+        "longitude": 139.546312036,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 10,
+        "rsdt_num": 25,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.74952,
+        "longitude": 139.547868
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "station:seibu-hibarigaoka",
+      "target_type": "public_station",
+      "normalized_town": "住吉町3丁目",
+      "requested_block": 9,
+      "requested_number": 19,
+      "status": "address_number_unique",
+      "block_record_count": 42,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.751715822,
+        "longitude": 139.544906739,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 9,
+        "rsdt_num": 19,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.74952,
+        "longitude": 139.547868
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:hibarigaoka-park",
+      "target_type": "public_facility",
+      "normalized_town": "ひばりが丘1丁目",
+      "requested_block": 2,
+      "requested_number": null,
+      "status": "address_only_block",
+      "block_record_count": 26,
+      "source_row_matches": 0,
+      "point": null,
+      "source_row": null,
+      "legacy_town_reference": {
+        "latitude": 35.750959,
+        "longitude": 139.542175
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:nakahara-elementary",
+      "target_type": "public_facility",
+      "normalized_town": "ひばりが丘2丁目",
+      "requested_block": 6,
+      "requested_number": 25,
+      "status": "address_number_unique",
+      "block_record_count": 39,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.747276017,
+        "longitude": 139.53746955,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 6,
+        "rsdt_num": 25,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.747571,
+        "longitude": 139.538924
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:hibarigaoka-post-office",
+      "target_type": "public_facility",
+      "normalized_town": "谷戸町3丁目",
+      "requested_block": 25,
+      "requested_number": 3,
+      "status": "address_number_unique",
+      "block_record_count": 15,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.749635775,
+        "longitude": 139.544389117,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 25,
+        "rsdt_num": 3,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.746786,
+        "longitude": 139.544765
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:hibarigaoka-parco",
+      "target_type": "public_facility",
+      "normalized_town": "ひばりが丘1丁目",
+      "requested_block": 1,
+      "requested_number": 1,
+      "status": "address_number_unique",
+      "block_record_count": 22,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.751767586,
+        "longitude": 139.544568083,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 1,
+        "rsdt_num": 1,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.750959,
+        "longitude": 139.542175
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:yato2-elementary",
+      "target_type": "public_facility",
+      "normalized_town": "谷戸町1丁目",
+      "requested_block": 17,
+      "requested_number": 27,
+      "status": "address_number_unique",
+      "block_record_count": 43,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.741604858,
+        "longitude": 139.545607086,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 17,
+        "rsdt_num": 27,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.741477,
+        "longitude": 139.545413
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:seiyu-hibarigaoka",
+      "target_type": "public_facility",
+      "normalized_town": "住吉町3丁目",
+      "requested_block": 9,
+      "requested_number": 8,
+      "status": "address_number_unique",
+      "block_record_count": 42,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.750781508,
+        "longitude": 139.544867192,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 9,
+        "rsdt_num": 8,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.74952,
+        "longitude": 139.547868
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:yato-icho-park",
+      "target_type": "public_facility",
+      "normalized_town": "谷戸町2丁目",
+      "requested_block": 12,
+      "requested_number": null,
+      "status": "address_only_block",
+      "block_record_count": 0,
+      "source_row_matches": 0,
+      "point": null,
+      "source_row": null,
+      "legacy_town_reference": {
+        "latitude": 35.746005,
+        "longitude": 139.541284
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:yato-elementary",
+      "target_type": "public_facility",
+      "normalized_town": "緑町3丁目",
+      "requested_block": 1,
+      "requested_number": 1,
+      "status": "address_number_unique",
+      "block_record_count": 32,
+      "source_row_matches": 1,
+      "point": {
+        "latitude": 35.740893214,
+        "longitude": 139.543380781,
+        "coordinate_kind": "public_residence_display_number_reference_not_entrance"
+      },
+      "source_row": {
+        "blk_num": 1,
+        "rsdt_num": 1,
+        "rsdt_num2": ""
+      },
+      "legacy_town_reference": {
+        "latitude": 35.741017,
+        "longitude": 139.540832
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:ikoinomori-park",
+      "target_type": "public_facility",
+      "normalized_town": "緑町3丁目",
+      "requested_block": 2,
+      "requested_number": null,
+      "status": "address_only_block",
+      "block_record_count": 68,
+      "source_row_matches": 0,
+      "point": null,
+      "source_row": null,
+      "legacy_town_reference": {
+        "latitude": 35.741017,
+        "longitude": 139.540832
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    },
+    {
+      "target_id": "facility:nishitokyo:yato-seseragi-park",
+      "target_type": "public_facility",
+      "normalized_town": "谷戸町1丁目",
+      "requested_block": 22,
+      "requested_number": null,
+      "status": "address_only_block",
+      "block_record_count": 51,
+      "source_row_matches": 0,
+      "point": null,
+      "source_row": null,
+      "legacy_town_reference": {
+        "latitude": 35.741477,
+        "longitude": 139.545413
+      },
+      "entrance_verified": false,
+      "route_measured": false,
+      "can_establish_correct_building": false
+    }
+  ]
+}
