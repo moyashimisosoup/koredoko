@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>これどこ｜公開住所の街区照合</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#202b35;background:#f6f7f6}
+*{box-sizing:border-box}body{margin:0}main{max-width:940px;margin:auto;padding:26px 16px 60px}
+h1{font-size:clamp(25px,5vw,36px);margin:5px 0 10px;letter-spacing:-.04em}h2{font-size:18px}
+p{line-height:1.7;color:#586675}a{color:#286b58}
+.small{font-size:13px;color:#637477}.panel{background:#fff;border:1px solid #d7dfdb;border-radius:18px;margin:18px 0;padding:19px;box-shadow:0 2px 9px #0000000a}
+label{display:block;font-weight:700;margin:13px 0 8px}
+input{font:inherit;width:100%;padding:11px;border:1px solid #aebbb7;border-radius:9px}
+input:focus-visible,button:focus-visible{outline:3px solid #2c8774;outline-offset:2px}
+button{background:#286b58;color:#fff;border:0;border-radius:90px;padding:11px 21px;font:inherit;font-weight:700;cursor:pointer;min-height:44px}
+button:disabled{background:#98aaa4;cursor:not-allowed}
+.status{padding:12px;border-radius:12px;background:#f0f5f3;line-height:1.6;white-space:pre-wrap}
+.scroll{max-width:100%;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;text-align:left}
+th,td{border-bottom:1px solid #e2e8e4;padding:10px 12px}
+th{background:#f5f8f6}tr{vertical-align:top}
+.pill{font-size:12px;border:1px solid #bdd1c9;border-radius:20px;padding:4px 9px;display:inline-block}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:620px){main{padding:20px 12px 45px}.panel{padding:13px}table{font-size:12px}}
+</style>
+</head>
+<body><main>
+<p class="small"><a href="./index.html">← これどこ</a> / APP-023・研究用PoC</p>
+<h1>公開住所の街区照合</h1>
+<p>公式の「街区レベル位置参照情報」を読み込んで、公開集合住宅7件・駅1件・公開施設10件の住所と街区代表点を照合します。<strong>地図上の建物入口の特定や、歩行経路の確定は行いません。</strong></p>
+<section class="panel">
+<h2>1. CSVを選択</h2>
+<p class="small"><a href="https://nlftp.mlit.go.jp/isj/agreement.html" target="_blank" rel="noopener noreferrer">国土交通省の利用約款</a>を確認・同意したうえで、公式ダウンロードした東京都の街区レベルCSVを選んでください。大字・町丁目データではありません。ファイルはこのブラウザ内だけで処理され、サーバーにアップロードしません。</p>
+<label for="csv">街区レベル位置参照情報 CSV（Shift-JIS）</label>
+<input id="csv" type="file" accept=".csv,text/csv">
+<label for="year">整備年度（西暦）</label>
+<input id="year" type="number" min="2000" max="2100" placeholder="例：2025">
+<div class="actions" style="margin-top:16px"><button type="button" id="run">照合する</button><button type="button" id="save" disabled>結果JSONを保存</button></div>
+<p class="small">参照点の形式・出典を点検する画面です。CSVを選択するまでは一切計算せず、外部APIにもアクセスしません。</p>
+</section>
+<section class="panel" aria-live="polite">
+<h2>2. 照合結果</h2><div class="status" id="status" role="status">CSV未選択。実データの検証はまだ行っていません。</div>
+<div class="scroll" id="resultArea" hidden>
+<table><thead><tr><th>公開対象ID</th><th>参照点の状態</th><th>候補数</th><th>入口確認</th></tr></thead><tbody id="rows"></tbody></table>
+</div>
+</section>
+<p class="small">出典：街区レベル位置参照情報 国土交通省。利用時には年度・元ファイル名・加工内容を明示してください。街区代表点は住棟・店舗・公園・学校・駅の正式な出入口ではありません。</p>
+</main>
+<script type="module">
+import {parseIsjBlocks,matchPublicBlockAddresses} from "./src/hibari_offline_isj_match.mjs";
+const $=id=>document.getElementById(id);let last=null;
+$("run").addEventListener("click",async()=>{
+ const file=$("csv").files[0],year=Number($("year").value);
+ if(!file){$("status").textContent="CSVファイルを選択してください。";return;}
+ if(!Number.isInteger(year)||year<2000||year>2100){$("status").textContent="正しい整備年度を入力してください。";return;}
+ if(file.size>100_000_000){$("status").textContent="100MBを超えるファイルには対応していません。";return;}
+ $("run").disabled=true;$("save").disabled=true;$("resultArea").hidden=true;
+ $("status").textContent="ファイルを確認中…";
+ try{
+  const bytes=await file.arrayBuffer();
+  const csv=new TextDecoder("shift_jis",{fatal:true}).decode(bytes);
+  const dataset=parseIsjBlocks(csv);
+  const names=["hibari_public_building_addresses_20261021.json","hibari_poi_identities_20261021.json"];
+  const documents=await Promise.all(names.map(async name=>{
+   const resp=await fetch("./examples/"+name,{cache:"no-store"});
+   if(!resp.ok)throw Error("確認資料の読込失敗："+name);
+   return resp.json();
+  }));
+  last=matchPublicBlockAddresses(documents[0],documents[1],dataset,{datasetYear:year,fileName:file.name});
+  $("status").textContent="18公開対象のうち街区代表点が見つかったもの："+last.with_block_reference+"件。実歩行経路0本。入口確認0件。住所代表点は必ず手動点検が必要です。";
+  $("rows").replaceChildren();
+  for(const r of last.results){
+   const tr=document.createElement("tr");
+   for(const t of [r.key,r.status,String(r.reference_points.length),"未確認"]){
+    const td=document.createElement("td");td.textContent=t;tr.append(td);
+   }
+   $("rows").append(tr);
+  }
+  $("resultArea").hidden=false;$("save").disabled=false;
+ }catch(e){last=null;$("status").textContent="照合できませんでした："+String(e.message||e);}
+ finally{$("run").disabled=false;}
+});
+$("save").addEventListener("click",()=>{
+ if(!last)return;
+ const url=URL.createObjectURL(new Blob([JSON.stringify(last,null,2)],{type:"application/json"}));
+ const a=document.createElement("a");a.href=url;a.download="app023-isj-reference-review.json";a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),5000);
+});
+</script></body></html>
