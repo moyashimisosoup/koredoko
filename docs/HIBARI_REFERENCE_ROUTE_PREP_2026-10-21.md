@@ -60,10 +60,16 @@ node scripts/hibari_geocode_probe.mjs
 # まず2件だけ取得。実行者が利用条件を再確認してから実施
 node scripts/hibari_geocode_probe.mjs --live --limit=2
 # まとめて試す場合も並列化せず逐次、リトライなし
-node scripts/hibari_geocode_probe.mjs --live --limit=13
+node scripts/hibari_geocode_probe.mjs --live --offset=2 --limit=2
 ```
 
 上の`--live`コマンドは、**現時点の本セッションでは実行していない**。JSONをstdoutに出力するのみで、勝手なGitHub更新や経路スコア変更はしない。
+
+## 5B. ローカル不要の手動GitHub Actions
+
+[`.github/workflows/hibari-gsi-manual-probe.yml`](../.github/workflows/hibari-gsi-manual-probe.yml)を追加。`workflow_dispatch`で許可された開始番号（0・2・4・6・8・10・12）を選び、1回あたり1〜2件の**公表建物／駅／公共施設の住所検索**を実行し、JSONを保持7日のGitHub Actions artifactに置く。APIが403/429を返した場合には停止し、取得できない点を架空の値で埋めない。CI実行時の自動呼出しはない。
+
+GitHubの手動ワークフローは通常、ワークフローファイルがデフォルトブランチに存在することがUI実行の要件になるため、**現在のDraft PR #28に置いただけでは手動実行が可能になったと主張しない**。新規ワークフローの有効化・PR統合・取得の実行は別々のゲートで検証する。
 
 ## 6. 次のゲート
 
