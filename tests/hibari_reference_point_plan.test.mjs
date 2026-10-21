@@ -9,7 +9,7 @@ const p=()=>file("hibari_poi_identities_20261021.json");
 const b=()=>file("hibari_public_building_addresses_20261021.json");
 test("seven published named building reference addresses and one station all have citation URLs",()=>{
  const x=b();assert.equal(x.buildings.length,7);
- assert.deepEqual(x.buildings.map(y=>y.candidate_id),["H01","H02","H03","H04","H05","H06","H07"]);
+ assert.deepEqual(x.buildings.map(y=>y.candidate_id),["K01","K02","K03","K04","K05","K06","K07"]);
  assert.ok(x.buildings.every(y=>y.public_building_address.startsWith("東京都西東京市")&&
     y.source_url.startsWith("https://")&&y.coordinate===null&&y.entrance_status==="unverified"));
  assert.ok(x.station.source_url.includes("seiburailway.jp"));
@@ -63,6 +63,7 @@ test("public answer location evidence never silently overwrites source advertise
  const ads=a(),plan=buildHibariRouteCoverage(ads,p(),b());
  assert.deepEqual(ads.advertisements.map(x=>x.station.walk_minutes),[5,4,2,11,18,10,18]);
  assert.ok(!JSON.stringify(plan).includes("ひばりヶ丘プラザ"));
+ assert.ok(!plan.routes.some(x=>x.candidate_id.startsWith("H")));
  assert.ok(!JSON.stringify(plan).includes("谷戸町3丁目27番24号"));
  assert.ok(plan.routes.every(x=>!("correct_advertisement_id" in x)));
 });
