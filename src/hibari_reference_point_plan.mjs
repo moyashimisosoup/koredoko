@@ -1,3 +1,4 @@
+import {parseNishitokyoBlock} from "./hibari_offline_isj_match.mjs";
 /** APP-023: location evidence collection plan, not a ranking engine.
  * Address-geocoded points are reference points ONLY. A facility identity, an
  * address point, or a route request is never a measured/surveyed entrance.
@@ -40,20 +41,29 @@ export function buildHibariGeocodeManifest(buildings,pois,{directOnly=true}={}){
  * array returned by GSI is a candidate set, not independently surveyed doors. */
 export function interpretGsiAddressFeatures(request,features){
  if(!request?.query_address||!request?.key)fail("Unknown request");
- if(!Array.isArray(features))return {key:request.key,status:"invalid_response",candidates:[],geocoded:false,access_point_verified:false};
- const options=[];
+ if(!Array.isArray(features))
+  return {key:request.key,status:"invalid_response",candidates:[],geocoded:false,access_point_verified:false,route_input_ready:false};
+ const expected=parseNishitokyoBlock(request.query_address);
+ if(!expected)
+  return {key:request.key,status:"input_block_unparseable",candidates:[],geocoded:false,access_point_verified:false,route_input_ready:false};
+ const matches=[];let coarse_or_other=0;
  for(const feature of features.slice(0,25)){
   const coords=feature?.geometry?.coordinates,title=feature?.properties?.title;
   if(!Array.isArray(coords)||coords.length<2||!isNumber(coords[0])||!isNumber(coords[1])||
      coords[0]<122||coords[0]>154||coords[1]<20||coords[1]>46||!okString(title))continue;
-  // Municipal boundary guard, not a matching threshold.
-  if(!normalize(title).includes("西東京市"))continue;
-  options.push({lon:coords[0],lat:coords[1],resolved_title:title,coordinate_kind:"GSI_address_search_reference"});
+  const observed=parseNishitokyoBlock(title);
+  if(!observed||observed.town!==expected.town||observed.chome!==expected.chome||
+     observed.block!==expected.block){coarse_or_other++;continue;}
+  matches.push({lon:coords[0],lat:coords[1],resolved_title:title,
+   matched_block:expected.block,
+   coordinate_kind:"GSI_address_search_block_reference_not_entrance"});
  }
- return {key:request.key,status:options.length?"candidate_points_need_manual_review":"no_valid_local_reference",
-  candidates:options,geocoded:options.length>0,
+ return {key:request.key,status:matches.length>1?"multiple_block_references_review_needed":
+   matches.length===1?"candidate_points_need_manual_review":
+   coarse_or_other>0?"no_matching_street_block":"no_valid_local_reference",
+  candidates:matches,geocoded:matches.length>0,
   access_point_verified:false,route_input_ready:false,
-  notice:"No building/station/park/school entrance implied by a geocoded address."};
+  notice:"Municipality or district-only results are rejected. A matching block is a reference point, not an access entrance."};
 }
 
 /** Number of UNIQUE destination comparisons, not route API results. All source
