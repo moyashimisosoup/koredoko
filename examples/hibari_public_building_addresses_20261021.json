@@ -11,7 +11,7 @@
   "facility_ledger": "examples/hibari_poi_identities_20261021.json",
   "buildings": [
     {
-      "candidate_id": "KK1",
+      "candidate_id": "K01",
       "public_building_name": "プレミストひばりが丘",
       "public_building_address": "東京都西東京市ひばりが丘3丁目2番53号",
       "source_url": "https://sumikae.ttfuhan.co.jp/database/real_estate/daiwahouse/city/707.html",
@@ -24,7 +24,7 @@
       "advertisement_as_ground_truth": "not_a_scoring_feature"
     },
     {
-      "candidate_id": "KK2",
+      "candidate_id": "K02",
       "public_building_name": "グランジオ武蔵野",
       "public_building_address": "東京都西東京市谷戸町2丁目1番24号",
       "source_url": "https://ggio-musashino.mansion-press.com/outline/",
@@ -37,7 +37,7 @@
       "advertisement_as_ground_truth": "not_a_scoring_feature"
     },
     {
-      "candidate_id": "KK3",
+      "candidate_id": "K03",
       "public_building_name": "ひばりヶ丘プラザ",
       "public_building_address": "東京都西東京市谷戸町3丁目27番24号",
       "source_url": "https://www.city.nishitokyo.lg.jp/kurasi/jutaku/index/72311420230714134133611.files/kannrikeikaku_251119.pdf",
@@ -50,7 +50,7 @@
       "advertisement_as_ground_truth": "not_a_scoring_feature"
     },
     {
-      "candidate_id": "KK4",
+      "candidate_id": "K04",
       "public_building_name": "ザ・レジデンスひばりが丘",
       "public_building_address": "東京都西東京市谷戸町2丁目6番9号",
       "source_url": "https://d2aeq1ide5ayuy.cloudfront.net/building/TO00117127",
@@ -63,7 +63,7 @@
       "advertisement_as_ground_truth": "not_a_scoring_feature"
     },
     {
-      "candidate_id": "KK5",
+      "candidate_id": "K05",
       "public_building_name": "グランフォーレひばりが丘",
       "public_building_address": "東京都西東京市ひばりが丘1丁目16番17号",
       "source_url": "https://www.sumai1.com/buyers/mansion/library/mns_29235",
@@ -76,7 +76,7 @@
       "advertisement_as_ground_truth": "not_a_scoring_feature"
     },
     {
-      "candidate_id": "KK6",
+      "candidate_id": "K06",
       "public_building_name": "ヌーベルヴィラージュひばり",
       "public_building_address": "東京都西東京市谷戸町2丁目8番27号",
       "source_url": "https://library.smtrc.jp/mansion/32107.html",
@@ -89,7 +89,7 @@
       "advertisement_as_ground_truth": "not_a_scoring_feature"
     },
     {
-      "candidate_id": "KK7",
+      "candidate_id": "K07",
       "public_building_name": "HIBARI TOWER",
       "public_building_address": "東京都西東京市住吉町3丁目10番25号",
       "source_url": "https://d2aeq1ide5ayuy.cloudfront.net/building/TO00040895",
