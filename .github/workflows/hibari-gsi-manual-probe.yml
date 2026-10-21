@@ -1,0 +1,58 @@
+name: APP-023 manual GSI reference probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      offset:
+        description: "Which public address index to start with (2 requests per batch)"
+        required: true
+        type: choice
+        default: "0"
+        options:
+          - "0"
+          - "2"
+          - "4"
+          - "6"
+          - "8"
+          - "10"
+          - "12"
+      limit:
+        description: "Maximum sequential GSI queries for this manual run"
+        required: true
+        type: choice
+        default: "2"
+        options:
+          - "1"
+          - "2"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Fetch at most two published addresses (never routes)
+        shell: bash
+        env:
+          PROBE_OFFSET: ${{ inputs.offset }}
+          PROBE_LIMIT: ${{ inputs.limit }}
+        run: |
+          set -euo pipefail
+          case "$PROBE_OFFSET" in 0|2|4|6|8|10|12) ;; *) exit 1 ;; esac
+          case "$PROBE_LIMIT" in 1|2) ;; *) exit 1 ;; esac
+          mkdir -p artifacts
+          node scripts/hibari_geocode_probe.mjs --live "--offset=$PROBE_OFFSET" "--limit=$PROBE_LIMIT" \
+            > "artifacts/app023_gsi_probe_${PROBE_OFFSET}_${PROBE_LIMIT}.json"
+          node -e 'const fs=require("node:fs");const f=fs.readdirSync("artifacts")[0];const o=JSON.parse(fs.readFileSync("artifacts/"+f));if(o.scoring_ready!==false||o.observed_pedestrian_routes!==0||o.verified_building_or_facility_entrances!==0)process.exit(2);console.log("Collected public-address reference results for manual review only:",o.attempted)'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app023-gsi-manual-${{ inputs.offset }}-${{ inputs.limit }}
+          path: artifacts/
+          retention-days: 7
+          if-no-files-found: error
