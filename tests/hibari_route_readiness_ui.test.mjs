@@ -50,3 +50,13 @@ test("two actual exploratory route outputs are displayed but excluded from prima
  assert.ok(s.includes("品質確認済み："));
  assert.ok(s.includes("上の採点用記録数には加えません"));
 });
+
+test("measured route geometry offsets appear as reference-point differences, not surveyed entrance positions",()=>{
+ const html=readFileSync(new URL("../route-readiness.html",import.meta.url),"utf8");
+ assert.ok(html.includes("hibari_v2_route_shape_offsets_20261022.json"));
+ assert.ok(html.includes("auditHibariPilotRouteShapeOffsets"));
+ assert.ok(html.includes("start_reference_to_geometry_m"));
+ assert.ok(html.includes("station_reference_to_geometry_m"));
+ assert.ok(html.includes("これは正式な道路吸着距離や建物入口・駅出口の位置精度を示しません"));
+ assert.ok(html.includes("品質確認済み"));
+});
