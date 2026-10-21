@@ -39,3 +39,14 @@ test("publicly known building names and correct advertisement mappings are not i
  assert.ok(!s.includes("K03=H02"));
  assert.ok(s.includes("独立正解率：未測定"));
 });
+
+test("two actual exploratory route outputs are displayed but excluded from primary quality-qualified observations",()=>{
+ const html=()=>readFileSync(new URL("../route-readiness.html",import.meta.url),"utf8");
+ const s=html();
+ assert.ok(s.includes('id="pilotStatus"'));
+ assert.ok(s.includes('id="pilotRows"'));
+ assert.ok(s.includes("hibari_v2_exploratory_walks_20261022.json"));
+ assert.ok(s.includes("summarizeHibariReferenceWalkPilot"));
+ assert.ok(s.includes("品質確認済み："));
+ assert.ok(s.includes("上の採点用記録数には加えません"));
+});
