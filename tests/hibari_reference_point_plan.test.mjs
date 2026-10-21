@@ -29,9 +29,9 @@ test("all registry facilities expand to 18 reference requests without changing s
 test("GSI reference search permits ambiguous block results only as manual-review points",()=>{
  const r=buildHibariGeocodeManifest(b(),p()).requests[0];
  const ans=interpretGsiAddressFeatures(r,[{type:"Feature",geometry:{coordinates:[139.54,35.75]},
- properties:{title:"東京都西東京市ひばりが丘一丁目"}}]);
+ properties:{title:"東京都西東京市ひばりが丘三丁目２番"}}]);
  assert.equal(ans.candidates.length,1);
- assert.equal(ans.candidates[0].coordinate_kind,"GSI_address_search_reference");
+ assert.equal(ans.candidates[0].coordinate_kind,"GSI_address_search_block_reference_not_entrance");
  assert.equal(ans.status,"candidate_points_need_manual_review");
  assert.equal(ans.access_point_verified,false);
  assert.equal(ans.route_input_ready,false);
@@ -42,6 +42,22 @@ test("invalid coordinates or different municipality are not mistaken for reviewe
   {geometry:{coordinates:[139.56,35.75]},properties:{title:"東京都練馬区"}}];
  assert.equal(interpretGsiAddressFeatures(r,resp).candidates.length,0);
  assert.equal(interpretGsiAddressFeatures(r,null).status,"invalid_response");
+});
+test("GSI response in the wrong block is rejected, even within the same city and neighborhood",()=>{
+ const r=buildHibariGeocodeManifest(b(),p()).requests[0];
+ const wrong=[{geometry:{coordinates:[139.54,35.75]},properties:{title:"東京都西東京市ひばりが丘三丁目３番"}}];
+ const x=interpretGsiAddressFeatures(r,wrong);
+ assert.equal(x.status,"no_matching_street_block");
+ assert.equal(x.candidates.length,0);
+ assert.equal(x.geocoded,false);
+});
+test("multiple exact-block GSI results remain ambiguous and never routable",()=>{
+ const r=buildHibariGeocodeManifest(b(),p()).requests[0];
+ const exact={geometry:{coordinates:[139.54,35.75]},properties:{title:"東京都西東京市ひばりが丘三丁目２番"}};
+ const x=interpretGsiAddressFeatures(r,[exact,exact]);
+ assert.equal(x.status,"multiple_block_references_review_needed");
+ assert.equal(x.candidates.length,2);
+ assert.equal(x.route_input_ready,false);
 });
 test("first cohort routing plan has exactly 42 separate station and facility combinations but no measured distances",()=>{
  const c=buildHibariRouteCoverage(a(),p(),b());
