@@ -11,6 +11,7 @@ const plan=()=>buildHibariRouteCoverage(
 const synthetic=(pair)=>({
  candidate_id:pair.candidate_id,destination_key:pair.destination_key,
  travel_mode:"pedestrian",meters:420,snap_start_m:4,snap_end_m:6,
+ origin_point:{lat:35.7502,lon:139.54},destination_point:{lat:35.752,lon:139.545},
  record_class:"synthetic_test_only",engine:"synthetic_only",
  route_dataset_revision:"unit-test-not-a-graph",
  route_source_url:"https://example.org/SYNTHETIC_NOT_OBSERVED",
@@ -47,6 +48,8 @@ test("documented example-shaped public reference route is measured but cannot sc
  route_source_url:"https://valhalla1.openstreetmap.de/route"});
  const a=auditHibariRouteObservations(p,[o]);
  assert.equal(a.measured_route_pairs,1);
+ assert.equal(a.independently_verified_measured_pairs,0);
+ assert.deepEqual(a.rows[1].origin_point,{lat:35.7502,lon:139.54});
  assert.equal(a.entrance_review_needed_pairs,1);
  assert.equal(a.potentially_scoring_eligible_pairs,0);
  assert.equal(a.rows[1].status,"observed_reference_route_not_entrance");
@@ -92,6 +95,8 @@ test("source URL, timestamp and network snap distance are mandatory",()=>{
   const bad={...o,[field]:null};assert.throws(()=>auditHibariRouteObservations(p,[bad]),/Invalid route evidence/);
  }
  assert.throws(()=>auditHibariRouteObservations(p,[{...o,snap_start_m:NaN}]),/Invalid route evidence/);
+ assert.throws(()=>auditHibariRouteObservations(p,[{...o,origin_point:null}]),/Invalid route evidence/);
+ assert.throws(()=>auditHibariRouteObservations(p,[{...o,origin_point:{lat:50,lon:139.54}}]),/Invalid route evidence/);
  assert.throws(()=>auditHibariRouteObservations(p,[{...o,travel_mode:"driving"}]),/Invalid route evidence/);
 });
 test("cannot modify frozen route planned universe via observations",()=>{
