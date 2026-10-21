@@ -1,0 +1,50 @@
+{
+  "schema_version": "app023-hibari-public-access-evidence-v0.1",
+  "app_id": "APP-023",
+  "recorded_on_jst": "2026-10-22",
+  "public_station": {
+    "station_id": "station:seibu-hibarigaoka",
+    "official_name": "ひばりヶ丘駅",
+    "operator": "西武鉄道",
+    "official_information_url": "https://www.seiburailway.jp/railway/station/hibarigaoka/",
+    "official_renewal_url": "https://www.seiburailway.jp/safety/stationrenewal/hibarigaoka/",
+    "official_public_exit_sides": [
+      "北口",
+      "南口"
+    ],
+    "source_claim": "Official railway operator states North and South exit escalator renewal; two exit sides exist, but precise door locations, pedestrian route endpoints and station-side shortest exit have not been validated.",
+    "public_exit_coordinates": null,
+    "gate_coordinates": null,
+    "station_address_number_reference_from": "examples/hibari_geolonia_v2_address_number_20261022.json",
+    "reference_point_represents_access": false,
+    "valid_station_exit_for_routing": false,
+    "station_exit_choice": "unresolved"
+  },
+  "building_access_review": [
+    {
+      "candidate_id": "K03",
+      "public_building_source_url": "https://library.smtrc.jp/mansion/563946.html",
+      "source_claim": "Publicly named apartment building and address corroborated by real estate listing; listing warns map icon may differ from physical location.",
+      "actual_pedestrian_access_point": null,
+      "access_point_source_status": "no_independent_entrance_coordinate",
+      "qualifies_for_rank": false
+    },
+    {
+      "candidate_id": "K05",
+      "public_building_source_url": "https://www.sumai1.com/buyers/mansion/library/mns_29235",
+      "source_claim": "Publicly named apartment building and published location, not an officially measured pedestrian entrance.",
+      "actual_pedestrian_access_point": null,
+      "access_point_source_status": "no_independent_entrance_coordinate",
+      "qualifies_for_rank": false
+    }
+  ],
+  "policy": {
+    "reference_point_source": "Geolonia v2 number-based coordinate, Digital Agency ABR derived",
+    "geometry_source": "Valhalla public demo returned route shape polyline6",
+    "geometric_offsets_are": "input public address-number reference to first or last route polyline vertex",
+    "station_official_exit_precision": "named north/south only, coordinates and direction-specific shortest route not independently verified",
+    "formal_route_certification": false,
+    "blind_accuracy_available": false,
+    "public_building_only": true
+  }
+}
