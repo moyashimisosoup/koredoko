@@ -4,6 +4,8 @@
  * Never fabricate routing measurements, exact exits or statistical accuracy.
  */
 const finite=n=>typeof n==="number"&&Number.isFinite(n);
+// A broad Nishitokyo-region sanity fence, NOT an entrance-accuracy assertion.
+const publicPoint=p=>p&&finite(p.lat)&&finite(p.lon)&&p.lat>=35.5&&p.lat<=35.95&&p.lon>=139.35&&p.lon<=139.75;
 const str=s=>typeof s==="string"&&s.trim().length>0;
 const url=s=>typeof s==="string"&&/^https:\/\/[^/\s?#]+(?:[/?#]|$)/.test(s);
 const validTimestamp=s=>str(s)&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)$/.test(s)&&
@@ -14,6 +16,7 @@ function validateObservation(o,planned){
  if(!o||!str(o.candidate_id)||!str(o.destination_key)||!planned.has(key(o.candidate_id,o.destination_key))||
     o.travel_mode!=="pedestrian"||!finite(o.meters)||o.meters<=0||o.meters>30000||
     !finite(o.snap_start_m)||!finite(o.snap_end_m)||o.snap_start_m<0||o.snap_end_m<0||
+    !publicPoint(o.origin_point)||!publicPoint(o.destination_point)||
     o.snap_start_m>3000||o.snap_end_m>3000||
     !["measured_public_route","synthetic_test_only"].includes(o.record_class)||
     !str(o.engine)||!str(o.route_dataset_revision)||!url(o.route_source_url)||
@@ -74,7 +77,9 @@ export function auditHibariRouteObservations(plan,observations,{snapWarnM=25}={}
    meters:o.meters,snap_start_m:o.snap_start_m,snap_end_m:o.snap_end_m,
    observed:!synthetic,record_class:o.record_class,route_source_url:o.route_source_url,
    route_dataset_revision:o.route_dataset_revision,engine:o.engine,
-   observed_at:o.observed_at,origin_point_kind:o.origin_point_kind,
+   observed_at:o.observed_at,origin_point:o.origin_point,destination_point:o.destination_point,
+   origin_point_source_url:o.origin_point_source_url,destination_point_source_url:o.destination_point_source_url,
+   origin_point_kind:o.origin_point_kind,
    destination_point_kind:o.destination_point_kind,quality_flags:flags,
    eligible_for_scoring:referenceSafe&&entrances,
    confirmed_identity:false};
@@ -85,13 +90,14 @@ export function auditHibariRouteObservations(plan,observations,{snapWarnM=25}={}
  return {schema_version:"app023-route-observation-audit-v0.1",
   cohort_id:plan.cohort_id,public_candidate_count:plan.candidate_count,
   planned_route_pairs:plan.expected_route_pairs,
-  measured_route_pairs:measured,synthetic_test_pairs:synthetic,
+  measured_route_pairs:measured,submitted_route_claims:measured,
+  independently_verified_measured_pairs:0,synthetic_test_pairs:synthetic,
   missing_route_pairs:rows.length-measured-synthetic,
   entrance_review_needed_pairs:measured-reviewed,
   potentially_scoring_eligible_pairs:reviewed,
   fully_observed:measured===rows.length,
   ready_for_blind_accuracy:false,
   independent_accuracy:null,can_identify_private_home:false,
-  disclaimer:"Route observations between reference points are NOT building/entrance proofs. Ranking requires separately frozen candidate and advertising inputs.",
+  disclaimer:"Submitted URLs, distance and coordinates are NOT independently verified by this audit. Route observations between reference points are NOT building/entrance proofs. Ranking requires separately frozen candidate and advertising inputs.",
   rows};
 }
