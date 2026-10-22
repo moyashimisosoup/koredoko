@@ -63,6 +63,8 @@ function searchRecord(v,name,center){
  */
 export function vetOpenPoiSearchResponse(payload,name,center,{referenceLocation=null,referencePrecision=null}={}){
  if(!payload||!Array.isArray(payload.results)||!withinJapan(center))throw Error("Invalid OpenPOI response");
+ if(referenceLocation!==null&&(referencePrecision!=="address_number_reference"||!withinJapan(referenceLocation)))
+  throw Error("Independent public address-number reference required");
  const valid=payload.results.map(x=>searchRecord(x,name,center)).filter(Boolean);
  if(valid.length===0)return {status:"no_exact_regional_match",match:null,matched_count:0};
  const groups=[];
@@ -76,8 +78,6 @@ export function vetOpenPoiSearchResponse(payload,name,center,{referenceLocation=
  // property or residents' coordinates; those never reach this function.
  let chosen=groups.length===1?groups[0]:null,matchBasis="exact_name_plus_region";
  if(referenceLocation!==null){
-  if(referencePrecision!=="address_number_reference"||!withinJapan(referenceLocation))
-   throw Error("Independent public address-number reference required");
   const near=groups.filter(g=>g.some(x=>meters(x.location,referenceLocation)<=100));
   if(near.length!==1)return {status:near.length===0?"reference_coordinate_conflict":
    "ambiguous_same_named_locations",match:null,matched_count:valid.length};
