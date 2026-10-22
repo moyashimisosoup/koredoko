@@ -30,7 +30,7 @@ function targetFor(publicId,buildings,pois){
    source_url:x.source_url,point_precision:"public_address_number_not_facility_entrance",
    category:x.category,source_role:"official_named_poi_reference"};
 }
-export function buildHibariSameRegionMapReview(bridge,refs,buildings,pois,towns){
+export function buildHibariSameRegionMapReview(bridge,refs,buildings,pois,towns,{focusFactor=1.3}={}){
  if(bridge?.schema_version!=="app023-ad-conditions-bridge-v0.1"||
     bridge.scope!=="public_named_apartment_buildings_only"||
     bridge.source?.ground_truth_available_to_matcher!==false||
@@ -95,7 +95,7 @@ export function buildHibariSameRegionMapReview(bridge,refs,buildings,pois,towns)
  });
  const exploration=buildHibariExploratoryOrder(conditions,
   buildings.buildings.map(b=>({id:b.candidate_id})),
-  rows.map(r=>({id:r.id,coordinates:r.coordinates,quality:r.quality})));
+  rows.map(r=>({id:r.id,coordinates:r.coordinates,quality:r.quality})),{focusFactor});
  const explored=new Map(exploration.candidates.map(x=>[x.candidate_id,x]));
  const candidates=buildings.buildings.map(b=>{
   const id=b.candidate_id,map=mapPoints.find(p=>p.id===id),e=explored.get(id);
