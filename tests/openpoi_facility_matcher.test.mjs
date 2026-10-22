@@ -103,3 +103,9 @@ test("without regional information even exact same-name record must not auto-mat
  assert.equal(result.state,"regional_context_missing");
  assert.equal(result.parsed.constraints.length,0);
 });
+
+test("OpenPOI level 3 (town/chome) record remains coarse, never promoted to an exact facility coordinate",()=>{
+ const v=vetOpenPoiSearchResponse({results:[{...exact,level:3}]},exact.name,center);
+ assert.equal(v.status,"single_regional_match");
+ assert.equal(v.match.precision,"town_chome_reference");
+});
