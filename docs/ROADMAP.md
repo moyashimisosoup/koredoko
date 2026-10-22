@@ -32,6 +32,10 @@
 
 [正式な公開・読戻しCHECKPOINT](APP023_PAGES_PREVIEW_SETUP_2026-10-22.md)。利用者がPagesのSourceを**GitHub Actions**に設定し、`preview/app023-iphone-20261022`の静的HTML/JS/JSONを専用ワークフローから公開した。最初の環境制限による失敗を`app023-iphone-preview`環境へ分離して解消し、[デプロイ成功 #39754750949](https://github.com/moyashimisosoup/koredoko/actions/runs/39754750949)、[トップ・操作画面・JS・JSONの実HTTP検収 #39754979967](https://github.com/moyashimisosoup/koredoko/actions/runs/39754979967)で全3ジョブ成功。公開操作画面：https://moyashimisosoup.github.io/koredoko/hibari-same-region.html 。**GitHub Pagesの配信は確認済み、iPhone Safariの操作は未確認**。main・PR #28の統合なし、秘密情報の公開なし。これをP5の「Web公開・配信確認」マイルストーンとして記録するが、**P5工程全体は未完了**。現行P0～P5の完了工程は1/6のまま。次はiPhone実機の最小操作1巡を実施。
 
+## OpenPOI APIで未登録施設を地域照合（2026-10-22）
+
+[OpenPOI連携CHECKPOINT](APP023_OPENPOI_FACILITY_MATCHING_2026-10-22.md)。施設情報に特化した[OpenPOI API](https://docs.openpoiapi.com/)の正式仕様を確認。**施設名だけ／既知地域中心座標**で`GET /v1/search`を利用し、既存辞書にない公開POIを最大3件照合するアダプタ`src/openpoi_facility_matcher.mjs`を追加。厳密名称・近隣6km・同名の別地点複数なら保留、施設の入口としては扱わない。取得した`source/licenses/attributions`を保持し、町丁目精度の結果や未検証のPOI座標は区域算出で低い暫定重み・広めの誤差を使う。**API失敗・429/CORS・地域不明でも既知施設の区域計算を止めない**。シンプルな[area.html](../area.html)は入力1つ・実行ボタン1つのままAPI補助検索を統合し、送信範囲とOpenPOI出典を表示。モックのネットワーク回帰はCIで実行。本番API応答、実機iPhone Safari、Pagesへの新版反映は**未確認・未実施**。次は実APIの少量照合と、実地図上で候補区域を見られる操作性検証。既知の7物件順位付け、駅出口全件精査に戻らない。
+
 ## 全体計画
 
 進捗率は各工程の出口条件の達成数 ÷ 全工程数で算出。実作業の進捗予測や位置特定の精度ではありません。既存の研究記録上、P0のみ出口完了で **1/6 = 17%**。このレポジトリでは初期化後に再検証すること。
