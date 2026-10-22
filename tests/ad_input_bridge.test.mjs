@@ -127,6 +127,7 @@ test("a nearby but different named station is not mapped to the fixed Hibarigaok
  s.listing.stations[0].name="ひばりヶ丘東駅";
  const quote="ひばりヶ丘東駅徒歩7分";
  s.evidence[0].verbatim_excerpt=quote;
+ s.evidence=[s.evidence[0]];
  const r=bridgeReviewedJson(JSON.stringify(s),quote,pois());
  assert.equal(r.conditions.length,0);
  assert.ok(r.withheld.some(x=>x.reason==="station_not_in_fixed_public_registry"));
