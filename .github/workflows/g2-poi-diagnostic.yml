@@ -1,8 +1,7 @@
 name: APP-023 G2 single live POI-name diagnosis
+# Diagnostic already captured in run 39796355064.
+# Never repeat an external POI probe on every PR revision.
 on:
-  pull_request:
-    paths:
-      - scripts/g2_live_openpoi_inspect.mjs
   workflow_dispatch:
 permissions:
   contents: read
