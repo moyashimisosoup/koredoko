@@ -67,13 +67,20 @@ export function parseAreaInput(text,landmarks,towns=[]){
   if(!m.location){
    ignored.push({line:i+1,reason:"施設の参照座標がありません"});continue;
   }
-  // Do not reject contradictory ad fields. Mark as inconsistency instead.
+  // Contradictory advertised meters/minutes must NOT narrow the search.
+  // Keep verbatim excerpt in ignored evidence for user review.
   const contradictory=d!==null&&minute!==null&&Math.ceil(d/80)!==minute;
+  if(contradictory){
+   ignored.push({line:i+1,reason:"距離と徒歩分数が不整合（計算から保留）",quote:line,
+    stated_meters:d,stated_minutes:minute});
+   continue;
+  }
   const prev=constraints.find(c=>c.landmark_id===m.id);
   if(prev){ignored.push({line:i+1,reason:"同じ施設の重複する条件は要確認"});continue;}
   constraints.push({landmark_id:m.id,label:m.name,location:m.location,precision:m.precision,
-    stated_meters:d,stated_minutes:minute,metric:d!==null?"distance":"walking_minutes",
-    quote:line,source_line:i+1,conflicting_advertisement_numbers:contradictory});
+    stated_meters:d,stated_minutes:minute,
+    metric:d===null?"walking_minutes":minute===null?"distance_mode_unknown":"distance_with_walk",
+    quote:line,source_line:i+1,conflicting_advertisement_numbers:false});
  }
  // A partial address such as 谷戸町二丁目 is a soft prior. Town centroids
  // are NOT administrative boundaries and must NOT hard-clip the output.
@@ -101,8 +108,9 @@ function roadBand(c){
   // use loose discrepancy scale rather than a hard equality ring.
   const d=c.stated_meters;
   return {lo:Math.max(0,d-60),hi:d+60,
-   sigma:c.precision==="town_chome_reference"?420:
-    c.precision==="openpoi_public_poi_reference_unverified_entrance"?330:180};
+   sigma:(c.precision==="town_chome_reference"?420:
+    c.precision==="openpoi_public_poi_reference_unverified_entrance"?330:180)+
+    (c.metric==="distance_mode_unknown"?240:0)};
  }
  const n=c.stated_minutes;
  // Official advertised minutes are CEIL(road distance/80m);
@@ -113,8 +121,11 @@ function roadBand(c){
 function softFit(d,c){
  const r=roadBand(c),modeled=d*1.3;
  const err=modeled<r.lo?r.lo-modeled:modeled>r.hi?modeled-r.hi:0;
- const dataQuality=c.precision==="town_chome_reference"?0.25:
+ const locationQuality=c.precision==="town_chome_reference"?0.25:
   c.precision==="openpoi_public_poi_reference_unverified_entrance"?0.5:1;
+ // An advertised 590m with no walking/straight-line qualifier is not
+ // a measured pedestrian distance. Use a weak clue, not a precise ring.
+ const dataQuality=locationQuality*(c.metric==="distance_mode_unknown"?0.3:1);
  return {penalty:dataQuality*Math.min((err/r.sigma)**2,16),
    // A direct-distance lower bound is insufficient to reject areas.
    clearly_too_far:d>r.hi+(c.precision==="town_chome_reference"?500:160)};
@@ -127,7 +138,8 @@ function softFit(d,c){
 export function solveSearchArea(parsed,{stepM=200}={}){
  required(parsed&&Array.isArray(parsed.constraints),"Parsed evidence required");
  required(stepM===200,"Fixed privacy-preserving search grid required");
- const clues=parsed.constraints.filter(x=>x.location&&finite(x.location.lat)&&finite(x.location.lon));
+ const clues=parsed.constraints.filter(x=>x.location&&finite(x.location.lat)&&finite(x.location.lon)&&
+  x.conflicting_advertisement_numbers!==true);
  if(clues.length===0)return {state:"insufficient_landmarks",grid:[],regions:[],clues_used:0,
   region_area_km2:null,center_point:null,accuracy:null,notice:"施設の距離条件がないため探索区域は算出できません。"};
  required(clues.length<=20,"Too many landmarks");
@@ -149,8 +161,9 @@ export function solveSearchArea(parsed,{stepM=200}={}){
   for(let i=0;i<clues.length;i++){
    const d=Math.hypot(x-coords[i].x,y-coords[i].y);
    const fit=softFit(d,clues[i]);
-   const q=clues[i].precision==="town_chome_reference"?0.25:
-    clues[i].precision==="openpoi_public_poi_reference_unverified_entrance"?0.5:1;
+   const q=(clues[i].precision==="town_chome_reference"?0.25:
+    clues[i].precision==="openpoi_public_poi_reference_unverified_entrance"?0.5:1)*
+    (clues[i].metric==="distance_mode_unknown"?0.3:1);
    loss+=fit.penalty;weight+=q;if(fit.clearly_too_far)far++;
   }
   if(scope){
