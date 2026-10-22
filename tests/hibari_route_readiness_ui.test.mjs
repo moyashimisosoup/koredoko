@@ -28,7 +28,7 @@ test("module source parses after removing static imports; home links to route au
  const code=s.match(/<script type="module">([\s\S]*?)<\/script>/)?.[1];
  assert.ok(code);
  assert.doesNotThrow(()=>new Function(code.replace(/^import .*? from "[^"]+";\s*$/gm,"")));
- const home=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const home=readFileSync(new URL("../legacy-input.html",import.meta.url),"utf8");
  assert.ok(home.includes("./route-readiness.html"));
 });
 test("publicly known building names and correct advertisement mappings are not in audit screen",()=>{
