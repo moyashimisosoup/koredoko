@@ -61,7 +61,7 @@ function searchRecord(v,name,center){
  * geographic cluster within 150m. Ambiguous same-named POIs are withheld.
  * We NEVER pick the first search result just because it's nearest the center.
  */
-export function vetOpenPoiSearchResponse(payload,name,center){
+export function vetOpenPoiSearchResponse(payload,name,center,{referenceLocation=null,referencePrecision=null}={}){
  if(!payload||!Array.isArray(payload.results)||!withinJapan(center))throw Error("Invalid OpenPOI response");
  const valid=payload.results.map(x=>searchRecord(x,name,center)).filter(Boolean);
  if(valid.length===0)return {status:"no_exact_regional_match",match:null,matched_count:0};
@@ -70,13 +70,27 @@ export function vetOpenPoiSearchResponse(payload,name,center){
   const g=groups.find(group=>meters(group[0].location,item.location)<=150);
   if(g)g.push(item);else groups.push([item]);
  }
- if(groups.length!==1)return {status:"ambiguous_same_named_locations",match:null,matched_count:valid.length};
- const sorted=[...groups[0]].sort((a,b)=>(b.level??0)-(a.level??0));
+ // A PUBLIC independently sourced ADDRESS-NUMBER reference can disambiguate
+ // multiple identically named POIs. Do not use the query center as that
+ // reference: it might be a generic town center. Never compare to private
+ // property or residents' coordinates; those never reach this function.
+ let chosen=groups.length===1?groups[0]:null,matchBasis="exact_name_plus_region";
+ if(referenceLocation!==null){
+  if(referencePrecision!=="address_number_reference"||!withinJapan(referenceLocation))
+   throw Error("Independent public address-number reference required");
+  const near=groups.filter(g=>g.some(x=>meters(x.location,referenceLocation)<=100));
+  if(near.length!==1)return {status:near.length===0?"reference_coordinate_conflict":
+   "ambiguous_same_named_locations",match:null,matched_count:valid.length};
+  chosen=near[0];matchBasis="exact_name_plus_independent_public_address_reference";
+ }
+ if(!chosen)return {status:"ambiguous_same_named_locations",match:null,matched_count:valid.length};
+ const sorted=[...chosen].sort((a,b)=>(b.level??0)-(a.level??0));
  // Keep only the representative POI and its own provenance.
  const p=sorted[0];
- return {status:"single_regional_match",matched_count:valid.length,
+ return {status:matchBasis==="exact_name_plus_region"?"single_regional_match":"single_independently_referenced_match",
+  matched_count:valid.length,
   match:{...p,precision:p.level===3?"town_chome_reference":"openpoi_public_poi_reference_unverified_entrance",
-   identity_status:"name_plus_region_only"}};
+   identity_status:matchBasis}};
 }
 export function findUnresolvedNames(input,parsed){
  if(typeof input!=="string"||!Array.isArray(parsed?.ignored))throw Error("Invalid original clue references");
