@@ -12,6 +12,7 @@ const compact=s=>typeof s==="string"?s.normalize("NFKC").replace(/[\s\u3000]/g,"
 const validMinute=m=>Number.isInteger(m)&&m>=1&&m<=180;
 const idOf=(p)=>p.physical_id;
 const STATION_ID="seibu-hibarigaoka";
+const STATION_ALIASES=new Set(["ひばりヶ丘","ひばりヶ丘駅","ひばりが丘","ひばりが丘駅"]);
 const sourceSafe=({adId,sourceTier,origin})=>({origin,advertisement_id:adId??null,source_quality:sourceTier,
   source_url:null,ground_truth_available_to_matcher:false});
 function foundation(source,poi){
@@ -104,6 +105,12 @@ export function bridgePastedPublicText(originalText,poi){
   const normalized=compact(line);
   const names=[...out.index.byAlias.entries()].filter(([a])=>normalized.startsWith(a));
   const unique=[...new Set(names.map(([,p])=>p.physical_id))];
+  // Never bind a compound line to the convenient first POI alias.
+  const anywhere=[...new Set([...out.index.byAlias.entries()]
+    .filter(([alias])=>normalized.includes(alias)).map(([,p])=>p.physical_id))];
+  if(anywhere.length>1){
+   hold(out,{field:"line:"+i,reason:"multiple_physical_pois_in_line"});continue;
+  }
   const isStation=unique.length===0&&
     /^(?:(?:西武池袋線|西武鉄道)[「『]?)?ひばり[ヶが]丘(?:[」』])?駅?.{0,6}徒歩\d{1,3}分/u.test(normalized);
   if(unique.length===0&&!isStation){
@@ -149,7 +156,7 @@ export function bridgeReviewedJson(raw,originalText,poi){
   const quotes=fieldIndex.get(field)||[];
   let placeId,label;
   if(type==="station"){
-   if(!/ひばり[ヶが]丘/.test(compact(row.name||""))){
+   if(!STATION_ALIASES.has(compact(row.name||""))){
     hold(out,{field,reason:"station_not_in_fixed_public_registry"});return;
    }
    placeId="station:"+STATION_ID;label="ひばりヶ丘駅";
