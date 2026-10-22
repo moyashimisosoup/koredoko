@@ -109,3 +109,47 @@ test("OpenPOI level 3 (town/chome) record remains coarse, never promoted to an e
  assert.equal(v.status,"single_regional_match");
  assert.equal(v.match.precision,"town_chome_reference");
 });
+
+test("G2 live: two identically named post offices are disambiguated ONLY by separate public address-number evidence",()=>{
+ const ref=getPublicPostOfficeRef();
+ const live={results:[
+  {name:"ひばりが丘郵便局",category:"finance",lat:35.749564224233985,lng:139.54440370202065,source:"overture",level:""},
+  {name:"ひばりが丘郵便局",category:"finance",lat:35.7463278,lng:139.5476222,source:"overture",level:""}
+ ]};
+ assert.equal(vetOpenPoiSearchResponse(live,"ひばりが丘郵便局",center).status,"ambiguous_same_named_locations");
+ assert.equal(ref.precision,"address_number_reference");
+ const r=vetOpenPoiSearchResponse(live,"ひばりが丘郵便局",center,
+  {referenceLocation:ref.location,referencePrecision:ref.precision});
+ assert.equal(r.status,"single_independently_referenced_match");
+ assert.equal(r.matched_count,2);
+ assert.equal(r.match.location.lat,35.749564224233985);
+ assert.equal(r.match.identity_status,"exact_name_plus_independent_public_address_reference");
+ assert.notEqual(r.match.precision,"verified_facility_entrance");
+});
+function getPublicPostOfficeRef(){
+ const pois=file("hibari_poi_identities_20261021.json"),
+  refs=file("hibari_geolonia_v2_address_number_20261022.json"),
+  towns=file("hibari_geolonia_town_chome_references_20261022.json");
+ return makeAreaLandmarks(pois,refs,towns).find(x=>x.name==="ひばりが丘郵便局");
+}
+test("G2 live: store tenants never become PARCO or SEIYU building landmarks by substring",()=>{
+ const parco={results:[{name:"食堂いつもの。",lat:35.751767586,lng:139.544568083,category:"restaurant",source:"jff",level:8}]};
+ const seiyu={results:[
+  {name:"ドトールコーヒーショップ　西友ひばりヶ丘店",lat:35.750781508,lng:139.544867192,category:"restaurant"},
+  {name:"ニトリ",lat:35.750796,lng:139.545244,category:"retail_other"},
+  {name:"占い館 魔女☆Maison 西友ひばりヶ丘店",lat:35.75098243,lng:139.5451583,category:"tourism"}
+ ]};
+ assert.equal(vetOpenPoiSearchResponse(parco,"ひばりが丘PARCO",center).status,"no_exact_regional_match");
+ assert.equal(vetOpenPoiSearchResponse(seiyu,"西友ひばりヶ丘店",center).status,"no_exact_regional_match");
+});
+test("a mismatching address reference cannot force an exact-name facility match",()=>{
+ const location={lat:35.732,lon:139.51};
+ const x=vetOpenPoiSearchResponse({results:[{name:"ひばりが丘郵便局",lat:35.749564224233985,lng:139.54440370202065}]},
+  "ひばりが丘郵便局",center,
+  {referenceLocation:location,referencePrecision:"address_number_reference"});
+ assert.equal(x.status,"reference_coordinate_conflict");
+ assert.equal(x.match,null);
+ assert.throws(()=>vetOpenPoiSearchResponse({results:[]},
+  "ひばりが丘郵便局",center,{referenceLocation:location,referencePrecision:"town_chome_reference"}),
+  /public address-number/);
+});
