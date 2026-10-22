@@ -75,7 +75,8 @@ export function vetOpenPoiSearchResponse(payload,name,center){
  // Keep only the representative POI and its own provenance.
  const p=sorted[0];
  return {status:"single_regional_match",matched_count:valid.length,
-  match:{...p,precision:"openpoi_public_poi_reference_unverified_entrance",identity_status:"name_plus_region_only"}};
+  match:{...p,precision:p.level===3?"town_chome_reference":"openpoi_public_poi_reference_unverified_entrance",
+   identity_status:"name_plus_region_only"}};
 }
 export function findUnresolvedNames(input,parsed){
  if(typeof input!=="string"||!Array.isArray(parsed?.ignored))throw Error("Invalid original clue references");
