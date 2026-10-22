@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>これどこ｜周辺施設から場所をしぼる</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#293932;background:#f8faf8}
+*{box-sizing:border-box}body{margin:0}main{max-width:740px;margin:0 auto;padding:40px 16px 72px}
+h1{font-size:clamp(28px,6vw,38px);letter-spacing:-.05em;margin:0 0 3px;font-weight:760}
+p{line-height:1.7;color:#67776d;margin:4px 0 14px}
+.sub{font-size:14px}.label{font-size:14px;font-weight:650;display:block;margin:22px 0 10px}
+textarea{display:block;width:100%;min-height:172px;padding:15px;border:1px solid #c9d7ce;border-radius:14px;background:#fff;color:inherit;font:inherit;line-height:1.7;resize:vertical}
+textarea:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #29785a;outline-offset:2px}
+button{font:inherit;cursor:pointer;min-height:46px}
+.go{width:100%;border:0;background:#307b61;color:#fff;border-radius:12px;font-weight:700;margin:13px 0 6px}
+.sample{background:none;border:0;padding:6px 0;color:#287355;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+#result{margin-top:31px}.hidden{display:none!important}
+#map{background:#eff6f0;width:100%;height:auto;display:block;border:1px solid #d6e5db;border-radius:14px}
+.stats{font-weight:700;font-size:19px;color:#2e7056;margin:12px 0 3px}
+.micro{font-size:12px;color:#6c7b72;line-height:1.6}
+summary{cursor:pointer;color:#48715f;font-size:13px;margin-top:16px}
+details{margin-top:12px}#details div{font-size:13px;margin:8px 0;color:#53645b}
+#errors{color:#9a5d39;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+#copy{border:1px solid #cadbd0;background:#fff;color:#276950;border-radius:10px;padding:8px 12px;font-size:13px;margin-top:8px}
+@media(max-width:520px){main{padding:23px 13px 56px}textarea{min-height:140px;font-size:16px}h1{font-size:29px}}
+</style></head><body><main>
+<h1>これどこ</h1>
+<p class="sub">広告の手がかりから、おおよその場所をしぼる。</p>
+<label class="label" for="advertisement">物件の情報を貼り付ける</label>
+<textarea id="advertisement" spellcheck="false" placeholder="例：
+西東京市 谷戸町三丁目
+ひばりが丘郵便局　徒歩2分（約133m）
+ひばりが丘PARCO　徒歩3分（約236m）"></textarea>
+<button class="go" id="search" type="button">このへんを探す</button>
+<button class="sample" id="example" type="button">例を入力する</button>
+<p id="errors" role="status" aria-live="polite"></p>
+<section id="result" class="hidden" aria-live="polite">
+<h2 style="font-size:18px;margin:0 0 12px">このあたりが候補です</h2>
+<svg id="map" viewBox="0 0 720 480" role="img" aria-label="周辺施設の参考位置と、距離条件から求めた複数の候補区域。住宅の所在地や正確な道路地図ではありません。"></svg>
+<p class="stats" id="summary"></p>
+<p class="micro" id="notice">色のついた場所は200m格子を広げた探索範囲です。住所・建物・土地の所在地を特定したものではありません。</p>
+<details><summary>使用した条件と注意点</summary><div id="details"></div>
+<button id="copy" type="button">候補エリアのGeoJSONをコピー</button></details>
+</section>
+<p class="micro" style="margin-top:24px">現在の試作はひばりヶ丘周辺の公開施設11地点に対応。地点が見つからない条件は飛ばして結果に明示します。徒歩経路APIはまだ使用しておらず、道路網を考慮した最終推定ではありません。入力文は端末内で処理し、送信・保存しません。</p>
+</main>
+<script type="module">
+import {makeAreaLandmarks,parseAreaInput,solveSearchArea} from "./src/area_overlap_solver.mjs";
+const el=id=>document.getElementById(id);
+const NS="http://www.w3.org/2000/svg";
+let data=null,lastResult=null;
+const sample="西東京市 谷戸町三丁目\nひばりが丘郵便局：徒歩2分（約133m）\nひばりが丘PARCO：徒歩3分（約236m）";
+el("example").addEventListener("click",()=>{el("advertisement").value=sample;el("advertisement").focus()});
+function svg(tag,attributes,text){
+ const e=document.createElementNS(NS,tag);
+ for(const [key,value] of Object.entries(attributes))e.setAttribute(key,String(value));
+ if(text!==undefined)e.textContent=text;
+ return e;
+}
+async function sources(){
+ if(data)return data;
+ const names=["hibari_poi_identities_20261021.json","hibari_geolonia_v2_address_number_20261022.json","hibari_geolonia_town_chome_references_20261022.json"];
+ const list=await Promise.all(names.map(async n=>{
+  const r=await fetch("./examples/"+n,{cache:"no-store"});
+  if(!r.ok)throw Error("施設の公開データが取得できません");
+  return r.json();
+ }));
+ const [pois,refs,towns]=list;
+ data={landmarks:makeAreaLandmarks(pois,refs,towns),towns:towns.records};
+ return data;
+}
+function render(result,parsed){
+ const root=el("map");root.replaceChildren();
+ const arr=result.grid,anchors=parsed.constraints;
+ const rr=result.ref_lat,rl=result.ref_lon;
+ const toXY=location=>{
+  const metersLat=111194.9,metersLon=metersLat*Math.cos(rr*Math.PI/180);
+  return {x:(location.lon-rl)*metersLon,y:(location.lat-rr)*metersLat};
+ };
+ const points=anchors.map(c=>({label:c.label,location:toXY(c.location)}));
+ const xs=arr.map(p=>p.ix*200).concat(points.map(p=>p.location.x));
+ const ys=arr.map(p=>p.iy*200).concat(points.map(p=>p.location.y));
+ const minX=Math.min(...xs)-300,maxX=Math.max(...xs)+300;
+ const minY=Math.min(...ys)-300,maxY=Math.max(...ys)+300;
+ const midX=(minX+maxX)/2,midY=(minY+maxY)/2;
+ const scale=Math.min(650/(maxX-minX),400/(maxY-minY));
+ const X=x=>360+(x-midX)*scale,Y=y=>240-(y-midY)*scale;
+ const background=svg("g",{});
+ for(const cell of arr)background.append(svg("rect",{
+  x:X(cell.ix*200-100),y:Y(cell.iy*200+100),
+  width:200*scale,height:200*scale,fill:"#429c7d",opacity:".3"
+ }));
+ root.append(background);
+ // Only publicly sourced landmark centers are shown; no inferred property pin.
+ points.forEach((p,i)=>{
+  root.append(svg("circle",{cx:X(p.location.x),cy:Y(p.location.y),r:5,fill:"#386e58",stroke:"#fff","stroke-width":2}));
+  const label=p.label.length>12?p.label.slice(0,12)+"…":p.label;
+  root.append(svg("text",{x:X(p.location.x)+9,y:Y(p.location.y)+(-1)**i*13,
+   fill:"#2f5342","font-size":"13","font-weight":"600"},label));
+ });
+ root.append(svg("text",{x:686,y:24,"text-anchor":"end",fill:"#809588","font-size":"12"},"↑ 北"));
+}
+el("search").addEventListener("click",async()=>{
+ el("search").disabled=true;el("errors").textContent="";el("result").classList.add("hidden");
+ try{
+  const source=await sources(),parsed=parseAreaInput(el("advertisement").value,source.landmarks,source.towns);
+  const result=solveSearchArea(parsed);lastResult=null;
+  if(result.state!=="exploratory_areas"){
+   el("errors").textContent="距離のある施設を読み取れませんでした。例の文章を使うか、施設名と徒歩分数／距離を入力してください。";
+   return;
+  }
+  render(result,parsed);lastResult=result;
+  el("summary").textContent=result.clues_used+"施設から約"+result.region_area_km2+"km²にしぼりました";
+  el("notice").textContent="施設の位置は公開住所の参考点です。着色範囲は地図上の探索目安で、個別物件や道路を特定しません。徒歩経路は未計測。";
+  const d=el("details");d.replaceChildren();
+  for(const c of parsed.constraints){
+   const line=document.createElement("div");
+   line.textContent=c.label+"："+
+    (c.stated_meters!==null?"約"+c.stated_meters+"m":"徒歩"+c.stated_minutes+"分")+
+    " ／ "+(c.precision==="town_chome_reference"?"町丁目の参考点":"住所番号の参考点")+
+    (c.conflicting_advertisement_numbers?"（距離と徒歩分数の表示が不整合）":"");
+   d.append(line);
+  }
+  if(parsed.partialAddress){
+   const p=document.createElement("div");p.textContent="住所の一部："+parsed.partialAddress.name+"（参考の重み付け。行政界とは異なります）";d.append(p);
+  }
+  for(const c of parsed.ignored){const p=document.createElement("div");p.textContent="保留 "+c.line+"行目："+c.reason;d.append(p);}
+  if(result.contradictory_clues)el("errors").textContent="広告の距離・徒歩分数に食い違いがあります。区域は暫定的です。";
+  el("result").classList.remove("hidden");
+ }catch(e){lastResult=null;el("errors").textContent="計算できません："+e.message;
+ }finally{el("search").disabled=false;}
+});
+el("copy").addEventListener("click",async()=>{
+ if(!lastResult)return;
+ try{await navigator.clipboard.writeText(JSON.stringify(lastResult.regions));
+  el("errors").textContent="候補区域のGeoJSONをコピーしました。";
+ }catch(_){el("errors").textContent="コピーに失敗しました。ブラウザの権限をご確認ください。";}
+});
+</script></body></html>
