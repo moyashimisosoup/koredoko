@@ -55,7 +55,7 @@ test("AI inference cannot be promoted to verified fact",()=>{
   const r=scan(d);assert.equal(r.valid,true);assert.ok(r.warnings.some(x=>x.includes("推定")));
 });
 test("display HTML contains no external API call",()=>{
-  const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+  const html=readFileSync(new URL("../legacy-input.html",import.meta.url),"utf8");
   assert.equal(html.includes("src/input_review.mjs"),true);
   assert.equal(html.includes("textContent"),true);
   assert.equal(html.includes('fetch("./examples/synthetic_listing_v0.2.json"'),true);
