@@ -8,14 +8,18 @@ import {evaluatePublishedLocationFusion} from "./facility_distance_fusion.mjs";
 const num=v=>typeof v==="number"&&Number.isFinite(v);
 const str=v=>typeof v==="string"&&v.trim().length>0;
 const types=new Set(["public_complex_reference","station_reference","facility_reference"]);
-const LIMITS={minLat:35.65,maxLat:35.75,minLon:139.78,maxLon:139.89};
-const allowed=p=>p&&num(p.lat)&&num(p.lon)&&p.lat>=LIMITS.minLat&&p.lat<=LIMITS.maxLat&&p.lon>=LIMITS.minLon&&p.lon<=LIMITS.maxLon;
+const REGIONS={
+ oshima:{minLat:35.65,maxLat:35.75,minLon:139.78,maxLon:139.89},
+ hibarigaoka:{minLat:35.70,maxLat:35.80,minLon:139.50,maxLon:139.58}
+};
+const allowed=(p,bounds)=>p&&num(p.lat)&&num(p.lon)&&p.lat>=bounds.minLat&&p.lat<=bounds.maxLat&&p.lon>=bounds.minLon&&p.lon<=bounds.maxLon;
 const meterLimit=n=>num(n)&&n>=0&&n<=20000;
 /** Plain coordinate reference scatter projection (not surveyed property
  * boundaries, OSM road geometries, exit locations or a licensed tile map). */
-export function projectPublicReferencePoints(points){
- if(!Array.isArray(points)||points.length<2||points.length>100||
-    points.some(p=>!allowed(p)||!str(p.id)||!str(p.label)||!types.has(p.type))||
+export function projectPublicReferencePoints(points,{region="oshima"}={}){
+ const bounds=REGIONS[region];
+ if(!bounds||!Array.isArray(points)||points.length<2||points.length>100||
+    points.some(p=>!allowed(p,bounds)||!str(p.id)||!str(p.label)||!types.has(p.type))||
     new Set(points.map(p=>p.id)).size!==points.length)throw Error("Invalid public reference points");
  const center=points.reduce((sum,p)=>sum+p.lat,0)/points.length;
  const longitudeFactor=Math.cos(center*Math.PI/180);
