@@ -64,13 +64,29 @@ test("unregistered facilities and malformed distances are visibly ignored, not f
  assert.deepEqual(r.regions,[]);
  assert.equal(r.accuracy,null);
 });
-test("conflicting words within advertisement are flagged but cannot force exact location",()=>{
+test("contradictory walking minutes and meter claims remain visible but NEVER narrow the area",()=>{
  const {landmarks,towns}=registry();
- const p=parseAreaInput("ひばりが丘PARCO 徒歩2分（約1537m）",landmarks,towns);
- assert.equal(p.constraints.length,1);
- assert.equal(p.constraints[0].conflicting_advertisement_numbers,true);
+ const bad="西東京市立谷戸第二小学校：徒歩15分（約1537m）";
+ const p=parseAreaInput(H02+"\n"+bad,landmarks,towns);
+ assert.equal(p.constraints.length,2);
+ assert.equal(p.ignored.length,1);
+ assert.match(p.ignored[0].reason,/不整合/);
+ assert.equal(p.ignored[0].quote,bad);
+ assert.equal(p.ignored[0].stated_meters,1537);
+ assert.equal(p.ignored[0].stated_minutes,15);
+ assert.deepEqual(solveSearchArea(p).grid,solveSearchArea(parseAreaInput(H02,landmarks,towns)).grid);
+ assert.equal(solveSearchArea(p).center_point,null);
+});
+test("unqualified 590m park clue is kept as a weak hint rather than a measured walking distance",()=>{
+ const {landmarks,towns}=registry();
+ const park=parseAreaInput("谷戸イチョウ公園（現地より約590m）",landmarks,towns);
+ assert.equal(park.constraints.length,1);
+ assert.equal(park.constraints[0].metric,"distance_mode_unknown");
+ const p=parseAreaInput("西友ひばりヶ丘店・・・約110m（徒歩2分）\nPARCOひばりが丘・・・約210m（徒歩3分）\n谷戸イチョウ公園（現地より約590m）",landmarks,towns);
+ assert.equal(p.constraints.length,3);
+ assert.equal(p.constraints[2].metric,"distance_mode_unknown");
  const r=solveSearchArea(p);
- assert.equal(r.contradictory_clues,1);
+ assert.equal(r.clues_used,3);
  assert.equal(r.center_point,null);
 });
 test("duplicate, compound same-line clues are not counted as independent intersections",()=>{
