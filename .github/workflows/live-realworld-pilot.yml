@@ -1,10 +1,9 @@
 name: APP-023 one real-world production-like pilot
 
+# Explicitly dispatched only. The pull_request path selector previously
+# retriggered the live pilot on every PR commit because the script stayed
+# in the PR diff, wasting quota and generating duplicate evidence.
 on:
-  pull_request:
-    paths:
-      - scripts/live_realworld_pilot.mjs
-      - .github/workflows/live-realworld-pilot.yml
   workflow_dispatch:
 
 permissions:
