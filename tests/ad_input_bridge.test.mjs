@@ -116,3 +116,18 @@ test("unmapped target, missing source and too long payloads fail closed",()=>{
  assert.throws(()=>bridgePastedPublicText("a".repeat(200001),pois()),/size/);
  assert.throws(()=>compareBridgeAgainstPublicCandidates({},buildings()),/Invalid/);
 });
+
+test("ambiguous compound POI source line cannot be scored as its first named park",()=>{
+ const r=bridgePastedPublicText("ひばりが丘公園からひばりが丘PARCO 徒歩3分",pois());
+ assert.equal(r.eligible_walking_clues,0);
+ assert.ok(r.withheld.some(x=>x.reason==="multiple_physical_pois_in_line"));
+});
+test("a nearby but different named station is not mapped to the fixed Hibarigaoka station",()=>{
+ const s=file("synthetic_listing_v0.2.json");
+ s.listing.stations[0].name="ひばりヶ丘東駅";
+ const quote="ひばりヶ丘東駅徒歩7分";
+ s.evidence[0].verbatim_excerpt=quote;
+ const r=bridgeReviewedJson(JSON.stringify(s),quote,pois());
+ assert.equal(r.conditions.length,0);
+ assert.ok(r.withheld.some(x=>x.reason==="station_not_in_fixed_public_registry"));
+});
