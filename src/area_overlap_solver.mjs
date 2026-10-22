@@ -158,10 +158,12 @@ export function solveSearchArea(parsed,{stepM=200}={}){
  }
  grid.sort((a,b)=>a.penalty-b.penalty||a.ix-b.ix||a.iy-b.iy);
  const best=grid[0].penalty;
- const topCount=Math.max(10,Math.ceil(total*0.10));
- // Do not make a razor-thin best-fit point appear as a verified location.
- const selected=grid.slice(0,topCount).filter((a,i)=>i<10||a.penalty<=best+0.65);
- const selectedKeys=new Set(selected.map(c=>c.ix+","+c.iy));
+ // A FIXED "best 10%" would fabricate a tight answer even when
+ // clues are contradictory or too weak. Preserve all cells inside a
+ // stated tolerance relative to the best fit; never force a narrow quota.
+ // Only a minimum footprint guards against pinpoint-looking output.
+ const plausible=grid.filter(a=>a.penalty<=best+0.75);
+ const selected=plausible.length>=10?plausible:grid.slice(0,10);
  const expanded=new Set();
  for(const c of selected)for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++)
   expanded.add((c.ix+dx)+","+(c.iy+dy));
@@ -208,5 +210,7 @@ export function solveSearchArea(parsed,{stepM=200}={}){
   unresolved:parsed.ignored?.length??0,
   center_point:null,property_candidates:null,accuracy:null,probability:null,
   contradictory_clues:clues.filter(x=>x.conflicting_advertisement_numbers).length,
+  constraint_consistency:best>1.2?"low_multiple_clues_in_tension":"exploratory_only",
+  search_window_limited:maxR+extra>3400,
   notice:"推定区域は200m格子を広げた探索の目安です。徒歩の実経路や物件所在地を示すものではありません。"};
 }
