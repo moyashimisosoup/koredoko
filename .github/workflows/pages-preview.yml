@@ -1,0 +1,57 @@
+name: APP-023 iPhone Pages preview
+
+on:
+  push:
+    branches:
+      - preview/app023-iphone-20261022
+  workflow_dispatch:
+
+concurrency:
+  group: pages-app023-iphone-preview
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Stage public static web files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Stage only public web assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site/src _site/examples
+          cp ./*.html _site/
+          cp src/*.mjs _site/src/
+          cp examples/*.json _site/examples/
+          touch _site/.nojekyll
+          test -f _site/index.html
+          test -f _site/hibari-same-region.html
+          test -f _site/src/hibari_partial_evidence_ranking.mjs
+          test -f _site/examples/hibari_real_ads_prelocked_20261021.json
+          echo "Staged APP-023 preview. PR/main untouched."
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    name: Publish frozen preview to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
