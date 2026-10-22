@@ -78,7 +78,7 @@ export function parseAreaInput(text,landmarks,towns=[]){
  // A partial address such as 谷戸町二丁目 is a soft prior. Town centroids
  // are NOT administrative boundaries and must NOT hard-clip the output.
  let partialAddress=null;
- const allText=norm(text);
+ const allText=townKey(text);
  for(const r of towns){
   if(allText.includes(townKey(r.town))){
    partialAddress={name:r.town,location:{lat:r.lat,lon:r.lon},precision:"town_chome_representative",
