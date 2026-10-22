@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 const page=()=>readFileSync(new URL("../ad-bridge.html",import.meta.url),"utf8");
 test("home links to ad conditions screen and keeps old stable input PoC",()=>{
- const html=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const html=readFileSync(new URL("../legacy-input.html",import.meta.url),"utf8");
  assert.ok(html.includes("./ad-bridge.html"));
  assert.ok(html.includes('id="payload"'));
  assert.ok(html.includes('id="check"'));
