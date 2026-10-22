@@ -67,14 +67,16 @@ jobs:
       - name: Install pinned browser test runtime
         run: npm install --no-save --no-package-lock --ignore-scripts playwright@1.58.2
       - name: Install Chromium with Linux dependencies
-        run: npx playwright install chromium --with-deps
+        run: npx playwright install chromium webkit --with-deps
       - name: Serve PR HTML only on runner localhost
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/koredoko-pr-preview.log 2>&1 &
           sleep 2
           curl -fsS http://127.0.0.1:8765/hibari-same-region.html >/dev/null
       - name: Real Chromium desktop and mobile-viewport user-flow smoke
-        run: node scripts/browser_smoke.mjs
+        run: |
+          node scripts/browser_smoke.mjs
+          node scripts/area_browser_smoke.mjs
       - name: Retain browser previews for inspection
         if: always()
         uses: actions/upload-artifact@v4
