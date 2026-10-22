@@ -110,7 +110,11 @@ el("search").addEventListener("click",async()=>{
   const parsed=lookup.parsed;
   const result=solveSearchArea(parsed);lastResult=null;
   if(result.state!=="exploratory_areas"){
-   el("errors").textContent="距離のある施設を読み取れませんでした。例の文章を使うか、施設名と徒歩分数／距離を入力してください。";
+   el("errors").textContent=lookup.state==="regional_context_missing"?
+    "施設の地域が分かりません。町丁目など住所の一部か、近くの駅・施設名を加えてください。":
+    lookup.lookups?.some(x=>x.status==="ambiguous_same_named_locations")?
+    "同名の施設が複数あり、場所を選べませんでした。別の施設名・周辺の駅を追加してください。":
+    "距離のある施設を読み取れませんでした。例の文章を使うか、施設名と徒歩分数／距離を入力してください。";
    return;
   }
   render(result,parsed);lastResult=result;
