@@ -1,25 +1,35 @@
-# APP-023 GitHub Pagesプレビュー準備（2026-10-22 JST）
+# APP-023｜GitHub Actions Pages公開・実HTTP確認 CHECKPOINT（2026-10-22 JST）
 
-## 現在地
+**状態：GitHub Pages実公開成功、HTTP静的ファイル確認成功、iPhone Safari実機未検収。**
 
-- 正本：moyashimisosoup/koredoko、Draft PR #28（マージしていない）。
-- 検証用スナップショットブランチ：`preview/app023-iphone-20261022`。作成元HEADは`a65f42ba85ffabc0085dd578b0f9491203c7fdba`。
-- 上記プレビューブランチに`.nojekyll`を追加済み。静的HTML、JavaScript、JSONをPagesで変換せず配信する準備。
-- 既存`main`に変更なし。Pagesの設定画面操作は、ブラウザ自動操作サービスの残高不足で開始できず**未実施**。Pages有効化・配信URLへのアクセス・iPhone Safari動作は**未確認**。プレビューブランチ作成を公開成功と報告しない。
-- 公開データはもともとPublicなリポジトリのファイルであるが、Pagesでは同じ静的ファイルがWebサイトとして誰でもアクセス可能になるため、公開範囲に注意。
+## 公開URL（GitHub Pages正式deploymentの出力）
 
-## 設定のための残り1操作
+- [iPhone向け、同一地域の実広告・公開7候補の操作画面](https://moyashimisosoup.github.io/koredoko/hibari-same-region.html)
+- [アプリトップ](https://moyashimisosoup.github.io/koredoko/)
+- [広告入力・施設名寄せの試作](https://moyashimisosoup.github.io/koredoko/ad-bridge.html)
+- [大島公開候補の参考位置関係図](https://moyashimisosoup.github.io/koredoko/public-map.html)
 
-[GitHub Pages 設定画面](https://github.com/moyashimisosoup/koredoko/settings/pages)で、Build and deployment → Source: `Deploy from a branch` → Branch: `preview/app023-iphone-20261022` → Folder: `/ (root)` → Save。
+ユーザー自身が Settings > Pages の公開元を **GitHub Actions** に設定した。ブラウザ自動操作サービスは使用せず、GitHub Actions workflowのみでPagesへデプロイした。
 
-GitHubの状態がbuiltとなったことを確認後、**予想URL（未検証）**：`https://moyashimisosoup.github.io/koredoko/hibari-same-region.html` をiPhone Safariで開く。トップは同パスの`/`。配信確認できるまでURLを稼働済みと記録しない。
+## GitHubで確認した根拠
 
-## 実機検収の最小セット
+- 正本Repo：`moyashimisosoup/koredoko`（Public）。
+- 公開元：`preview/app023-iphone-20261022`、ワークフロー `.github/workflows/pages-preview.yml`。サイトのHTML/JS/JSONは検収用スナップショット`a65f42ba85ffabc0085dd578b0f9491203c7fdba`に由来。ブランチ上ではCI/Pages構成のみ追加。
+- **最初の試行 #39754507529 はデプロイ環境の段階で失敗**。ビルド成果物の作成は成功。
+- **成功した最初のデプロイ：[Actions #39754750949](https://github.com/moyashimisosoup/koredoko/actions/runs/39754750949)**。公開専用環境`app023-iphone-preview`へ変更し、ビルドとdeploy両ジョブ成功。deploy-pagesのログに「Reported success!」「Evaluated environment url: https://moyashimisosoup.github.io/koredoko/」を確認。
+- **公開されたURLの動作：[Actions #39754979967](https://github.com/moyashimisosoup/koredoko/actions/runs/39754979967)**。ビルド、Pages deploy、配信後HTTP GETの**3ジョブすべて成功**。GitHub Actionsランナーから以下5ファイルを`curl --fail`で取得し、それぞれの本文識別子を検査：
+  - `index.html`
+  - `hibari-same-region.html`
+  - `src/hibari_same_region_map_view.mjs`
+  - `src/hibari_partial_evidence_ranking.mjs`
+  - `examples/hibari_real_ads_prelocked_20261021.json`
+- 主なソース以外の秘密ファイルを公開しないよう、アーティファクトはHTML、srcのMJS、examplesのJSONのみに限定。元のソースRepoもPublicである。
+- `main`は`4ecb87260c5907da9f84542c0ee8bac25177a543`を維持。Draft PR #28は未マージ。Pagesの公開はmain統合と独立した作業。
 
-H02広告選択 → 7候補表示 → PARCO/建物の根拠 → 遠回り係数変更 → 広告本文貼付 → 不正JSON後にH03で復旧。
+## 残る実機検収（次の1操作）
 
-出典・欠測・暫定探索順・実測経路の違いを明示したまま操作確認。住所代表点を実際の出入口・建物のピンポイント位置と誤認させない。
+iPhone Safariで https://moyashimisosoup.github.io/koredoko/hibari-same-region.html を開き、H02広告→7候補→PARCO/建物の根拠→倍率変更→非JSON貼付→無効JSON後H03へ復帰を一巡。画面下端見切れ、キーボード、ピン重なりとスクロールだけ重点確認。
 
-## 次の状態更新
+**未確認**：iPhone Safari実機での操作、一般広告での独立的中率、正式な入口・歩行経路の認定。公開/HTTP成功を位置推定品質や実機検収の成功とはしない。
 
-Pages設定を保存できた時点で、配信状態、ビルド履歴、実URLとiPhone Safari検収を**別々に**記録する。全体P0〜P5の正式な完了は依然1/6。
+正式マイルストーン P0〜P5 は P0のみ完了（1/6）。次はSafari上の操作感レビュー。
