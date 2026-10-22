@@ -118,7 +118,11 @@ el("search").addEventListener("click",async()=>{
    return;
   }
   render(result,parsed);lastResult=result;
-  el("summary").textContent=result.clues_used+"施設から約"+result.region_area_km2+"km²にしぼりました";
+  const withheld=parsed.ignored.filter(x=>x.reason.includes("不整合")).length;
+  const weak=parsed.constraints.filter(x=>x.metric==="distance_mode_unknown").length;
+  el("summary").textContent=result.clues_used+"施設から約"+result.region_area_km2+
+    "km²を表示"+(withheld?"（不整合で保留 "+withheld+"件）":"")+
+    (weak?"（距離種別不明 "+weak+"件は弱い参考）":"");
   el("notice").textContent="施設の位置は公開住所の参考点です。着色範囲は地図上の探索目安で、個別物件や道路を特定しません。徒歩経路は未計測。";
   const d=el("details");d.replaceChildren();
   for(const c of parsed.constraints){
@@ -128,7 +132,7 @@ el("search").addEventListener("click",async()=>{
     " ／ "+(c.precision==="town_chome_reference"?"町丁目の参考点":
      c.precision==="openpoi_public_poi_reference_unverified_entrance"?"OpenPOIの未検証の施設座標":
      "住所番号の参考点")+
-    (c.conflicting_advertisement_numbers?"（距離と徒歩分数の表示が不整合）":"");
+    (c.metric==="distance_mode_unknown"?"（徒歩・直線の種別不明。弱い参考条件）":"");
    d.append(line);
   }
   if(parsed.partialAddress){
@@ -142,7 +146,7 @@ el("search").addEventListener("click",async()=>{
     api_unavailable_or_rate_limited:"施設検索に失敗・保留"}[item.status]??item.status;
    p.textContent="OpenPOI "+item.name+"："+label;d.append(p);
   }
-  if(result.contradictory_clues)el("errors").textContent="広告の距離・徒歩分数に食い違いがあります。区域は暫定的です。";
+  if(withheld)el("errors").textContent="距離と徒歩分数が矛盾する"+withheld+"条件を、候補区域の計算から保留しました。";
   el("result").classList.remove("hidden");
  }catch(e){lastResult=null;el("errors").textContent="計算できません："+e.message;
  }finally{el("search").disabled=false;}
