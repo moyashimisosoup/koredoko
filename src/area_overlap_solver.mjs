@@ -16,7 +16,7 @@ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const norm=s=>String(s??"").normalize("NFKC").replace(/[\s\u3000]/g,"").toLowerCase();
 const chinese={"一":"1","二":"2","三":"3","四":"4","五":"5","六":"6","七":"7","八":"8","九":"9"};
 function townKey(s){return norm(s).replace(/[一二三四五六七八九]丁目/g,x=>chinese[x[0]]+"丁目");}
-const stationAliases=["ひばりヶ丘駅","ひばりが丘駅","西武ひばりヶ丘駅","ひばりヶ丘"];
+const stationAliases=["ひばりヶ丘駅","ひばりが丘駅","西武ひばりヶ丘駅"];
 export function makeAreaLandmarks(pois,refs,towns){
  required(pois?.schema_version==="app023-poi-identity-ledger-v0.1","POI registry missing");
  required(refs?.cohort_id==="hibarigaoka-20261021"&&towns?.cohort_id===refs.cohort_id,"Reference cohort mismatch");
