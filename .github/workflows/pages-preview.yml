@@ -57,3 +57,32 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  verify-live:
+    name: Confirm published HTML, scripts and data over HTTPS
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Fetch the public site through GitHub Pages CDN
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://moyashimisosoup.github.io/koredoko"
+          check() {
+            local path="$1" marker="$2" out
+            out="$(mktemp)"
+            curl --fail --silent --show-error --location \
+              --retry 8 --retry-delay 5 --retry-all-errors \
+              --max-time 25 "$base/$path" --output "$out"
+            grep --fixed-strings --quiet "$marker" "$out"
+            echo "OK (live): $base/$path"
+            rm -f "$out"
+          }
+          check "index.html" "ad-bridge.html"
+          check "hibari-same-region.html" "buildHibariSameRegionMapReview"
+          check "src/hibari_same_region_map_view.mjs" "buildHibariSameRegionMapReview"
+          check "src/hibari_partial_evidence_ranking.mjs" "buildHibariExploratoryOrder"
+          check "examples/hibari_real_ads_prelocked_20261021.json" "hibarigaoka-20261021"
+          echo "APP-023 Pages live HTTP content checks complete."
