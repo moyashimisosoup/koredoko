@@ -233,8 +233,12 @@ async function run(){
   selected=null;render();
   $("detail").replaceChildren();$("detail").append(txt("p","ピンまたは候補一覧から選べます。"));
  }catch(e){
-  report=null;$("conditionStatus").textContent="比較できません："+String(e.message);
-  $("status").textContent="入力・参照データを確認してください。候補は削除しません。";
+  // An invalid next input must not leave an old result on screen.
+  report=null;selected=null;
+  for(const id of ["conditions","withheld","stats","plot","candidates","placeList","detail","missing"])
+   $(id).replaceChildren();
+  $("conditionStatus").textContent="比較できません："+String(e.message);
+  $("status").textContent="この入力に対する順位は未算出です。公開候補のデータ自体は削除されていません。入力を修正して再実行してください。";
  }finally{$("run").disabled=false;}
 }
 $("run").addEventListener("click",run);
