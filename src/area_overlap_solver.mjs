@@ -100,17 +100,21 @@ function roadBand(c){
   // Unknown advertisement meters can mean straight or walking route;
   // use loose discrepancy scale rather than a hard equality ring.
   const d=c.stated_meters;
-  return {lo:Math.max(0,d-60),hi:d+60,sigma:c.precision==="town_chome_reference"?420:180};
+  return {lo:Math.max(0,d-60),hi:d+60,
+   sigma:c.precision==="town_chome_reference"?420:
+    c.precision==="openpoi_public_poi_reference_unverified_entrance"?330:180};
  }
  const n=c.stated_minutes;
  // Official advertised minutes are CEIL(road distance/80m);
  // a straight line is <= road distance. The route multiplier is unknown.
- return {lo:(n-1)*80,hi:n*80,sigma:c.precision==="town_chome_reference"?450:200};
+ return {lo:(n-1)*80,hi:n*80,sigma:c.precision==="town_chome_reference"?450:
+  c.precision==="openpoi_public_poi_reference_unverified_entrance"?350:200};
 }
 function softFit(d,c){
  const r=roadBand(c),modeled=d*1.3;
  const err=modeled<r.lo?r.lo-modeled:modeled>r.hi?modeled-r.hi:0;
- const dataQuality=c.precision==="town_chome_reference"?0.25:1;
+ const dataQuality=c.precision==="town_chome_reference"?0.25:
+  c.precision==="openpoi_public_poi_reference_unverified_entrance"?0.5:1;
  return {penalty:dataQuality*Math.min((err/r.sigma)**2,16),
    // A direct-distance lower bound is insufficient to reject areas.
    clearly_too_far:d>r.hi+(c.precision==="town_chome_reference"?500:160)};
@@ -145,7 +149,8 @@ export function solveSearchArea(parsed,{stepM=200}={}){
   for(let i=0;i<clues.length;i++){
    const d=Math.hypot(x-coords[i].x,y-coords[i].y);
    const fit=softFit(d,clues[i]);
-   const q=clues[i].precision==="town_chome_reference"?0.25:1;
+   const q=clues[i].precision==="town_chome_reference"?0.25:
+    clues[i].precision==="openpoi_public_poi_reference_unverified_entrance"?0.5:1;
    loss+=fit.penalty;weight+=q;if(fit.clearly_too_far)far++;
   }
   if(scope){
