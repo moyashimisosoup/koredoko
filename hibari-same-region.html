@@ -81,7 +81,8 @@ background:#f1f6f1;background-image:linear-gradient(#dbe8dd 1px,transparent 1px)
 <h2>3. 参考位置の図</h2>
 <div id="plot" class="plot" role="group" aria-label="公開住宅7・駅1・施設10の相対位置図。町丁目の代表点を含み、入口や道路線は表示しない。"><div class="north">↑ 北</div></div>
 <div class="legend"><span><b></b>公開住宅</span><span><b class="station"></b>駅</span><span><b class="facility"></b>公共施設</span></div>
-<p class="small">参照位置18点のうち住所番号一致13点、町丁目のみ5点。破線の枠は町丁目代表点を表します。町丁目の異なる対象が近接する場合も、ピンと候補一覧の両方から確認できます。</p>
+<p class="small">参照位置18点のうち住所番号一致13点、町丁目のみ5点。破線の枠は町丁目代表点です。ピンが重なって操作できない場合は下の施設一覧を使用してください。</p>
+<h3>公共施設・駅の参照地点</h3><div id="placeList"></div>
 </section>
 <section class="panel">
 <h2>4. 全7候補の暫定探索順</h2>
@@ -196,6 +197,12 @@ function render(){
   b.dataset.selected=String(selected===p.id);b.style.left=p.xPct+"%";b.style.top=p.yPct+"%";
   b.title=p.label;b.setAttribute("aria-label",p.label+"。参照地点の根拠を確認");
   b.addEventListener("click",()=>showPoint(p.id));plot.append(b);
+ }
+ const places=$("placeList");places.replaceChildren();
+ for(const p of report.map_points.filter(x=>x.type!=="public_complex_reference")){
+  const b=txt("button",p.label+"　"+(p.point_precision==="town_chome_reference_only"?"町丁目":"住所番号"),"subtle");
+  b.type="button";b.style.margin="4px";b.style.fontSize="12px";b.addEventListener("click",()=>showPoint(p.id));
+  places.append(b);
  }
  const missing=$("missing");missing.replaceChildren();
  for(const p of report.missing_target_references){
