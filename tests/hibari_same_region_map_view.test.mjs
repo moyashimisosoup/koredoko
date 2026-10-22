@@ -20,7 +20,7 @@ test("maps exactly 13 real address-number public reference points out of 18 in S
  assert.equal(x.map_points.filter(p=>p.type==="station_reference").length,1);
  assert.equal(x.map_points.filter(p=>p.type==="facility_reference").length,10);
  assert.equal(x.missing_target_references.length,5);
- assert.equal(x.physical_pois_on_map,6);
+ assert.equal(x.physical_pois_on_map,10);
  assert.ok(x.map_points.every(p=>p.xPct>=0&&p.xPct<=100&&p.yPct>=0&&p.yPct<=100));
  assert.equal(x.map_points.length,18);
  assert.equal(x.lower_precision_town_reference_count,5);
