@@ -76,7 +76,7 @@ export function vetOpenPoiSearchResponse(payload,name,center,{referenceLocation=
  // multiple identically named POIs. Do not use the query center as that
  // reference: it might be a generic town center. Never compare to private
  // property or residents' coordinates; those never reach this function.
- let chosen=groups.length===1?groups[0]:null,matchBasis="exact_name_plus_region";
+ let chosen=groups.length===1?groups[0]:null,matchBasis="name_plus_region_only";
  if(referenceLocation!==null){
   const near=groups.filter(g=>g.some(x=>meters(x.location,referenceLocation)<=100));
   if(near.length!==1)return {status:near.length===0?"reference_coordinate_conflict":
@@ -87,7 +87,7 @@ export function vetOpenPoiSearchResponse(payload,name,center,{referenceLocation=
  const sorted=[...chosen].sort((a,b)=>(b.level??0)-(a.level??0));
  // Keep only the representative POI and its own provenance.
  const p=sorted[0];
- return {status:matchBasis==="exact_name_plus_region"?"single_regional_match":"single_independently_referenced_match",
+ return {status:matchBasis==="name_plus_region_only"?"single_regional_match":"single_independently_referenced_match",
   matched_count:valid.length,
   match:{...p,precision:p.level===3?"town_chome_reference":"openpoi_public_poi_reference_unverified_entrance",
    identity_status:matchBasis}};
