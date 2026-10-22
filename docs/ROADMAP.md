@@ -28,6 +28,10 @@
 
 [最小実機運用ゲートとCI監査](APP023_REAL_DEVICE_READINESS_AUDIT_2026-10-22.md)。従来のNode.js CIが列挙した古い12テストだけ実行し、最近追加した新地図・欠測中立・暫定順位のテストを実行していなかった。全Nodeテスト自動検出に切り替えた結果、**342件中341件成功・1件失敗**を発見。町丁目代替点追加後の公開施設数の古い期待値6を、実データに沿う10へ修正。さらに、無効なJSONのあとに前広告の候補地図が残る実用上の問題を修正。**PRのHTMLをlocalhostで開いた実Chromium 1280×800/390×844タッチ**の代表操作（H01/H02/H03、倍率、貼付、公共POIと候補タップ、入力失敗→復旧、はみ出し、例外、外部通信）を[4ジョブ成功のActions #39751927001](https://github.com/moyashimisosoup/koredoko/actions/runs/39751927001)で確認。検証の費用を抑えるため、毎コミットでは全Node/Pythonを実行し、重いブラウザの再検査はPRをReady for reviewにした際に実施する。**iPhone Safari実機・外部Webプレビュー・Pages公開は未実施**。次は実機でH02→候補7件→POI根拠→倍率変更→非JSON貼付→誤入力復帰の最短一巡を検収する。歩行経路全42組、駅出口詳細、独立的中率をUIゲートの前提にしない。P0〜P5の正式完了1/6は不変。
 
+## GitHub Actions経由Pages公開・配信HTTP検証（2026-10-22）
+
+[正式な公開・読戻しCHECKPOINT](APP023_PAGES_PREVIEW_SETUP_2026-10-22.md)。利用者がPagesのSourceを**GitHub Actions**に設定し、`preview/app023-iphone-20261022`の静的HTML/JS/JSONを専用ワークフローから公開した。最初の環境制限による失敗を`app023-iphone-preview`環境へ分離して解消し、[デプロイ成功 #39754750949](https://github.com/moyashimisosoup/koredoko/actions/runs/39754750949)、[トップ・操作画面・JS・JSONの実HTTP検収 #39754979967](https://github.com/moyashimisosoup/koredoko/actions/runs/39754979967)で全3ジョブ成功。公開操作画面：https://moyashimisosoup.github.io/koredoko/hibari-same-region.html 。**GitHub Pagesの配信は確認済み、iPhone Safariの操作は未確認**。main・PR #28の統合なし、秘密情報の公開なし。これをP5の「Web公開・配信確認」マイルストーンとして記録するが、**P5工程全体は未完了**。現行P0～P5の完了工程は1/6のまま。次はiPhone実機の最小操作1巡を実施。
+
 ## 全体計画
 
 進捗率は各工程の出口条件の達成数 ÷ 全工程数で算出。実作業の進捗予測や位置特定の精度ではありません。既存の研究記録上、P0のみ出口完了で **1/6 = 17%**。このレポジトリでは初期化後に再検証すること。
