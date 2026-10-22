@@ -47,7 +47,7 @@ test("same-region module imports and page JS script are statically valid",()=>{
  assert.doesNotThrow(()=>new Function(js.replace(/^import .*? from "[^"]+";\s*$/gm,"")));
 });
 test("home and old bridge link to same-region usability without mutating Ojima example",()=>{
- const home=read("index.html"),bridge=read("ad-bridge.html");
+ const home=read("legacy-input.html"),bridge=read("ad-bridge.html");
  assert.ok(home.includes("./hibari-same-region.html"));
  assert.ok(bridge.includes("./hibari-same-region.html"));
  assert.ok(home.includes("./public-map.html"));
