@@ -22,12 +22,16 @@ export function projectPublicReferencePoints(points){
  const lons=points.map(p=>p.lon*longitudeFactor),lats=points.map(p=>p.lat);
  const minX=Math.min(...lons),maxX=Math.max(...lons),minY=Math.min(...lats),maxY=Math.max(...lats);
  const spreadX=Math.max(maxX-minX,0.0015),spreadY=Math.max(maxY-minY,0.0015);
- const margin=0.09;
+ // Viewport aspect ratio = 1.25:1. Preserve one equal approximate
+ // geographic length scale in X (longitude*cos(lat)) and Y (latitude).
+ const aspect=1.25,margin=0.09;
+ const unitHeight=Math.max(spreadY,spreadX/aspect)/(1-2*margin);
+ const midX=(minX+maxX)/2,midY=(minY+maxY)/2;
  return points.map(p=>({
   id:p.id,label:p.label,type:p.type,
   lat:p.lat,lon:p.lon,
-  xPct:Math.round((margin+(p.lon*longitudeFactor-minX)/spreadX*(1-2*margin))*1000)/10,
-  yPct:Math.round((margin+(maxY-p.lat)/spreadY*(1-2*margin))*1000)/10,
+  xPct:Math.round((0.5+(p.lon*longitudeFactor-midX)/(unitHeight*aspect))*1000)/10,
+  yPct:Math.round((0.5-(p.lat-midY)/unitHeight)*1000)/10,
   point_precision:p.point_precision??"public_reference_not_entrance",
   public_source_url:p.public_source_url??null
  }));
