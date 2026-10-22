@@ -52,8 +52,11 @@ jobs:
         run: node --test tests/*.test.mjs
 
   browser-preview-smoke:
-    # Separate from offline tests. This runs a real browser against the PR's
-    # local static file server; it NEVER publishes GitHub Pages.
+    # Run the heavier local real-browser smoke when a PR leaves Draft.
+    # Draft development runs ALL offline tests on each commit; one successful
+    # manual milestone preview was already recorded on run 39751927001.
+    # This never publishes GitHub Pages.
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
