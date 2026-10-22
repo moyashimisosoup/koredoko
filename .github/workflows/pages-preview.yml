@@ -49,7 +49,9 @@ jobs:
       pages: write
       id-token: write
     environment:
-      name: github-pages
+      # Use an isolated deploy environment: the default github-pages
+      # environment may restrict non-main branches.
+      name: app023-iphone-preview
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy GitHub Pages
