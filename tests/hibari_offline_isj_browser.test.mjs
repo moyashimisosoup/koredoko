@@ -28,7 +28,7 @@ test("inline module code is parseable and no true-entrance verification is claim
  assert.ok(html.includes("入口確認0件"));
 });
 test("home page makes review UI discoverable without changing public-location disclaimer",()=>{
- const home=readFileSync(new URL("../index.html",import.meta.url),"utf8");
+ const home=readFileSync(new URL("../legacy-input.html",import.meta.url),"utf8");
  assert.ok(home.includes("./isj-review.html"));
  assert.ok(home.includes("現時点では所在地の推定や地図照合を行いません。"));
 });
