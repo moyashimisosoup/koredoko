@@ -16,9 +16,15 @@ const pois=file("hibari_poi_identities_20261021.json");
 const refs=file("hibari_geolonia_v2_address_number_20261022.json");
 const towns=file("hibari_geolonia_town_chome_references_20261022.json");
 const registry=makeAreaLandmarks(pois,refs,towns);
-const output={date:"2026-10-22",mode:"live_public_ad_realworld_pilot",advertisement_cases:[],openpoi_live:[],
+// G1 retest changes advertisement clue selection only. The previous live
+// OpenPOI 3-query outcome is already recorded, so do not repeat costly
+// network discovery without an explicit APP023_RECHECK_OPENPOI=1.
+const checkOpenPoi=process.env.APP023_RECHECK_OPENPOI==="1";
+const output={date:"2026-10-22",mode:"G1_one_time_real_ad_recheck",advertisement_cases:[],openpoi_live:[],
+  openpoi_rechecked_this_run:checkOpenPoi,
+  openpoi_previous_observation:{run_id:39773177928,http200:3,accepted:0},
   browser:{},review:{},disclaimers:["No true location or address used as input","No scoring of individual dwellings",
-  "200m grid exploratory overlap, not pedestrian isochrone","Live OpenPOI may omit real POIs or be offline"]};
+  "200m grid exploratory overlap, not pedestrian isochrone","OpenPOI prior outcome is not re-measured unless specifically enabled"]};
 mkdirSync("realworld-pilot-artifacts",{recursive:true});
 for(const id of ids){
  const ad=ads.find(x=>x.ad_id===id);
@@ -28,9 +34,13 @@ for(const id of ids){
  const parsed=parseAreaInput(content,registry,towns.records);
  const result=solveSearchArea(parsed);
  const row={ad_id:id,source_tier:ad.listing.source_tier,excerpts:ad.facilities.length,
-  parsed_clues:parsed.constraints.length,ignored:parsed.ignored,partial_address_used:false,
+  parsed_clues:parsed.constraints.length,
+  withheld_contradictory:parsed.ignored.filter(x=>x.reason.includes("不整合")).length,
+  weak_distance_mode_unknown:parsed.constraints.filter(x=>x.metric==="distance_mode_unknown").length,
+  ignored:parsed.ignored,partial_address_used:false,
   state:result.state,estimated_areas:result.region_count,area_km2:result.region_area_km2,
-  contradictions:result.contradictory_clues??0,mode:"coarse_straight_distance_area_not_road_network"};
+  contradictions_admitted_to_solver:result.contradictory_clues??0,
+  mode:"coarse_straight_distance_area_not_road_network"};
  output.advertisement_cases.push(row);
  if(result.state!=="exploratory_areas"||result.clues_used<2||!Number.isFinite(result.region_area_km2))
   output.review.user_flow_blocked=true;
@@ -38,7 +48,7 @@ for(const id of ids){
 const first=registry.find(x=>x.name==="ひばりが丘郵便局")??registry.find(x=>x.name.includes("PARCO"));
 if(!first?.location)throw Error("No public regional reference center available");
 const center=first.location;
-for(const query of ["ひばりが丘郵便局","ひばりが丘PARCO","西友ひばりヶ丘店"]){
+if(checkOpenPoi)for(const query of ["ひばりが丘郵便局","ひばりが丘PARCO","西友ひばりヶ丘店"]){
  let row={public_poi_name:query,endpoint:"GET /v1/search",request_disclosed_fields:["poi_name","public_reference_center"]};
  try{
   const url=buildOpenPoiSearchUrl(query,center);
@@ -85,8 +95,12 @@ try{
  if(errors.length||output.browser.horizontal_overflow)output.review.user_flow_blocked=true;
  await context.close();
 }finally{await browser.close();}
-output.review.live_openpoi_http_200=output.openpoi_live.filter(x=>x.http_status===200).length;
-output.review.live_openpoi_name_matches=output.openpoi_live.filter(x=>x.name_exact_regional_matched).length;
+output.review.live_openpoi_http_200=checkOpenPoi?output.openpoi_live.filter(x=>x.http_status===200).length:null;
+output.review.live_openpoi_name_matches=checkOpenPoi?output.openpoi_live.filter(x=>x.name_exact_regional_matched).length:null;
+output.review.G1_H02_conflicting_claim_withheld=output.advertisement_cases.find(x=>x.ad_id==="H02")?.withheld_contradictory===1;
+output.review.G1_H03_unqualified_park_weak=output.advertisement_cases.find(x=>x.ad_id==="H03")?.weak_distance_mode_unknown===1;
+if(!output.review.G1_H02_conflicting_claim_withheld||!output.review.G1_H03_unqualified_park_weak)
+ output.review.user_flow_blocked=true;
 output.review.all_three_ads_produced_area=output.advertisement_cases.every(x=>x.state==="exploratory_areas"&&x.parsed_clues>=2);
 output.review.real_world_accuracy_measured=false;
 output.review.known_building_target_used=false;
