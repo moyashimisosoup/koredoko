@@ -36,7 +36,9 @@ test("browser area UI handles text safely, never inserts private addresses or in
  assert.ok(!h.includes("fetch(\"https"));
  assert.ok(!h.includes("building:K"));
  assert.ok(!h.includes("ひばりヶ丘プラザ"));
- assert.ok(h.includes("徒歩経路APIはまだ使用しておらず"));
+ assert.ok(h.includes("徒歩経路APIはまだ使用していません"));
+ assert.ok(h.includes("出典：OpenPOI API"));
+ assert.ok(h.includes("広告全文や住所をAPIへ送らず"));
 });
 test("legacy JSON inspector and experimental pages remain reachable by URL",()=>{
  const h=page("legacy-input.html");
