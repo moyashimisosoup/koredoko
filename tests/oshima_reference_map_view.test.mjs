@@ -84,3 +84,22 @@ test("map is immutable to original public evidence and contains zero private-hom
  assert.ok(res.ranked.every(c=>!c.geographic_identity_confirmed));
  assert.ok(res.map_points.every(p=>p.public_source_url===null||p.public_source_url.startsWith("https://")));
 });
+
+test("coordinate projection preserves approximately the same map scale in x and y",()=>{
+ const lat=35.69,c=Math.cos(lat*Math.PI/180);
+ const one=projectPublicReferencePoints([
+  {id:"a",type:"public_complex_reference",label:"A",lat,lon:139.83},
+  {id:"b",type:"public_complex_reference",label:"B",lat:lat+0.005,lon:139.83},
+  {id:"c",type:"public_complex_reference",label:"C",lat,lon:139.83+0.005/c}
+ ]);
+ const a=one.find(x=>x.id==="a"),b=one.find(x=>x.id==="b"),d=one.find(x=>x.id==="c");
+ const vertical=Math.abs(a.yPct-b.yPct);
+ const horizontal=Math.abs(a.xPct-d.xPct)*1.25;
+ assert.ok(Math.abs(horizontal-vertical)<=0.3,"Equal local ground distance should have equal on-screen ground distance");
+});
+test("adding a hypothetical facility condition never increases eligible reference candidates",()=>{
+ const r=compare({facilityId:"koto-civic-center",metric:"walk_m",maxMeters:500});
+ assert.ok(r.combined_reference_compatible_candidates.length<=r.baseline_reference_compatible_candidates.length);
+ assert.ok(r.combined_reference_compatible_candidates.every(id=>r.baseline_reference_compatible_candidates.includes(id)));
+ assert.equal(r.facility_condition_origin,"user_selected_hypothetical_not_an_advertisement");
+});
