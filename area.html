@@ -40,10 +40,11 @@ details{margin-top:12px}#details div{font-size:13px;margin:8px 0;color:#53645b}
 <details><summary>使用した条件と注意点</summary><div id="details"></div>
 <button id="copy" type="button">候補エリアのGeoJSONをコピー</button></details>
 </section>
-<p class="micro" style="margin-top:24px">現在の試作はひばりヶ丘周辺の公開施設11地点に対応。地点が見つからない条件は飛ばして結果に明示します。徒歩経路APIはまだ使用しておらず、道路網を考慮した最終推定ではありません。入力文は端末内で処理し、送信・保存しません。</p>
+<p class="micro" style="margin-top:24px">現在の試作はひばりヶ丘周辺の公開施設11地点に対応。未知の施設名はOpenPOI APIで地域照合を試みます。広告全文や住所をAPIへ送らず、抽出した施設名だけを送信します。API側の通信記録は当アプリでは管理できません。結果の座標は未検証で、徒歩経路APIはまだ使用していません。<a href="https://openpoiapi.com/attribution.html" target="_blank" rel="noopener noreferrer">施設データの出典：OpenPOI API</a>。</p>
 </main>
 <script type="module">
 import {makeAreaLandmarks,parseAreaInput,solveSearchArea} from "./src/area_overlap_solver.mjs";
+import {enrichWithOpenPoi} from "./src/openpoi_facility_matcher.mjs";
 const el=id=>document.getElementById(id);
 const NS="http://www.w3.org/2000/svg";
 let data=null,lastResult=null;
@@ -101,7 +102,12 @@ function render(result,parsed){
 el("search").addEventListener("click",async()=>{
  el("search").disabled=true;el("errors").textContent="";el("result").classList.add("hidden");
  try{
-  const source=await sources(),parsed=parseAreaInput(el("advertisement").value,source.landmarks,source.towns);
+  const source=await sources();
+  const first=parseAreaInput(el("advertisement").value,source.landmarks,source.towns);
+  // Only strictly extracted names of UNREGISTERED public facilities are sent.
+  // Never send full ad text, private addresses, or property information.
+  const lookup=await enrichWithOpenPoi(el("advertisement").value,first);
+  const parsed=lookup.parsed;
   const result=solveSearchArea(parsed);lastResult=null;
   if(result.state!=="exploratory_areas"){
    el("errors").textContent="距離のある施設を読み取れませんでした。例の文章を使うか、施設名と徒歩分数／距離を入力してください。";
@@ -115,7 +121,9 @@ el("search").addEventListener("click",async()=>{
    const line=document.createElement("div");
    line.textContent=c.label+"："+
     (c.stated_meters!==null?"約"+c.stated_meters+"m":"徒歩"+c.stated_minutes+"分")+
-    " ／ "+(c.precision==="town_chome_reference"?"町丁目の参考点":"住所番号の参考点")+
+    " ／ "+(c.precision==="town_chome_reference"?"町丁目の参考点":
+     c.precision==="openpoi_public_poi_reference_unverified_entrance"?"OpenPOIの未検証の施設座標":
+     "住所番号の参考点")+
     (c.conflicting_advertisement_numbers?"（距離と徒歩分数の表示が不整合）":"");
    d.append(line);
   }
@@ -123,6 +131,13 @@ el("search").addEventListener("click",async()=>{
    const p=document.createElement("div");p.textContent="住所の一部："+parsed.partialAddress.name+"（参考の重み付け。行政界とは異なります）";d.append(p);
   }
   for(const c of parsed.ignored){const p=document.createElement("div");p.textContent="保留 "+c.line+"行目："+c.reason;d.append(p);}
+  for(const item of lookup.lookups??[]){const p=document.createElement("div");
+   const label={single_regional_match:"施設名と地域が一致（入口未確認）",
+    ambiguous_same_named_locations:"同名施設が複数あり保留",
+    no_exact_regional_match:"地域内の一致なし",
+    api_unavailable_or_rate_limited:"施設検索に失敗・保留"}[item.status]??item.status;
+   p.textContent="OpenPOI "+item.name+"："+label;d.append(p);
+  }
   if(result.contradictory_clues)el("errors").textContent="広告の距離・徒歩分数に食い違いがあります。区域は暫定的です。";
   el("result").classList.remove("hidden");
  }catch(e){lastResult=null;el("errors").textContent="計算できません："+e.message;
