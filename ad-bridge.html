@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>これどこ｜広告の手がかりを比較へ</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#21332d;background:#f6f7f6}
+*{box-sizing:border-box}body{margin:0}main{max-width:900px;margin:0 auto;padding:24px 15px 58px}
+h1{font-size:clamp(25px,4.5vw,36px);margin:7px 0 8px}h2{font-size:18px;margin:0 0 11px}
+a{color:#286b58}p{color:#5e7169;line-height:1.7}.small{font-size:13px}.panel{background:white;border:1px solid #d5dfd9;border-radius:18px;margin:16px 0;padding:19px}
+select,textarea{font:inherit;display:block;width:100%;border:1px solid #aebcb4;border-radius:10px;padding:11px;color:#243b30;background:white;line-height:1.5}
+textarea{min-height:134px;resize:vertical}
+select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid #2e8e77;outline-offset:2px}
+label{display:block;font-weight:700;margin:14px 0 8px;font-size:14px}
+button{border:0;background:#286b58;color:#fff;border-radius:80px;min-height:44px;font:inherit;font-weight:700;padding:12px 20px;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.subtle{border:1px solid #cbd7d0;background:#f4f8f5;color:#315544}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.notes{background:#f0f5f1;padding:13px;border-radius:10px;line-height:1.7;white-space:pre-line}
+.counter{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.tag{border:1px solid #cbd8d0;background:#f7faf7;border-radius:11px;padding:8px 11px;font-size:13px}
+.item{border-bottom:1px solid #e3e9e5;padding:13px 1px;line-height:1.65}
+.item:last-child{border:0}
+.item strong{font-size:15px}.quote{margin:5px 0 0;font-size:13px;color:#526a5a;white-space:pre-wrap;overflow-wrap:anywhere}
+.pending{color:#805c35}.hidden{display:none!important}
+@media(max-width:600px){main{padding:17px 12px 50px}.panel{padding:13px;margin:12px 0}.actions button{flex:1}}
+</style></head><body><main>
+<p class="small"><a href="./index.html">← これどこ・入力</a> / APP-023・入力→施設条件</p>
+<h1>広告の手がかりを整理</h1>
+<p>広告に実際に書かれた駅・学校・公園などを、既存の候補比較エンジンへ渡す試作画面です。<strong>出典不明・施設名不一致・距離不整合は保留</strong>し、存在しない歩行距離を補いません。</p>
+<section class="panel">
+<h2>1. 広告の入力方法</h2>
+<label for="mode">入力</label>
+<select id="mode">
+<option value="locked">公開広告の出典固定サンプル（H01〜H03）</option>
+<option value="text">広告本文の貼り付け（限定的な厳密抽出）</option>
+<option value="json">契約v0.2のJSONと広告原文</option>
+</select>
+<div id="lockedFields">
+<label for="ad">確認済み広告</label>
+<select id="ad"><option value="H01">H01：施設2件</option><option value="H02">H02：施設3件（1件保留）</option><option value="H03">H03：施設3件（1件保留）</option></select>
+<p class="small">出典の直接ページを確認した3広告から、施設の引用部分だけを表示します。駅徒歩分数は原文引用が未保存のため条件への採用を保留します。建物の正解情報は比較入力へ渡しません。</p>
+</div>
+<div id="textFields" class="hidden">
+<label for="text">広告本文（駅・施設の徒歩条件を含む行）</label>
+<textarea id="text" placeholder="例：ひばりが丘公園・・・約230ｍ（徒歩3分）" spellcheck="false"></textarea>
+<div class="actions"><button class="subtle" id="copyExcerpts" type="button">H01の確認済み引用2行を読み込む</button></div>
+<p class="small">明示された徒歩分数と、公式名称または登録済み別名が一致した施設だけを仮登録します。数字・場所をAIで推定しません。貼り付けた本文の出典そのものは独立検証されません。</p>
+</div>
+<div id="jsonFields" class="hidden">
+<label for="json">定型JSON（schema_version 0.2）</label>
+<textarea id="json" placeholder="契約v0.2のJSONを貼り付け" spellcheck="false"></textarea>
+<label for="original">引用を含む広告原文</label>
+<textarea id="original" placeholder="JSONのexplicit根拠と一致する原文を貼り付け" spellcheck="false"></textarea>
+<p class="small">P1の既存検証器で引用一致を確認した後、固有施設名・徒歩分数だけを橋渡しします。</p>
+</div>
+<div class="actions"><button id="run" type="button">施設条件を整理して比較</button></div>
+</section>
+<section class="panel" aria-live="polite">
+<h2>2. 施設条件と根拠</h2>
+<div id="status" class="notes" role="status">入力を選んで実行してください。</div>
+<div id="counters" class="counter"></div>
+<div id="conditions"></div>
+<h2 style="margin-top:22px">採用しなかった条件</h2><div id="withheld" class="small pending"></div>
+</section>
+<section class="panel" aria-live="polite">
+<h2>3. 公開建物候補との照合状況</h2>
+<div id="comparisonStatus" class="notes">まだ照合していません。</div>
+<div id="candidateRows"></div>
+<p class="small">候補集合は公表済み7建物を匿名化したものです。現時点では施設の入口・歩行経路が揃っていないため、個別建物を確定する順位は出しません。候補地図と詳細な距離評価は次の工程です。</p>
+</section>
+<p class="small">処理は端末のブラウザ内で実施。入力内容は外部へ送信・保存しません。元広告URLや建物の正解対応、私的な住戸所在地を候補比較エンジンへ渡しません。</p>
+</main>
+<script type="module">
+import {bridgePrelockedPublicAd,bridgePastedPublicText,bridgeReviewedJson,compareBridgeAgainstPublicCandidates} from "./src/ad_input_bridge.mjs";
+const el=id=>document.getElementById(id);
+const docs=["hibari_real_ads_prelocked_20261021.json","hibari_poi_identities_20261021.json","hibari_public_building_addresses_20261021.json"];
+let cache=null;
+async function source(){
+ if(cache)return cache;
+ const data=await Promise.all(docs.map(async n=>{
+  const res=await fetch("./examples/"+n,{cache:"no-store"});
+  if(!res.ok)throw Error("公開資料を取得できません："+n);
+  return res.json();
+ }));
+ cache=data;return data;
+}
+function appendLine(parent,headline,sub,className="item"){
+ const wrap=document.createElement("div");wrap.className=className;
+ const title=document.createElement("strong");title.textContent=headline;wrap.append(title);
+ if(sub){const p=document.createElement("p");p.className="quote";p.textContent=sub;wrap.append(p);}
+ parent.append(wrap);
+}
+function showMode(){
+ const mode=el("mode").value;
+ for(const [field,m] of [["lockedFields","locked"],["textFields","text"],["jsonFields","json"]]){
+  el(field).classList.toggle("hidden",mode!==m);
+ }
+}
+el("mode").addEventListener("change",showMode);
+el("copyExcerpts").addEventListener("click",async()=>{
+ try{
+  const [prelock]=await source();
+  const ad=prelock.advertisements.find(x=>x.ad_id==="H01");
+  el("text").value=ad.facilities.map(x=>x.source_excerpt).join("\n");
+  el("status").textContent="H01に記録済みの施設引用2行を読み込みました。駅の未引用条件は含めていません。";
+ }catch(e){el("status").textContent="引用の読込失敗："+e.message;}
+});
+el("run").addEventListener("click",async()=>{
+ el("run").disabled=true;el("status").textContent="施設条件を点検しています。";
+ for(const id of ["conditions","withheld","counters","candidateRows"])el(id).replaceChildren();
+ el("comparisonStatus").textContent="確認中";
+ try{
+  const [prelock,poi,buildings]=await source();
+  const mode=el("mode").value;
+  const draft=mode==="locked"?bridgePrelockedPublicAd(prelock,poi,el("ad").value):
+   mode==="text"?bridgePastedPublicText(el("text").value,poi):
+    bridgeReviewedJson(el("json").value,el("original").value,poi);
+  const {comparison,conditions_passed,candidate_count}=compareBridgeAgainstPublicCandidates(draft,buildings);
+  el("status").textContent="原文から採用できた固有名詞の徒歩条件と、保留の条件を分離しました。"
+   +" 施設名の一致は入口座標や道路距離の確認を意味しません。";
+  for(const t of ["採用 "+draft.eligible_walking_clues+"件","保留 "+draft.withheld_clues+"件",
+   "重複する物理施設 "+draft.duplicate_physical_groups+"群",
+   "矛盾する施設距離 "+draft.ambiguous_walk_groups+"群"]){
+    const tag=document.createElement("span");tag.className="tag";tag.textContent=t;el("counters").append(tag);
+  }
+  if(!draft.conditions.length)appendLine(el("conditions"),"採用できる条件がありません","出典・施設名・単位・徒歩分数を確認してください。");
+  for(const c of draft.conditions){
+   appendLine(el("conditions"),c.label+"｜徒歩"+c.min_minutes+"分",
+    "原文：" +c.advertised_excerpt+"\n計測状況：歩行経路未取得 / 入口未確認");
+  }
+  if(!draft.withheld.length)appendLine(el("withheld"),"今回の保留条件はありません","ただし実際の歩行距離は別途確認が必要です。");
+  for(const c of draft.withheld)appendLine(el("withheld"),c.field+"： "+c.reason,null);
+  el("comparisonStatus").textContent="公開候補 "+candidate_count+"件・比較へ渡した条件 "+
+   conditions_passed+"件。"+
+   (comparison?.ranking_state==="abstain"?"道路経路の根拠がないため、評価は全件保留です。":
+    "根拠付きの参考比較を表示します。")+" 正解建物の確定・一般化可能な正解率の算出は行いません。";
+  if(comparison)for(const c of comparison.ranked){
+    appendLine(el("candidateRows"),c.label+"｜照合保留",
+     "強い一致 "+c.summary.matched+"、未確認 "+c.summary.unknown+
+      "。出入口・施設の実経路が足りません。");
+  }
+ }catch(e){
+  el("status").textContent="入力を条件化できませんでした："+e.message;
+  el("comparisonStatus").textContent="比較中止。根拠不明な条件で推定しません。";
+ }finally{el("run").disabled=false;}
+});
+showMode();
+</script></body></html>
