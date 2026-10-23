@@ -1,9 +1,11 @@
 # APP-023「これどこ」｜設計・実行・進捗管理マスター
 
 **文書ID:** `APP023-EXECUTION-MASTER`  
-**版:** v1.2（2026-10-22 JST／G2 OpenPOI実応答診断）  
+**版:** v1.3（2026-10-23 JST／G3実地図Pages配信確認）  
 **正本:** `moyashimisosoup/koredoko` ／ 開発ブランチ `work/app023-hibari-ad-prelock-20261021` ／ [Draft PR #28](https://github.com/moyashimisosoup/koredoko/pull/28)  
 **この文書の位置づけ:** 今後のAPP-023の**設計・優先順位・マイルストーン・進捗の単一の判断基準**。過去の `docs/ROADMAP.md`、`APP023_DELIVERY_AND_QUALITY_PLAN_2026-10-22.md`、既知7物件の順位付けに関する詳細計画は**履歴・研究資料**であり、実行優先順位が矛盾する場合は本書を優先する。成果と計測根拠は各CHECKPOINT・Actionsへリンクして残し、本書を際限なく肥大化させない。
+
+**最新CHECKPOINT（G3地図への候補区域表示、2026-10-23 JST）：** [Pages実行 #39881072064](https://github.com/moyashimisosoup/koredoko/actions/runs/39881072064) の**ビルド・デプロイ・本番HTTPS静的ファイル取得3ジョブ成功**。実行画面 [area.html](https://moyashimisosoup.github.io/koredoko/area.html) とトップからの遷移を公開。従来の相対位置SVGを、Leaflet 1.9.4 + OpenStreetMapタイルの**実地図**に変更し、既存の200m広めのGeoJSON MultiPolygon候補区域を重ね、公開施設の参考点だけをマーカー表示する。**物件そのものの位置ピンは作らない。** 開発ブランチとプレビューブランチで4つのアプリ用ファイルのGit blob SHAが一致することを確認。開発ブランチの[品質CI #39880355458](https://github.com/moyashimisosoup/koredoko/actions/runs/39880355458)は成功。OSMタイル利用はWeb標準のReferer・キャッシュ・地図内帰属を保持し、タイルの一括取得を行わない。地図の表示領域はOSMのタイル配信元に伝わる。**未達は実際のiPhone Safariで「貼付→区域→地図の拡大縮小」を確認すること**、及び本当の物件が区域に含まれる割合の独立評価。新たなPOI調査や複雑なUIの追加はしない。**次の1操作：iPhone Safariで https://moyashimisosoup.github.io/koredoko/area.html の「例を入力する → このへんを探す」を実際に操作する。**
 
 **最新CHECKPOINT（G2実API応答を6候補だけ診断）：** [Actions #39797211426](https://github.com/moyashimisosoup/koredoko/actions/runs/39797211426)。OpenPOIへの検索3件で、郵便局は**同名2地点**（ABR由来の公開住所番号参考点との差 約8m／約469m）、PARCOは**飲食店1件のみ**、西友は**テナント3件のみ**。APIが返した「テナント」を商業施設本体へ変換してはいけない。既存の厳密名称照合はこの2件を**保留して正解**。郵便局についてのみ、*別出典の公開住所番号参考点があるとき*候補を分離できるロジックを追加。位置は入口や物件住所ではなく**施設の参考点**。一般ユーザー向けの未登録POI自動検索への無条件適用はしない。G2を**限定的な原因診断・安全な照合方針決定済み**とし、自動採用率・全国対応の達成は主張しない。重複する外部API診断を停止（`g2-poi-diagnostic.yml`は手動起動のみ）。**次はG3：地図上の着色区域を最小UIへ載せ、iPhoneで確認する。**
 
@@ -43,7 +45,7 @@
 | **G0 目的・操作の固定** | 「未知の不動産→候補**面**」、入力欄1つ、結果地図1つに決定。既知建物リスト不要 | **設計決定・初期実装済み** | [目的再定義](APP023_AREA_FIRST_PURPOSE_RESET_2026-10-22.md)、`area.html` |
 | **G1 実広告入力の品質** | H01/H02/H03の直接確認済み引用から安全に採用／保留し、矛盾や方式不明の条件を区別する。修正後の採用件数・区域を記録 | **入力処理合格：実広告3件で再評価済み**。正解区域の包含精度は未評価 | [修正後実広告パイロット #39776134062](https://github.com/moyashimisosoup/koredoko/actions/runs/39776134062)：H02不整合1件保留、H03弱い参考1件、3広告区域面積は以前と同じ |
 | **G2 施設照合の実用性** | 本番OpenPOIでの既知3施設の結果から安全に照合または保留を判断し、既存参照点を引き続き使用 | **限定診断完了**：郵便局は公開住所番号参照点の裏付けで選択可能、PARCO・西友はテナントしか返らないため保留。一般施設の網羅性は未達 | [実API候補診断 #39797211426](https://github.com/moyashimisosoup/koredoko/actions/runs/39797211426)。1件の参照付き照合は、未知施設の自動採用率を示さない |
-| **G3 地図上の最小実機動線** | 住所の一部＋複数の周辺施設の広告文1件で、**実際の地図に候補区域を重ねてiPhone Safariで見られる**。入力→区域を見る、エラー復帰を一巡 | **未達** | 現状は相対位置SVG、開発中UIはPages未反映 |
+| **G3 地図上の最小実機動線** | 住所の一部＋複数の周辺施設の広告文1件で、**実際の地図に候補区域を重ねてiPhone Safariで見られる**。入力→区域を見る、エラー復帰を一巡 | **実地図版を公開・HTTP読戻し済み、iPhone Safari実機は未検収** | [Pages #39881072064](https://github.com/moyashimisosoup/koredoko/actions/runs/39881072064) にてHTML/JS配信成功。公開したのは面表示で、個別物件ピンなし |
 | **G4 限定運用の根拠** | 広告由来の正解はモデル入力に使わず、公開物件種別の異なる少数サンプルで**正解区域包含（coverage）・区域面積・使える入力割合**を記録。重大な表示誤認を解消 | **未達** | 独立の対象固定・真の区域との比較なし。精度保証はしない |
 
 **公開済み**と**実機動作確認済み**と**推定品質評価済み**を混同しない。G1/G2の解決で面積が広がるのは必ずしも失敗ではない。誤った条件による狭すぎる区域をなくす方を優先する。
@@ -60,10 +62,11 @@
 - **PARCOと西友**：OpenPOIが返したものはテナントであり施設本体の独立参照ではない。根拠なく同一施設と推定しない。既存の公開POI参照点を継続使用。
 - 実APIの自動採用0/3は、検索が全滅した意味ではなく**安全な不採用**を含む。根拠を増やす前に同一APIを再試行しない。
 
-### NOW：G3、ユーザーが触れる最小公開画面
+### NOW：G3、公開した実地図版のiPhone Safari実機検収
 
-- 現在の`area.html`の**1入力・1ボタン**を維持したまま、出典表示可能な軽量地図へ候補区域を載せる。ピンポイントの物件位置・既知建物名の一覧を表示しない。
-- 新版だけをプレビューブランチからGitHub Actionsで公開（`main`統合は別途）、本当のiPhone Safariで一巡確認。**画面・施設・広告3件を網羅的に再検査しない**。
+- 実地図へのGeoJSON区域重ね合わせを実装し、プレビューブランチへ**単一コミット**で公開、GitHub Actionsのビルド／Pages配信／HTTP読戻しに合格。`main`とDraft PRをマージしていない。
+- 次はiPhone Safariの**1実広告動線**：「例を入力する」→「このへんを探す」→着色区域＋OpenStreetMapが出る→指でズーム・移動→不明施設入力時は旧区域が消える。誤った地点を指すピン、地図画面の見切れ、タッチ操作不能があれば修正。
+- **実機確認が終わる前にG3完了とは記録しない**。全3広告・全施設・全タイルの自動検査は要求しない。
 
 ### LAST：G4、限定的な実用判定
 
@@ -91,6 +94,7 @@
 | 2026-10-22（GitHub Actions） | **実広告3件から区域を描画、OpenPOI本番APIへ3回接続（修正前）** | [本番的パイロット #39773177928](https://github.com/moyashimisosoup/koredoko/actions/runs/39773177928) | **H02数値不整合・H03距離種別未定の取り扱いを修正 → 同じ3件を1度だけ再測定** |
 | 2026-10-22（GitHub Actions） | **G1：H02保留・H03弱条件を含む3広告で区域を再描画**。H01 1.88、H02/H03 1.12km²で面積不変。APIの再呼出しはなし | [G1修正後の実広告ブラウザ #39776134062](https://github.com/moyashimisosoup/koredoko/actions/runs/39776134062)、[CI成功 #39776221361](https://github.com/moyashimisosoup/koredoko/actions/runs/39776221361) | **G2：OpenPOIの既知3施設の本番応答を元に、厳密一致0/3の原因を確認。不要な自動API再試験なし** |
 | 2026-10-22（GitHub Actions） | **G2：本番OpenPOIの3検索・6候補の実体を確認**。郵便局2同名（住所参照との差8m/469m）、PARCO飲食店1件、西友テナント3件。独立住所参照のある候補のみ限定識別ロジック追加 | [実APIの候補一覧 #39797211426](https://github.com/moyashimisosoup/koredoko/actions/runs/39797211426) | **G3：候補区域を実地図へ重ね、iPhone Safariで実用性確認**。OpenPOIのテナントを施設本体へ流用しない |
+| 2026-10-23（GitHub Actions） | **G3：実地図版の公開・本番HTTPS読戻し3ジョブ成功**。Leaflet／OSM上に面を重ね、物件特定ピンは出さない。開発元と公開4ファイルのGit blob一致を確認 | [Pages #39881072064](https://github.com/moyashimisosoup/koredoko/actions/runs/39881072064)、[品質CI #39880355458](https://github.com/moyashimisosoup/koredoko/actions/runs/39880355458) | **iPhone Safariで一巡操作、特に地図タイル・区域・スクロールを確認**。独立的中精度は未達 |
 | 2026-10-22（GitHub Actions） | 旧画面のPages配信を確認 | [配信HTTP確認 #39754979967](https://github.com/moyashimisosoup/koredoko/actions/runs/39754979967) | 新区域UIはまだ公開ブランチ未反映。iPhone Safari未検収 |
 
 ### 参照資料（詳細の正本は保存済み、普段は読み直さない）
@@ -100,4 +104,4 @@
 - [従来の研究・検証履歴](ROADMAP.md)
 - [開発の安全・GitHub運用規則](../AGENTS.md)
 
-**現在の確定した次の1操作：G3の最小UIで「広告を貼る → 実地図に候補区域を表示」をiPhoneで一巡確認できるようにする。** 新たなOpenPOI大量探索・物件特定・駅出口の全調査は開始しない。
+**現在の確定した次の1操作：iPhone Safariで公開版 `https://moyashimisosoup.github.io/koredoko/area.html` を開き、「例を入力する → このへんを探す → 実地図に着色区域が表示される → ズーム／移動」を一巡する。** Safariでの実機合格まではG3未完了。追加のOpenPOI大量探索・駅出口の全調査を行わない。
