@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>これどこ｜周辺施設から場所をしぼる</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+:root{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#293932;background:#f8faf8}
+*{box-sizing:border-box}body{margin:0}main{max-width:740px;margin:0 auto;padding:40px 16px 72px}
+h1{font-size:clamp(28px,6vw,38px);letter-spacing:-.05em;margin:0 0 3px;font-weight:760}
+p{line-height:1.7;color:#67776d;margin:4px 0 14px}
+.sub{font-size:14px}.label{font-size:14px;font-weight:650;display:block;margin:22px 0 10px}
+textarea{display:block;width:100%;min-height:172px;padding:15px;border:1px solid #c9d7ce;border-radius:14px;background:#fff;color:inherit;font:inherit;line-height:1.7;resize:vertical}
+textarea:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #29785a;outline-offset:2px}
+button{font:inherit;cursor:pointer;min-height:46px}
+.go{width:100%;border:0;background:#307b61;color:#fff;border-radius:12px;font-weight:700;margin:13px 0 6px}
+.sample{background:none;border:0;padding:6px 0;color:#287355;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+#result{margin-top:31px}.hidden{display:none!important}
+#map{background:#eff6f0;width:100%;height:min(66vh,490px);min-height:320px;display:block;border:1px solid #d6e5db;border-radius:14px;z-index:0}
+#map .leaflet-control-attribution{font-size:11px}
+#map .leaflet-control-zoom a{width:36px;height:36px;line-height:36px}
+@media(max-width:520px){#map{height:54vh;min-height:320px;max-height:440px}}
+.stats{font-weight:700;font-size:19px;color:#2e7056;margin:12px 0 3px}
+.micro{font-size:12px;color:#6c7b72;line-height:1.6}
+summary{cursor:pointer;color:#48715f;font-size:13px;margin-top:16px}
+details{margin-top:12px}#details div{font-size:13px;margin:8px 0;color:#53645b}
+#errors{color:#9a5d39;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+#copy{border:1px solid #cadbd0;background:#fff;color:#276950;border-radius:10px;padding:8px 12px;font-size:13px;margin-top:8px}
+@media(max-width:520px){main{padding:23px 13px 56px}textarea{min-height:140px;font-size:16px}h1{font-size:29px}}
+</style></head><body><main>
+<h1>これどこ</h1>
+<p class="sub">広告の手がかりから、おおよその場所をしぼる。</p>
+<label class="label" for="advertisement">物件の情報を貼り付ける</label>
+<textarea id="advertisement" spellcheck="false" placeholder="例：
+西東京市 谷戸町三丁目
+ひばりが丘郵便局　徒歩2分（約133m）
+ひばりが丘PARCO　徒歩3分（約236m）"></textarea>
+<button class="go" id="search" type="button">このへんを探す</button>
+<button class="sample" id="example" type="button">例を入力する</button>
+<p id="errors" role="status" aria-live="polite"></p>
+<section id="result" class="hidden" aria-live="polite">
+<h2 style="font-size:18px;margin:0 0 12px">このあたりが候補です</h2>
+<div id="map" role="region" aria-label="OpenStreetMapの実地図上に、周辺施設の参考位置と複数の候補区域を色で表示。建物や土地の特定地点ではありません。"></div>
+<p class="micro">緑色の範囲：探索候補区域　● 公開施設の参考位置</p>
+<p class="stats" id="summary"></p>
+<p class="micro" id="notice">色のついた場所は200m格子を広げた探索範囲です。住所・建物・土地の所在地を特定したものではありません。</p>
+<details><summary>使用した条件と注意点</summary><div id="details"></div>
+<button id="copy" type="button">候補エリアのGeoJSONをコピー</button></details>
+</section>
+<p class="micro" style="margin-top:24px">試作対象はひばりヶ丘周辺。未登録施設はOpenPOIで補助検索し、広告全文や住所は送らず施設名と公開参照位置だけ送信します。地図の表示にはOpenStreetMapのタイルを利用し、表示地域の情報が地図提供元に伝わります。施設の参考位置は入口未確認、道路徒歩経路も未計測です。<a href="https://openpoiapi.com/attribution.html" target="_blank" rel="noopener noreferrer">OpenPOIの出典</a>。</p>
+</main>
+<script type="module">
+import {makeAreaLandmarks,parseAreaInput,solveSearchArea} from "./src/area_overlap_solver.mjs";
+import {enrichWithOpenPoi} from "./src/openpoi_facility_matcher.mjs";
+const el=id=>document.getElementById(id);
+let data=null,lastResult=null,map=null,zoneLayer=null,facilityLayer=null;
+const sample="西東京市 谷戸町三丁目\nひばりが丘郵便局：徒歩2分（約133m）\nひばりが丘PARCO：徒歩3分（約236m）";
+el("example").addEventListener("click",()=>{el("advertisement").value=sample;el("advertisement").focus()});
+async function sources(){
+ if(data)return data;
+ const names=["hibari_poi_identities_20261021.json","hibari_geolonia_v2_address_number_20261022.json","hibari_geolonia_town_chome_references_20261022.json"];
+ const list=await Promise.all(names.map(async n=>{
+  const r=await fetch("./examples/"+n,{cache:"no-store"});
+  if(!r.ok)throw Error("施設の公開データが取得できません");
+  return r.json();
+ }));
+ const [pois,refs,towns]=list;
+ data={landmarks:makeAreaLandmarks(pois,refs,towns),towns:towns.records};
+ return data;
+}
+function render(result,parsed){
+ if(!window.L?.map||!window.L?.geoJSON)
+  throw Error("地図を読み込めませんでした。通信環境を確認して再実行してください。");
+ if(!result?.regions?.features?.length)throw Error("表示できる区域がありません。");
+ if(!map){
+  map=L.map("map",{scrollWheelZoom:false,zoomControl:true,preferCanvas:true,
+   // Reduce tile usage to the viewport the user is actually viewing.
+   zoomSnap:0.5});
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
+   maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>',
+   updateWhenIdle:true,keepBuffer:1
+  }).addTo(map);
+ }
+ if(zoneLayer)map.removeLayer(zoneLayer);
+ if(facilityLayer)map.removeLayer(facilityLayer);
+ // The regions contain only polygon CELLS, never a property or midpoint pin.
+ zoneLayer=L.geoJSON(result.regions,{style:{
+  color:"#277f60",weight:1,fillColor:"#46a57c",fillOpacity:0.30
+ },interactive:false}).addTo(map);
+ facilityLayer=L.layerGroup();
+ for(const c of parsed.constraints){
+  if(!c.location)continue;
+  const dot=L.circleMarker([c.location.lat,c.location.lon],{
+   radius:5,weight:2,color:"#fff",fillColor:"#286b52",fillOpacity:1,
+  });
+  // A public landmark only. Never add an inferred house/location marker.
+  dot.bindTooltip(document.createTextNode(c.label));
+  facilityLayer.addLayer(dot);
+ }
+ facilityLayer.addTo(map);
+ map.invalidateSize();
+ const bounds=zoneLayer.getBounds();
+ if(!bounds.isValid())throw Error("地図の区域が不正です。");
+ map.fitBounds(bounds.pad(0.12),{maxZoom:15,animate:false});
+ el("map").dataset.state="geographic-area-visible";
+}
+el("search").addEventListener("click",async()=>{
+ el("search").disabled=true;lastResult=null;el("errors").textContent="";el("result").classList.add("hidden");
+ try{
+  const source=await sources();
+  const first=parseAreaInput(el("advertisement").value,source.landmarks,source.towns);
+  // Only strictly extracted names of UNREGISTERED public facilities are sent.
+  // Never send full ad text, private addresses, or property information.
+  const lookup=await enrichWithOpenPoi(el("advertisement").value,first);
+  const parsed=lookup.parsed;
+  const result=solveSearchArea(parsed);lastResult=null;
+  if(result.state!=="exploratory_areas"){
+   el("errors").textContent=lookup.state==="regional_context_missing"?
+    "施設の地域が分かりません。町丁目など住所の一部か、近くの駅・施設名を加えてください。":
+    lookup.lookups?.some(x=>x.status==="ambiguous_same_named_locations")?
+    "同名の施設が複数あり、場所を選べませんでした。別の施設名・周辺の駅を追加してください。":
+    "距離のある施設を読み取れませんでした。例の文章を使うか、施設名と徒歩分数／距離を入力してください。";
+   return;
+  }
+  el("result").classList.remove("hidden");
+  render(result,parsed);lastResult=result;
+  const withheld=parsed.ignored.filter(x=>x.reason.includes("不整合")).length;
+  const weak=parsed.constraints.filter(x=>x.metric==="distance_mode_unknown").length;
+  el("summary").textContent=result.clues_used+"施設から約"+result.region_area_km2+
+    "km²を表示"+(withheld?"（不整合で保留 "+withheld+"件）":"")+
+    (weak?"（距離種別不明 "+weak+"件は弱い参考）":"");
+  el("notice").textContent="施設の位置は公開住所の参考点です。着色範囲は地図上の探索目安で、個別物件や道路を特定しません。徒歩経路は未計測。";
+  const d=el("details");d.replaceChildren();
+  for(const c of parsed.constraints){
+   const line=document.createElement("div");
+   line.textContent=c.label+"："+
+    (c.stated_meters!==null?"約"+c.stated_meters+"m":"徒歩"+c.stated_minutes+"分")+
+    " ／ "+(c.precision==="town_chome_reference"?"町丁目の参考点":
+     c.precision==="openpoi_public_poi_reference_unverified_entrance"?"OpenPOIの未検証の施設座標":
+     "住所番号の参考点")+
+    (c.metric==="distance_mode_unknown"?"（徒歩・直線の種別不明。弱い参考条件）":"");
+   d.append(line);
+  }
+  if(parsed.partialAddress){
+   const p=document.createElement("div");p.textContent="住所の一部："+parsed.partialAddress.name+"（参考の重み付け。行政界とは異なります）";d.append(p);
+  }
+  for(const c of parsed.ignored){const p=document.createElement("div");p.textContent="保留 "+c.line+"行目："+c.reason;d.append(p);}
+  for(const item of lookup.lookups??[]){const p=document.createElement("div");
+   const label={single_regional_match:"施設名と地域が一致（入口未確認）",
+    ambiguous_same_named_locations:"同名施設が複数あり保留",
+    no_exact_regional_match:"地域内の一致なし",
+    api_unavailable_or_rate_limited:"施設検索に失敗・保留"}[item.status]??item.status;
+   p.textContent="OpenPOI "+item.name+"："+label;d.append(p);
+  }
+  if(withheld)el("errors").textContent="距離と徒歩分数が矛盾する"+withheld+"条件を、候補区域の計算から保留しました。";
+ }catch(e){lastResult=null;el("result").classList.add("hidden");el("errors").textContent="計算できません："+e.message;
+ }finally{el("search").disabled=false;}
+});
+el("copy").addEventListener("click",async()=>{
+ if(!lastResult)return;
+ try{await navigator.clipboard.writeText(JSON.stringify(lastResult.regions));
+  el("errors").textContent="候補区域のGeoJSONをコピーしました。";
+ }catch(_){el("errors").textContent="コピーに失敗しました。ブラウザの権限をご確認ください。";}
+});
+</script></body></html>

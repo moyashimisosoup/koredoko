@@ -29,8 +29,9 @@ jobs:
           cp examples/*.json _site/examples/
           touch _site/.nojekyll
           test -f _site/index.html
-          test -f _site/hibari-same-region.html
-          test -f _site/src/hibari_partial_evidence_ranking.mjs
+          test -f _site/area.html
+          test -f _site/src/area_overlap_solver.mjs
+          test -f _site/src/openpoi_facility_matcher.mjs
           test -f _site/examples/hibari_real_ads_prelocked_20261021.json
           echo "Staged APP-023 preview. PR/main untouched."
       - name: Configure Pages
@@ -80,9 +81,10 @@ jobs:
             echo "OK (live): $base/$path"
             rm -f "$out"
           }
-          check "index.html" "ad-bridge.html"
-          check "hibari-same-region.html" "buildHibariSameRegionMapReview"
-          check "src/hibari_same_region_map_view.mjs" "buildHibariSameRegionMapReview"
-          check "src/hibari_partial_evidence_ranking.mjs" "buildHibariExploratoryOrder"
-          check "examples/hibari_real_ads_prelocked_20261021.json" "hibarigaoka-20261021"
+          check "index.html" "url=./area.html"
+          check "area.html" "L.geoJSON(result.regions"
+          check "area.html" "tile.openstreetmap.org"
+          check "src/area_overlap_solver.mjs" "solveSearchArea"
+          check "src/openpoi_facility_matcher.mjs" "enrichWithOpenPoi"
+          check "examples/hibari_poi_identities_20261021.json" "app023-poi-identity-ledger-v0.1"
           echo "APP-023 Pages live HTTP content checks complete."
