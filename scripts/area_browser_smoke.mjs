@@ -14,8 +14,15 @@ async function check(type,label,options){
  const page=await context.newPage(),errors=[],outside=[];
  page.on("pageerror",e=>errors.push(e.message));
  await page.route("**/*",route=>{
-  if(!route.request().url().startsWith(base+"/")){outside.push(route.request().url());return route.abort();}
-  return route.continue();
+  const url=route.request().url();
+  if(url.startsWith(base+"/"))return route.continue();
+  // Real pinned Leaflet from CDN is part of the app. Do not download OSM
+  // tiles in automated tests; OSM tile policy prohibits headless scraping.
+  if(url.startsWith("https://unpkg.com/leaflet@1.9.4/"))return route.continue();
+  if(url.startsWith("https://tile.openstreetmap.org/"))
+   return route.fulfill({status:200,contentType:"image/png",body:Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==","base64")});
+  outside.push(url);return route.abort();
  });
  try{
   await page.goto(base+"/",{waitUntil:"domcontentloaded",timeout:30000});
@@ -29,9 +36,11 @@ async function check(type,label,options){
   await page.locator("#result").waitFor({state:"visible",timeout:20000});
   const summary=await page.locator("#summary").innerText();
   assert.match(summary,/2施設から約.*km²/);
-  const tileCount=await page.locator("#map rect").count();
-  assert.ok(tileCount>=9,"broad area instead of precise single point");
-  assert.equal(await page.locator("#map circle").count(),2,"only public landmark points");
+  await page.waitForFunction(()=>document.querySelector("#map")?.dataset.state==="geographic-area-visible");
+  const tileCount=await page.locator("#map .leaflet-overlay-pane path").count();
+  assert.ok(tileCount>=9,"multiple 200m region cells on real geographic map");
+  assert.ok(await page.locator("#map .leaflet-control-attribution").isVisible(),"OSM attribution is visible");
+  assert.equal(await page.locator("#map .leaflet-marker-icon").count(),0,"no property pin");
   await page.screenshot({path:"area-smoke-artifacts/"+label+".png",fullPage:true});
   // Missing data is not a previous area's success.
   await page.locator("#advertisement").fill("未登録の駅 徒歩8分");
@@ -49,7 +58,7 @@ async function check(type,label,options){
   assert.ok(overflow.page<=overflow.width+3,JSON.stringify(overflow));
   assert.deepEqual(errors,[]);
   assert.deepEqual(outside,[]);
-  checks.push({label,summary,tiles:tileCount,restore:true,overflow:false,js_errors:0,outgoing_requests:0});
+  checks.push({label,summary,tiles:tileCount,restore:true,overflow:false,js_errors:0,unapproved_requests:0});
  }finally{await browser.close();}
 }
 try{
