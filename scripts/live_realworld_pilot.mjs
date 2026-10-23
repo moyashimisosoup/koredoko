@@ -84,8 +84,9 @@ try{
   await page.locator("#search").click();
   await page.locator("#result").waitFor({state:"visible",timeout:15000});
   const text=await page.locator("#summary").innerText();
-  const cells=await page.locator("#map rect").count();
-  output.browser[id]={summary:text,displayed_area_grid_cells:cells,visible:cells>=9};
+  await page.waitForFunction(()=>document.querySelector("#map")?.dataset.state==="geographic-area-visible",null,{timeout:15000});
+  const cells=await page.locator("#map .leaflet-overlay-pane path").count();
+  output.browser[id]={summary:text,displayed_geographic_paths:cells,visible:cells>=9};
   if(cells<9)output.review.user_flow_blocked=true;
   await page.screenshot({path:"realworld-pilot-artifacts/"+id+"-mobile-chromium.png",fullPage:true});
  }
