@@ -1,0 +1,40 @@
+name: APP-023 one real-world production-like pilot
+
+# Explicitly dispatched only. The pull_request path selector previously
+# retriggered the live pilot on every PR commit because the script stayed
+# in the PR diff, wasting quota and generating duplicate evidence.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-pilot:
+    name: Actual published ads, live OpenPOI and rendered mobile area
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+      - name: Install a real browser
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.58.2
+          npx playwright install chromium --with-deps
+      - name: Serve the actual app (no stubs)
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/app023-realworld.log 2>&1 &
+          sleep 2
+          curl --fail --silent http://127.0.0.1:8765/area.html >/dev/null
+      - name: Query real OpenPOI and render three real published ads
+        run: node scripts/live_realworld_pilot.mjs
+      - name: Keep measured pilot summary and three mobile screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app023-realworld-pilot-evidence
+          path: realworld-pilot-artifacts/
+          if-no-files-found: warn
+          retention-days: 14

@@ -1,0 +1,330 @@
+{
+  "schema_version": "app023-real-ad-evidence-prelock-v0.1",
+  "app_id": "APP-023",
+  "cohort_id": "hibarigaoka-20261021",
+  "captured_at_jst": "2026-10-21",
+  "stage": "source_prelock_only_not_scored",
+  "selection_method": "Seven named publicly advertised apartment complexes within Hibarigaoka station area. Convenience sample, not random.",
+  "scope": "Publicly advertised building-scale information only. No private unit addresses or resident data.",
+  "advertisement_input_policy": "For predictions read station + facilities only; do not read listing URL, publisher, listing ID, building name, correct mapping, location, or property address.",
+  "source_separation": "Full direct-page check H01-H03; H04-H07 search-index excerpt only due to direct 403; require source verification before claimed independent evaluation.",
+  "distance_interpretation": "Displayed m are approximate; walking minutes are advertised, not stopwatch travel time. Official 80 m/min road-distance rule is a conversion guideline, not a surveyed access-point guarantee.",
+  "measurement_method": "Exact start/end points, roads, entrances and publisher measurement tools are not identified in these ads.",
+  "accepted_facilities_count": 14,
+  "unresolved_facilities_count": 2,
+  "advertisements": [
+    {
+      "ad_id": "H01",
+      "listing": {
+        "publisher": "東急リバブル",
+        "listing_id": "C48269648",
+        "url": "https://www.livable.co.jp/mansion/C48269648/",
+        "source_tier": "direct_page_read"
+      },
+      "station": {
+        "name": "ひばりヶ丘",
+        "operator": "西武池袋線",
+        "walk_minutes": 5,
+        "raw_metric": "walk_minutes",
+        "source_section": "交通"
+      },
+      "facilities": [
+        {
+          "name": "ひばりが丘公園",
+          "category": "park",
+          "approx_distance_m": 230,
+          "walk_minutes": 3,
+          "source_excerpt": "ひばりが丘公園・・・約230ｍ（徒歩3分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        },
+        {
+          "name": "西東京市立中原小学校",
+          "category": "school",
+          "approx_distance_m": 880,
+          "walk_minutes": 11,
+          "source_excerpt": "西東京市立中原小学校・・・約880ｍ（徒歩11分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        }
+      ],
+      "geographic_scope": "東京都西東京市・ひばりヶ丘駅周辺",
+      "site_to_building_mapping": "not_in_prediction_input",
+      "route_measurements_status": "not_observed_for_this_cohort",
+      "poi_matching_status": "pending",
+      "ground_truth_status": "not_in_this_file"
+    },
+    {
+      "ad_id": "H02",
+      "listing": {
+        "publisher": "東急リバブル",
+        "listing_id": "C13265R12",
+        "url": "https://www.livable.co.jp/mansion/C13265R12/",
+        "source_tier": "direct_page_read"
+      },
+      "station": {
+        "name": "ひばりヶ丘",
+        "operator": "西武池袋線",
+        "walk_minutes": 4,
+        "raw_metric": "walk_minutes",
+        "source_section": "交通"
+      },
+      "facilities": [
+        {
+          "name": "ひばりが丘郵便局",
+          "category": "post_office",
+          "approx_distance_m": 133,
+          "walk_minutes": 2,
+          "source_excerpt": "ひばりが丘郵便局：徒歩2分（約133m ）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        },
+        {
+          "name": "ひばりが丘PARCO",
+          "category": "shopping",
+          "approx_distance_m": 236,
+          "walk_minutes": 3,
+          "source_excerpt": "ひばりが丘PARCO：徒歩3分 （約236ｍ）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        },
+        {
+          "name": "西東京市立谷戸第二小学校",
+          "category": "school",
+          "approx_distance_m": 1537,
+          "walk_minutes": 15,
+          "source_excerpt": "西東京市立谷戸第二小学校：徒歩15分（約1537m）",
+          "usable_for_first_pass": false,
+          "review_note": "80m/min換算では20分。原文の不整合を修正せず採点から一時除外"
+        }
+      ],
+      "geographic_scope": "東京都西東京市・ひばりヶ丘駅周辺",
+      "site_to_building_mapping": "not_in_prediction_input",
+      "route_measurements_status": "not_observed_for_this_cohort",
+      "poi_matching_status": "pending",
+      "ground_truth_status": "not_in_this_file"
+    },
+    {
+      "ad_id": "H03",
+      "listing": {
+        "publisher": "東急リバブル",
+        "listing_id": "C13261L86",
+        "url": "https://www.livable.co.jp/mansion/C13261L86/",
+        "source_tier": "direct_page_read"
+      },
+      "station": {
+        "name": "ひばりヶ丘",
+        "operator": "西武池袋線",
+        "walk_minutes": 2,
+        "raw_metric": "walk_minutes",
+        "source_section": "交通"
+      },
+      "facilities": [
+        {
+          "name": "西友ひばりヶ丘店",
+          "category": "supermarket",
+          "approx_distance_m": 110,
+          "walk_minutes": 2,
+          "source_excerpt": "西友ひばりヶ丘店・・・約110m（徒歩2分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        },
+        {
+          "name": "PARCOひばりが丘",
+          "category": "shopping",
+          "approx_distance_m": 210,
+          "walk_minutes": 3,
+          "source_excerpt": "PARCOひばりが丘・・・約210m（徒歩3分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        },
+        {
+          "name": "谷戸イチョウ公園",
+          "category": "park",
+          "approx_distance_m": 590,
+          "walk_minutes": null,
+          "source_excerpt": "谷戸イチョウ公園（現地より約590m）",
+          "usable_for_first_pass": false,
+          "review_note": "徒歩・直線の計測方式が不明。距離のみを道路徒歩と見なさない"
+        }
+      ],
+      "geographic_scope": "東京都西東京市・ひばりヶ丘駅周辺",
+      "site_to_building_mapping": "not_in_prediction_input",
+      "route_measurements_status": "not_observed_for_this_cohort",
+      "poi_matching_status": "pending",
+      "ground_truth_status": "not_in_this_file"
+    },
+    {
+      "ad_id": "H04",
+      "listing": {
+        "publisher": "三井のリハウス",
+        "listing_id": "FEPBSA10",
+        "url": "https://www.rehouse.co.jp/buy/mansion/bkdetail/FEPBSA10/",
+        "source_tier": "indexed_search_excerpt_direct_403"
+      },
+      "station": {
+        "name": "ひばりヶ丘",
+        "operator": "西武池袋線",
+        "walk_minutes": 11,
+        "raw_metric": "walk_minutes",
+        "source_section": "交通"
+      },
+      "facilities": [
+        {
+          "name": "谷戸イチョウ公園",
+          "category": "park",
+          "approx_distance_m": 220,
+          "walk_minutes": 3,
+          "source_excerpt": "谷戸イチョウ公園 約220m（徒歩3分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        },
+        {
+          "name": "西東京市立谷戸小学校",
+          "category": "school",
+          "approx_distance_m": 700,
+          "walk_minutes": 9,
+          "source_excerpt": "西東京市立谷戸小学校 約700m（徒歩9分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        }
+      ],
+      "geographic_scope": "東京都西東京市・ひばりヶ丘駅周辺",
+      "site_to_building_mapping": "not_in_prediction_input",
+      "route_measurements_status": "not_observed_for_this_cohort",
+      "poi_matching_status": "pending",
+      "ground_truth_status": "not_in_this_file"
+    },
+    {
+      "ad_id": "H05",
+      "listing": {
+        "publisher": "三井のリハウス",
+        "listing_id": "FEPBSA0B",
+        "url": "https://www.rehouse.co.jp/buy/mansion/bkdetail/FEPBSA0B/",
+        "source_tier": "indexed_search_excerpt_direct_403"
+      },
+      "station": {
+        "name": "ひばりヶ丘",
+        "operator": "西武池袋線",
+        "walk_minutes": 18,
+        "raw_metric": "walk_minutes",
+        "source_section": "交通"
+      },
+      "facilities": [
+        {
+          "name": "西東京いこいの森公園",
+          "category": "park",
+          "approx_distance_m": 375,
+          "walk_minutes": 5,
+          "source_excerpt": "西東京いこいの森公園 約375m（徒歩5分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        },
+        {
+          "name": "西東京市立中原小学校",
+          "category": "school",
+          "approx_distance_m": 510,
+          "walk_minutes": 7,
+          "source_excerpt": "西東京市立中原小学校 約510m（徒歩7分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        }
+      ],
+      "geographic_scope": "東京都西東京市・ひばりヶ丘駅周辺",
+      "site_to_building_mapping": "not_in_prediction_input",
+      "route_measurements_status": "not_observed_for_this_cohort",
+      "poi_matching_status": "pending",
+      "ground_truth_status": "not_in_this_file"
+    },
+    {
+      "ad_id": "H06",
+      "listing": {
+        "publisher": "三井のリハウス",
+        "listing_id": "FEPBFA0A",
+        "url": "https://www.rehouse.co.jp/buy/mansion/bkdetail/FEPBFA0A/",
+        "source_tier": "indexed_search_excerpt_direct_403"
+      },
+      "station": {
+        "name": "ひばりヶ丘",
+        "operator": "西武池袋線",
+        "walk_minutes": 10,
+        "raw_metric": "walk_minutes",
+        "source_section": "交通"
+      },
+      "facilities": [
+        {
+          "name": "谷戸せせらぎ公園",
+          "category": "park",
+          "approx_distance_m": 270,
+          "walk_minutes": 4,
+          "source_excerpt": "谷戸せせらぎ公園 約270m（徒歩4分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        },
+        {
+          "name": "西東京市立谷戸小学校",
+          "category": "school",
+          "approx_distance_m": 500,
+          "walk_minutes": 7,
+          "source_excerpt": "西東京市立谷戸小学校 約500m（徒歩7分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        }
+      ],
+      "geographic_scope": "東京都西東京市・ひばりヶ丘駅周辺",
+      "site_to_building_mapping": "not_in_prediction_input",
+      "route_measurements_status": "not_observed_for_this_cohort",
+      "poi_matching_status": "pending",
+      "ground_truth_status": "not_in_this_file"
+    },
+    {
+      "ad_id": "H07",
+      "listing": {
+        "publisher": "三井のリハウス",
+        "listing_id": "FEP7RA14",
+        "url": "https://www.rehouse.co.jp/buy/mansion/bkdetail/FEP7RA14/",
+        "source_tier": "indexed_search_excerpt_direct_403"
+      },
+      "station": {
+        "name": "ひばりヶ丘",
+        "operator": "西武池袋線",
+        "walk_minutes": 18,
+        "raw_metric": "walk_minutes",
+        "source_section": "交通"
+      },
+      "facilities": [
+        {
+          "name": "西東京いこいの森公園",
+          "category": "park",
+          "approx_distance_m": 150,
+          "walk_minutes": 2,
+          "source_excerpt": "西東京いこいの森公園 約150m（徒歩2分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        },
+        {
+          "name": "西東京市立谷戸小学校",
+          "category": "school",
+          "approx_distance_m": 600,
+          "walk_minutes": 8,
+          "source_excerpt": "市立谷戸小学校 約600m（徒歩8分）",
+          "usable_for_first_pass": true,
+          "review_note": null
+        }
+      ],
+      "geographic_scope": "東京都西東京市・ひばりヶ丘駅周辺",
+      "site_to_building_mapping": "not_in_prediction_input",
+      "route_measurements_status": "not_observed_for_this_cohort",
+      "poi_matching_status": "pending",
+      "ground_truth_status": "not_in_this_file"
+    }
+  ],
+  "required_before_scoring": [
+    "Lock fixed candidate registry of these seven publicly known buildings in an evaluation-only file, excluded from advertisement feature input.",
+    "Independently confirm POI aliases, physical IDs, public access geometry and source licenses.",
+    "Observe actual pedestrian routes or mark missing; do not substitute direct-line estimates.",
+    "Run existing station-only scoring without weights/tuning changes and save outputs before answer comparison.",
+    "Run station+facility scoring with same candidate set and freeze outputs before reveal.",
+    "Report Top1/Top3/abstention/candidate survival and all negative cases; no generalized accuracy claim."
+  ]
+}

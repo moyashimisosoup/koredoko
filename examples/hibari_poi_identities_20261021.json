@@ -1,0 +1,174 @@
+{
+  "schema_version": "app023-poi-identity-ledger-v0.1",
+  "app_id": "APP-023",
+  "cohort_id": "hibarigaoka-20261021",
+  "checked_on": "2026-10-21 JST",
+  "purpose": "Confirm identity and names of public POIs without fabricating geocoordinates or entrance routes.",
+  "coordinate_policy": "Do not submit this registry to the existing distance fusion engine; it intentionally has no lat/lon.",
+  "facilities": [
+    {
+      "id": "hibarigaoka-park",
+      "physical_id": "nishitokyo:hibarigaoka-park",
+      "official_name": "ひばりが丘公園",
+      "category": "park",
+      "public_address": "東京都西東京市ひばりが丘一丁目2番地",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://www.city.nishitokyo.lg.jp/sisetu/koen_ryokuti/hibarigaoka.html",
+      "aliases": [
+        "ひばりが丘公園"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    },
+    {
+      "id": "nakahara-elementary",
+      "physical_id": "nishitokyo:nakahara-elementary",
+      "official_name": "西東京市立中原小学校",
+      "category": "school",
+      "public_address": "東京都西東京市ひばりが丘二丁目6番25号",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://www.nishitokyo.ed.jp/e-nakahara/index.html",
+      "aliases": [
+        "西東京市立中原小学校"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    },
+    {
+      "id": "hibarigaoka-post-office",
+      "physical_id": "nishitokyo:hibarigaoka-post-office",
+      "official_name": "ひばりが丘郵便局",
+      "category": "post_office",
+      "public_address": "東京都西東京市谷戸町三丁目25番3号",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://map.japanpost.jp/smt/search/inf/300100358000/",
+      "aliases": [
+        "ひばりが丘郵便局"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    },
+    {
+      "id": "hibarigaoka-parco",
+      "physical_id": "nishitokyo:hibarigaoka-parco",
+      "official_name": "ひばりが丘PARCO",
+      "category": "shopping",
+      "public_address": "東京都西東京市ひばりが丘一丁目1番1号",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://hibarigaoka.parco.jp/info/?gcd=facilities",
+      "aliases": [
+        "ひばりが丘PARCO",
+        "PARCOひばりが丘"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    },
+    {
+      "id": "yato2-elementary",
+      "physical_id": "nishitokyo:yato2-elementary",
+      "official_name": "西東京市立谷戸第二小学校",
+      "category": "school",
+      "public_address": "東京都西東京市谷戸町一丁目17番27号",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://www.nishitokyo.ed.jp/e-yato2/shokai/access.html",
+      "aliases": [
+        "西東京市立谷戸第二小学校"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    },
+    {
+      "id": "seiyu-hibarigaoka",
+      "physical_id": "nishitokyo:seiyu-hibarigaoka",
+      "official_name": "西友ひばりヶ丘店",
+      "category": "supermarket",
+      "public_address": "東京都西東京市住吉町三丁目9番8号",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://www.seiyu.co.jp/shop/%E8%A5%BF%E5%8F%8B%E3%81%B2%E3%81%B0%E3%82%8A%E3%83%B6%E4%B8%98%E5%BA%97/",
+      "aliases": [
+        "西友ひばりヶ丘店"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    },
+    {
+      "id": "yato-icho-park",
+      "physical_id": "nishitokyo:yato-icho-park",
+      "official_name": "谷戸イチョウ公園",
+      "category": "park",
+      "public_address": "東京都西東京市谷戸町二丁目12番地",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://www.city.nishitokyo.lg.jp/sisetu/koen_ryokuti/yatoityou.html",
+      "aliases": [
+        "谷戸イチョウ公園"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    },
+    {
+      "id": "yato-elementary",
+      "physical_id": "nishitokyo:yato-elementary",
+      "official_name": "西東京市立谷戸小学校",
+      "category": "school",
+      "public_address": "東京都西東京市緑町三丁目1番1号",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://www.nishitokyo.ed.jp/e-yato/shokai/index.html",
+      "aliases": [
+        "西東京市立谷戸小学校",
+        "市立谷戸小学校"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    },
+    {
+      "id": "ikoinomori-park",
+      "physical_id": "nishitokyo:ikoinomori-park",
+      "official_name": "西東京いこいの森公園",
+      "category": "park",
+      "public_address": "東京都西東京市緑町三丁目2番地",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://www.city.nishitokyo.lg.jp/sisetu/koen_ryokuti/ikoinomori.html",
+      "aliases": [
+        "西東京いこいの森公園"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    },
+    {
+      "id": "yato-seseragi-park",
+      "physical_id": "nishitokyo:yato-seseragi-park",
+      "official_name": "谷戸せせらぎ公園",
+      "category": "park",
+      "public_address": "東京都西東京市谷戸町一丁目22番地",
+      "source_kind": "facility_operator_or_municipal_primary",
+      "source_url": "https://www.city.nishitokyo.lg.jp/sisetu/koen_ryokuti/yatoseseragi.html",
+      "aliases": [
+        "谷戸せせらぎ公園"
+      ],
+      "location_representation": "published_address_only",
+      "coordinate_status": "not_independently_verified",
+      "entrance_status": "not_independently_verified",
+      "walking_route_status": "not_observed"
+    }
+  ],
+  "license_note": "Official listings identify facility/address. Independent coordinate/geocode origin, license and entrance surveys are not yet established.",
+  "privacy": "Public institutions/stores/parks only; no private unit or resident data."
+}

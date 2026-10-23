@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light">
+<title>これどこ｜公開候補の位置関係と距離比較</title>
+<style>
+:root{font:15px/1.6 system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#263b32;background:#f7f8f6}
+*{box-sizing:border-box}body{margin:0}main{max-width:1120px;margin:auto;padding:19px 15px 65px}
+a{color:#246b57}h1{font-size:clamp(25px,4.2vw,36px);letter-spacing:-.035em;line-height:1.25;margin:6px 0 10px}
+h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 6px}
+p{color:#63756b;margin:7px 0 14px}.small{font-size:12px;color:#62766b}
+.panel{background:#fff;border:1px solid #dce5dd;border-radius:17px;padding:18px;margin:15px 0}
+.warning{border:1px solid #ead8b8;background:#fff9ef;padding:12px 14px;border-radius:12px;font-size:13px;color:#775c33}
+.controls{display:grid;grid-template-columns:2fr 1.6fr 1fr 1fr;gap:10px;align-items:end}
+label{display:block;font-size:13px;font-weight:650;margin:0 0 5px}
+select,input{font:inherit;width:100%;min-height:44px;padding:8px 10px;background:#fff;color:#273b31;border:1px solid #b6c7bc;border-radius:9px}
+select:focus-visible,input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #278a70;outline-offset:2px}
+.two{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,1fr);gap:16px}
+.plot{position:relative;width:100%;aspect-ratio:1.25;overflow:hidden;border:1px solid #d2e0d7;border-radius:13px;
+background-color:#eff5f0;background-image:linear-gradient(to right,#d9e8dd 1px,transparent 1px),linear-gradient(to bottom,#d9e8dd 1px,transparent 1px);background-size:10% 10%}
+.north{position:absolute;top:9px;right:10px;color:#5a786a;font-size:12px;pointer-events:none}
+.pin{position:absolute;transform:translate(-50%,-50%);border-radius:100px;min-width:35px;min-height:35px;padding:6px;background:#6b8a7a;color:#fff;border:2px solid #fff;box-shadow:0 1px 5px #23352b55;font:bold 12px system-ui;cursor:pointer;z-index:1}
+.pin[data-type="public_complex_reference"]{background:#306d59}
+.pin[data-type="station_reference"]{background:#506d96}
+.pin[data-type="facility_reference"]{background:#b37a3c}
+.pin[data-selected="true"]{outline:3px solid #e3b54a;outline-offset:2px;z-index:2}
+.pin[data-compatible="false"][data-type="public_complex_reference"]{background:#67766f}
+.pin[data-compatible="false"][data-type="public_complex_reference"]{opacity:.75}
+.legend{display:flex;flex-wrap:wrap;gap:11px;margin-top:10px;font-size:12px;color:#5d7167}
+.dot{display:inline-block;width:10px;height:10px;border-radius:100%;vertical-align:middle;margin-right:4px}
+.dot.c{background:#306d59}.dot.s{background:#506d96}.dot.f{background:#b37a3c}
+.mapdesc{font-size:12px;color:#667970;margin:7px 0 0}
+.numbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.number{background:#f1f6f2;border-radius:10px;padding:11px}
+.number strong{display:block;font-size:clamp(20px,3vw,28px);font-variant-numeric:tabular-nums}
+.number span{font-size:12px;color:#596d62}
+.candidate{border:1px solid #dae5dc;border-radius:12px;padding:12px 13px;margin:8px 0;background:#fff;cursor:pointer;text-align:left;width:100%;font:inherit;color:inherit}
+.candidate[data-selected="true"]{border-color:#2a8167;background:#f1f8f3}
+.candidate b{display:block;font-size:15px}.candidate span{display:block;color:#647568;font-size:12px}
+.details{border-top:1px solid #e2e9e3;padding-top:12px;margin-top:13px}
+.evidence{padding:9px 0;border-bottom:1px solid #e8ede9;font-size:13px}
+.evidence strong{display:block}.evidence p{font-size:12px;margin:4px 0 0}
+.explain{line-height:1.65;white-space:pre-wrap}
+.sourceLinks{overflow-wrap:anywhere}
+@media(max-width:760px){.two{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}.controls>div:first-child{grid-column:1/-1}}
+@media(max-width:520px){.controls{grid-template-columns:1fr 1fr}.controls>div:nth-child(2){grid-column:1/-1}.panel{padding:13px}.pin{min-width:32px;min-height:32px;font-size:11px}}
+</style></head>
+<body><main>
+<nav class="small"><a href="./index.html">← これどこ</a> / <a href="./facility-fusion.html">既存の施設統合PoC</a></nav>
+<h1>候補の位置関係と距離の手がかり</h1>
+<p>公開されているUR住宅5件と、駅4地点・公共施設3地点の<strong>参考位置</strong>を並べます。広告の駅徒歩条件を基準に、仮の施設条件を追加すると比較結果がどう変わるか確認できます。</p>
+<div class="warning"><strong>研究用・実物件の特定結果ではありません。</strong> 表示点は公開住所などの代表座標です。住宅の玄関・駅出口・公園入口ではありません。道路の実経路形状は保存していないため、ここには経路線を描きません。施設の距離条件は利用者が設定する<strong>仮定</strong>で、URの実広告文から抽出したものではありません。</div>
+<section class="panel">
+<h2>1. 比較の条件</h2>
+<div class="controls">
+<div><label for="ad">公開UR広告の駅徒歩条件</label><select id="ad" disabled><option>データの読み込み中</option></select></div>
+<div><label for="facility">追加する公共施設（任意・仮条件）</label><select id="facility" disabled><option>読み込み中</option></select></div>
+<div><label for="metric">追加施設への距離</label><select id="metric"><option value="walk_m">徒歩経路</option><option value="straight_m">直線参考</option></select></div>
+<div><label for="max">距離の上限 (m)</label><input id="max" type="number" inputmode="numeric" min="0" max="20000" step="10" value="500"></div>
+</div>
+<p class="small">距離上限を変えて再比較できます。施設を「追加しない」にすると駅の条件だけを表示します。広告に明示のない距離を、実広告の評価指標として扱いません。</p>
+</section>
+<div class="two">
+<section class="panel">
+<h2>2. 公開地点の位置関係図</h2>
+<div id="plot" class="plot" aria-label="公開建物5件・駅4件・公共施設3件の相対位置図。緯度経度をもとに描画。道路や建物入口は表示しない。">
+<div class="north">↑ 北</div>
+</div>
+<div class="legend"><span><i class="dot c"></i>UR住宅</span><span><i class="dot s"></i>駅</span><span><i class="dot f"></i>公共施設</span></div>
+<p class="mapdesc">緯度経度の縮尺を調整した位置関係図です。道路・建物形状・土地境界の地図ではなく、直線距離の測定器でもありません。ピンを選ぶと下の根拠を確認できます。</p>
+</section>
+<section class="panel">
+<h2>3. 条件追加でどう変わったか</h2>
+<div id="stats" class="numbers" aria-live="polite"><div class="number"><strong>—</strong><span>読込中</span></div></div>
+<div id="summary" class="explain small" role="status" aria-live="polite">比較を読み込んでいます。</div>
+<h3 style="margin-top:17px">公開住宅候補</h3><div id="candidates"></div>
+</section>
+</div>
+<section class="panel">
+<h2>4. 選択した地点の出典と距離根拠</h2>
+<div id="detail" aria-live="polite">位置関係図のピンか候補を選んでください。</div>
+</section>
+<section class="panel">
+<h2>資料の扱い</h2>
+<p class="small">参照資料：<a href="https://www.ur-net.go.jp/chintai/" rel="noopener noreferrer" target="_blank">UR賃貸住宅</a>、<a href="https://www.city.koto.lg.jp/" rel="noopener noreferrer" target="_blank">江東区</a>。駅点はOpenPOIの駅代表点、住宅は国土地理院住所検索の住所代表点、施設は資料に記録された公共位置参照点です。経路距離は保存済みのValhalla公開デモの歩行経路応答に由来します。<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">© OpenStreetMap contributors</a>。対象資料の年次・出典・ライセンスは元の保存台帳に従います。</p>
+<p class="small sourceLinks">正本：<a href="./facility-fusion.html">既存の施設比較画面</a>。本ページは保存済みの公開座標と距離の可視化のみ行います。端末から新たなジオコーディング・経路APIへの照会や個人情報の送信はしません。</p>
+</section></main>
+<script type="module">
+import {buildOjimaPublicMapReview} from "./src/oshima_reference_map_view.mjs";
+const el=id=>document.getElementById(id);
+const span=(tag,text,className="")=>{const s=document.createElement(tag);s.textContent=String(text??"");if(className)s.className=className;return s};
+let inputs=null,report=null,selectedId=null;
+const urls=["oshima_five_complete_20routes_20261020.json","oshima_public_facilities_20261020.json","oshima_three_facilities_pedestrian_routes_20261020.json"];
+async function load(){
+ if(inputs)return inputs;
+ const docs=await Promise.all(urls.map(async n=>{const res=await fetch("./examples/"+n,{cache:"no-store"});if(!res.ok)throw Error("公開資料の読込に失敗："+n);return res.json()}));
+ inputs=docs;return docs;
+}
+function renderSelected(){
+ const target=el("detail");target.replaceChildren();
+ if(!report||!selectedId){target.append(span("p","参考地点を選択してください。","small"));return}
+ const point=report.map_points.find(x=>x.id===selectedId);
+ if(!point)return;
+ target.append(span("h3",point.label));
+ const desc=point.type==="public_complex_reference"?"公開UR住宅の住所代表点":
+  point.type==="station_reference"?"駅の参考中心点（出口ではありません）":"公共施設の参照座標（入口ではありません）";
+ target.append(span("p",desc+"。道路の図形・敷地の境界・入口の場所を示すものではありません。","small"));
+ if(point.public_source_url){
+  const a=document.createElement("a");a.href=point.public_source_url;a.textContent="公開元資料を開く";
+  a.target="_blank";a.rel="noopener noreferrer";target.append(a);
+ }
+ const row=report.ranked.find(x=>x.id===selectedId);
+ if(row){
+  const b=span("div","", "details");b.append(span("h3","広告条件との参考比較"));
+  b.append(span("p","駅だけの差： "+row.baseline_gap_m+"m ／ 仮の施設を追加した差： "+
+   row.combined_gap_m+"m。得られた距離帯との差を合計した参考値で、正解率・到達時間・特定確率ではありません。","small"));
+  for(const e of row.evidence){
+   const d=span("div","", "evidence");
+   d.append(span("strong",e.label));
+   const metric=e.kind==="straight_distance"?"直線距離":e.kind==="walking_route"?"道路の参考経路":"参考距離";
+   d.append(span("p",metric+"："+(e.observed_m===null?"未観測":e.observed_m+"m")+
+    "　／　仮・広告の距離帯との差："+(e.gap_m===null?"不明":e.gap_m+"m")));
+   if(e.quality_warning)d.append(span("p","品質上の注意："+e.quality_warning,"small"));
+   b.append(d);
+  }target.append(b);
+ }
+}
+function selectPoint(id){
+ selectedId=id;
+ for(const p of el("plot").querySelectorAll("button.pin"))p.dataset.selected=String(p.dataset.id===id);
+ for(const p of el("candidates").querySelectorAll("button.candidate"))p.dataset.selected=String(p.dataset.id===id);
+ renderSelected();
+}
+function renderMap(){
+ const root=el("plot");root.replaceChildren();
+ const north=span("div","↑ 北","north");root.append(north);
+ for(const p of report.map_points){
+  const b=span("button",p.type==="public_complex_reference"?p.id:
+    p.type==="station_reference"?"駅":"施","pin");
+  b.type="button";b.dataset.type=p.type;b.dataset.id=p.id;
+  b.dataset.selected=String(p.id===selectedId);
+  b.dataset.compatible=String(report.combined_reference_compatible_candidates.includes(p.id));
+  b.style.left=p.xPct+"%";b.style.top=p.yPct+"%";
+  b.title=p.label;b.setAttribute("aria-label",p.label+"、位置参照点。詳細を表示");
+  b.addEventListener("click",()=>selectPoint(p.id));root.append(b);
+ }
+}
+function render(){
+ if(!inputs)return;
+ try{
+  const facility=el("facility").value||null;
+  const max=Number(el("max").value);
+  report=buildOjimaPublicMapReview(...inputs,el("ad").value,{facilityId:facility,metric:el("metric").value,maxMeters:max});
+  const base=report.baseline_reference_compatible_candidates.length;
+  const after=report.combined_reference_compatible_candidates.length;
+  const metrics=[["公開住宅候補",report.candidate_count],["駅だけの参考両立",base],["施設追加後の参考両立",after]];
+  const stats=el("stats");stats.replaceChildren();
+  for(const [label,value] of metrics){const block=span("div","", "number");
+   block.append(span("strong",value),span("span",label));stats.append(block);
+  }
+  el("summary").textContent="広告の駅条件：実際の公開UR掲載情報。"+
+   (facility?"施設追加：ユーザー仮定（実広告条件ではありません）。":"施設の仮条件は未選択。")+
+   " 駅の記録経路20本／施設の記録経路15本を再利用。候補が距離帯に合わなくても確定除外はしません。";
+  renderMap();
+  const root=el("candidates");root.replaceChildren();
+  for(const c of report.ranked){
+   const btn=span("button","", "candidate");btn.type="button";btn.dataset.id=c.id;
+   btn.dataset.selected=String(c.id===selectedId);
+   btn.append(span("b",c.id+"　"+c.name));
+   const status=c.combined_reference_compatible?"参考距離帯と両立":"参考距離帯と差がある／未測定の可能性";
+   btn.append(span("span",status+"　条件未測定 "+c.missing_conditions+"件"));
+   btn.addEventListener("click",()=>selectPoint(c.id));root.append(btn);
+  }
+  renderSelected();
+ }catch(err){
+  report=null;el("summary").textContent="比較を中止しました："+String(err.message);
+  el("candidates").replaceChildren();el("detail").replaceChildren();
+  el("stats").replaceChildren();el("plot").replaceChildren();
+ }
+}
+async function init(){
+ try{
+  const [doc,registry]=await load();
+  const ads=el("ad");ads.replaceChildren();
+  for(const a of doc.advertisements){const op=span("option",a.id+"： "+a.conditions.map(x=>x.label).join("・"));op.value=a.id;ads.append(op);}
+  ads.value="OH05";ads.disabled=false;
+  const facility=el("facility");facility.replaceChildren();
+  const none=span("option","追加しない（駅のみ）");none.value="";facility.append(none);
+  for(const f of registry.facilities){const op=span("option",f.name);op.value=f.id;facility.append(op);}
+  facility.value="koto-civic-center";facility.disabled=false;
+  for(const id of ["ad","facility","metric","max"])el(id).addEventListener("change",render);
+  render();
+ }catch(err){el("summary").textContent="公開根拠を読み込めません："+String(err.message);}
+}
+init();
+</script></body></html>

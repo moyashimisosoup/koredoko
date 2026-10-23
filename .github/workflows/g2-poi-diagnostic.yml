@@ -1,0 +1,18 @@
+name: APP-023 G2 single live POI-name diagnosis
+# Diagnostic already captured in run 39796355064.
+# Never repeat an external POI probe on every PR revision.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  query-three-public-names:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+      - name: Inspect 3 OpenPOI live response names without broad retries
+        run: node scripts/g2_live_openpoi_inspect.mjs

@@ -1,0 +1,80 @@
+{
+  "schema_version": "app023-exploratory-reference-walks-v0.1",
+  "app_id": "APP-023",
+  "cohort_id": "hibarigaoka-20261021",
+  "observation_date_jst": "2026-10-22",
+  "purpose": "Confirm public pedestrian routing connectivity for two previously named public apartment buildings to station, not to test accuracy.",
+  "source_coordinates": "examples/hibari_geolonia_v2_address_number_20261022.json",
+  "source_coordinate_updated_utc": "2024-12-25T04:57:50.000Z",
+  "route_engine": "Valhalla FOSSGIS public demo, single GET requests, no key, fair use",
+  "route_engine_terms_url": "https://valhalla.github.io/valhalla/valhalla-intro/",
+  "routing_graph_revision": "unknown",
+  "sampling": "two hand-picked K03 and K05 public-building reference origin points, station reference destination",
+  "planned_candidate_station_pairs": 7,
+  "planned_primary_candidate_destination_pairs": 42,
+  "exploratory_reference_route_observations": 2,
+  "scoring_quality_verified_routes": 0,
+  "independent_accuracy": null,
+  "street_access_points_verified": 0,
+  "analysis_restriction": "Do not treat as registered quality-qualified candidate-station routes; no entrance/turnstile point, unknown snapping, unpinned graph, no blind mapping.",
+  "observations": [
+    {
+      "candidate_id": "K03",
+      "destination_key": "station:seibu-hibarigaoka",
+      "status": "exploratory_reference_route_observed_not_quality_qualified",
+      "mode": "pedestrian",
+      "meters": 298,
+      "route_engine_reported_length_km": 0.298,
+      "route_engine_reported_time_seconds": 217.2,
+      "source_url": "https://valhalla1.openstreetmap.de/route",
+      "request_url": "https://valhalla1.openstreetmap.de/route?json=%7B%22locations%22%3A%5B%7B%22lat%22%3A35.749908039000005%2C%22lon%22%3A139.5437929%7D%2C%7B%22lat%22%3A35.751715822%2C%22lon%22%3A139.544906739%7D%5D%2C%22costing%22%3A%22pedestrian%22%2C%22directions_options%22%3A%7B%22units%22%3A%22kilometers%22%7D%2C%22directions_type%22%3A%22none%22%7D",
+      "engine": "Valhalla public demo",
+      "result_status": 0,
+      "routing_graph_revision": null,
+      "endpoint_snap_start_m": null,
+      "endpoint_snap_end_m": null,
+      "source_point_kind": "geolonia_v2_public_address_number_reference",
+      "origin_point": {
+        "lat": 35.749908039000005,
+        "lon": 139.5437929
+      },
+      "destination_point": {
+        "lat": 35.751715822,
+        "lon": 139.544906739
+      },
+      "street_access_or_entrance_verified": false,
+      "scoring_eligible": false,
+      "precision": "route_summary_meters_from_public_engine_not_surveyed_walk",
+      "observed_date_jst": "2026-10-22"
+    },
+    {
+      "candidate_id": "K05",
+      "destination_key": "station:seibu-hibarigaoka",
+      "status": "exploratory_reference_route_observed_not_quality_qualified",
+      "mode": "pedestrian",
+      "meters": 335,
+      "route_engine_reported_length_km": 0.335,
+      "route_engine_reported_time_seconds": 259.645,
+      "source_url": "https://valhalla1.openstreetmap.de/route",
+      "request_url": "https://valhalla1.openstreetmap.de/route?json=%7B%22locations%22%3A%5B%7B%22lat%22%3A35.752760122%2C%22lon%22%3A139.542337389%7D%2C%7B%22lat%22%3A35.751715822%2C%22lon%22%3A139.544906739%7D%5D%2C%22costing%22%3A%22pedestrian%22%2C%22directions_options%22%3A%7B%22units%22%3A%22kilometers%22%7D%2C%22directions_type%22%3A%22none%22%7D",
+      "engine": "Valhalla public demo",
+      "result_status": 0,
+      "routing_graph_revision": null,
+      "endpoint_snap_start_m": null,
+      "endpoint_snap_end_m": null,
+      "source_point_kind": "geolonia_v2_public_address_number_reference",
+      "origin_point": {
+        "lat": 35.752760122,
+        "lon": 139.542337389
+      },
+      "destination_point": {
+        "lat": 35.751715822,
+        "lon": 139.544906739
+      },
+      "street_access_or_entrance_verified": false,
+      "scoring_eligible": false,
+      "precision": "route_summary_meters_from_public_engine_not_surveyed_walk",
+      "observed_date_jst": "2026-10-22"
+    }
+  ]
+}

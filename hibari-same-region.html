@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
+<title>これどこ｜広告から候補の探索順へ</title>
+<style>
+:root{font:15px/1.6 system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#293d34;background:#f7f9f7}
+*{box-sizing:border-box}body{margin:0}main{max-width:1100px;margin:auto;padding:18px 14px 65px}
+h1{font-size:clamp(25px,4vw,35px);margin:6px 0}h2{font-size:18px;margin:0 0 10px}h3{font-size:15px;margin:12px 0 6px}
+p{margin:6px 0 13px;color:#61766a}a{color:#2a6c56}.small{font-size:12px;color:#65796d}
+.panel{padding:17px;background:white;border:1px solid #d8e4db;border-radius:16px;margin:14px 0}
+.notice{background:#fff8ec;color:#6c5739;border:1px solid #eadabb;border-radius:12px;padding:12px;font-size:13px}
+.controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+label{display:block;font-size:13px;font-weight:650;margin:8px 0 4px}
+select,textarea{display:block;width:100%;font:inherit;color:#263b30;background:white;border:1px solid #afc0b3;border-radius:10px;padding:9px;min-height:44px}
+textarea{min-height:125px;resize:vertical}
+button{font:inherit;min-height:44px;border:0;border-radius:10px;background:#2f765d;color:white;padding:9px 14px;cursor:pointer}
+button.subtle{color:#2f654f;background:#edf4ef;border:1px solid #cedbd0}
+button:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #28896c;outline-offset:2px}
+button:disabled{opacity:.55;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.hidden{display:none!important}
+.two{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(280px,.92fr);gap:15px}
+.plot{position:relative;width:100%;aspect-ratio:1.25;overflow:hidden;border:1px solid #d4e2d7;border-radius:11px;
+background:#f1f6f1;background-image:linear-gradient(#dbe8dd 1px,transparent 1px),linear-gradient(90deg,#dbe8dd 1px,transparent 1px);background-size:10% 10%}
+.north{position:absolute;top:8px;right:9px;color:#587366;font-size:12px;pointer-events:none}
+.pin{position:absolute;transform:translate(-50%,-50%);min-height:32px;min-width:32px;border-radius:50%;border:2px solid white;background:#387359;color:white;padding:5px;font:bold 11px system-ui;box-shadow:0 1px 5px #233a2855;z-index:1}
+.pin[data-type="station_reference"]{background:#506f9d}
+.pin[data-type="facility_reference"]{background:#af813f}
+.pin[data-precision="town_chome_reference_only"]{border:2px dashed #fbdb95}
+.pin[data-selected="true"]{outline:3px solid #dca842;outline-offset:2px;z-index:3}
+.legend{display:flex;flex-wrap:wrap;gap:13px;margin-top:9px;color:#587464;font-size:12px}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;background:#387359}
+.legend b.station{background:#506f9d}.legend b.facility{background:#af813f}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.metric{background:#f1f6f2;border-radius:9px;padding:10px}
+.metric strong{display:block;font-size:clamp(18px,3vw,27px);line-height:1.2;font-variant-numeric:tabular-nums}
+.metric span{font-size:12px;color:#607469}
+.card{border:1px solid #dce5db;border-radius:12px;padding:10px 12px;margin:8px 0}
+.card[data-selected="true"]{background:#f1f9f3;border-color:#34846a}
+.card button{width:100%;text-align:left;color:#284f3c;background:transparent;padding:0}
+.card button strong{display:block;font-size:15px}
+.card button small{display:block;color:#607568;font-size:12px}
+.entry{border-bottom:1px solid #e4ebe4;padding:9px 0;font-size:13px}
+.entry:last-child{border:0}.entry strong{display:block}.entry p{font-size:12px;margin:2px 0;overflow-wrap:anywhere}
+.warn{color:#805c36}.evidence{white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:780px){.two{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}.controls>div:first-child{grid-column:1/-1}}
+@media(max-width:490px){.controls{grid-template-columns:1fr}.controls>div:first-child{grid-column:auto}.panel{padding:12px}.metric{padding:8px}}
+</style></head><body><main>
+<nav class="small"><a href="./index.html">← トップ</a> / <a href="./ad-bridge.html">入力の単体PoC</a> / <a href="./public-map.html">大島の経路デモ</a></nav>
+<h1>広告の手がかりから、調べる順番を考える</h1>
+<p>ひばりヶ丘の広告と、同じ地域の公開住宅7候補・公共施設を使った比較です。経路が欠けていても候補を除外せず、参考位置からの<strong>暫定的な探索順</strong>を提示します。</p>
+<div class="notice"><strong>物件の特定結果ではありません。</strong> 表示は住所番号または町丁目の代表点。玄関・駅出口・公園入口ではありません。1.0／1.3／1.6倍の遠回り係数と町丁目の重み0.25は、精度検証済みの係数ではなく探索用の仮定です。正式な実測経路での採点と分離しています。</div>
+<section class="panel">
+<h2>1. 広告と比較の設定</h2>
+<div class="controls">
+<div><label for="mode">入力方法</label>
+<select id="mode"><option value="prelocked">出典固定の実広告</option><option value="text">広告文を貼り付け</option><option value="json">JSON v0.2＋引用原文</option></select></div>
+<div id="lockedArea"><label for="ad">広告（直接確認した3件）</label>
+<select id="ad"><option value="H01">H01：公園・小学校</option><option value="H02">H02：郵便局・PARCO</option><option value="H03">H03：西友・PARCO</option></select></div>
+<div><label for="factor">仮定する遠回り</label>
+<select id="factor"><option value="1">直線 × 1.0</option><option value="1.3" selected>直線 × 1.3</option><option value="1.6">直線 × 1.6</option></select></div>
+</div>
+<div id="textArea" class="hidden">
+<label for="adText">徒歩分数を含む広告原文</label><textarea id="adText" spellcheck="false" placeholder="例：ひばりが丘PARCO：徒歩3分"></textarea>
+<button type="button" class="subtle" id="insertSample">H01の公表引用2行を入力</button>
+</div>
+<div id="jsonArea" class="hidden">
+<label for="json">定型JSON</label><textarea id="json" spellcheck="false"></textarea>
+<label for="original">引用を含む広告原文</label><textarea id="original" spellcheck="false"></textarea>
+</div>
+<div class="actions"><button id="run" type="button">候補の探索順を更新</button></div>
+<p class="small">情報を補っていない条件、検索索引のみの広告は自動採用しません。仮定する遠回りを変えると順位が変化する場合があります。表示は端末内で計算されます。</p>
+</section>
+<section class="panel">
+<h2>2. 広告から採用した手がかり</h2>
+<div id="conditionStatus" role="status" class="small" aria-live="polite">資料を読み込んでいます。</div>
+<div id="conditions"></div>
+<h3>出典・入力が足りない条件</h3><div id="withheld"></div>
+</section>
+<div class="two">
+<section class="panel">
+<h2>3. 参考位置の図</h2>
+<div id="plot" class="plot" role="group" aria-label="公開住宅7・駅1・施設10の相対位置図。町丁目の代表点を含み、入口や道路線は表示しない。"><div class="north">↑ 北</div></div>
+<div class="legend"><span><b></b>公開住宅</span><span><b class="station"></b>駅</span><span><b class="facility"></b>公共施設</span></div>
+<p class="small">参照位置18点のうち住所番号一致13点、町丁目のみ5点。破線の枠は町丁目代表点です。ピンが重なって操作できない場合は下の施設一覧を使用してください。</p>
+<h3>公共施設・駅の参照地点</h3><div id="placeList"></div>
+</section>
+<section class="panel">
+<h2>4. 全7候補の暫定探索順</h2>
+<div class="metrics" id="stats"></div>
+<p id="status" class="small" role="status" aria-live="polite"></p>
+<div id="candidates"></div>
+<p class="small">欠測の候補も一覧に残します。探索順は「一致確率」ではなく、参考点間の直線距離と広告の記載距離・分数を仮の遠回り係数で比較した差の小ささです。参照位置が粗い条件は軽く扱います。</p>
+</section>
+</div>
+<section class="panel">
+<h2>5. 選択した候補・施設の根拠</h2>
+<div id="detail" class="small">ピンまたは候補一覧を選んでください。</div>
+<h3>住所番号レベルの位置が欠ける地点</h3><div id="missing" class="small"></div>
+</section>
+<p class="small">位置出典：<a href="https://github.com/geolonia/japanese-addresses-v2" target="_blank" rel="noopener noreferrer">Geolonia住所データv2</a>（CC BY 4.0、デジタル庁ABR由来、記録された更新時点2024年12月）と<a href="https://github.com/geolonia/japanese-addresses" target="_blank" rel="noopener noreferrer">旧町丁目データ</a>（CC BY 4.0）。入力された広告本文やJSONは外部へ送信・保存しません。外部地図タイルや経路APIは呼び出しません。</p>
+</main>
+<script type="module">
+import {bridgePrelockedPublicAd,bridgePastedPublicText,bridgeReviewedJson} from "./src/ad_input_bridge.mjs";
+import {buildHibariSameRegionMapReview} from "./src/hibari_same_region_map_view.mjs";
+const $=id=>document.getElementById(id);
+const txt=(tag,value,cls="")=>{const n=document.createElement(tag);n.textContent=String(value??"");if(cls)n.className=cls;return n};
+let files=null,report=null,selected=null;
+const filenames=["hibari_real_ads_prelocked_20261021.json","hibari_poi_identities_20261021.json",
+ "hibari_public_building_addresses_20261021.json","hibari_geolonia_v2_address_number_20261022.json",
+ "hibari_geolonia_town_chome_references_20261022.json"];
+async function data(){
+ if(files)return files;
+ const result=await Promise.all(filenames.map(async n=>{
+  const r=await fetch("./examples/"+n,{cache:"no-store"});
+  if(!r.ok)throw Error("公開資料が見つかりません："+n);
+  return r.json();
+ }));
+ files=result;return result;
+}
+function switchMode(){
+ const mode=$("mode").value;
+ $("lockedArea").classList.toggle("hidden",mode!=="prelocked");
+ $("textArea").classList.toggle("hidden",mode!=="text");
+ $("jsonArea").classList.toggle("hidden",mode!=="json");
+}
+$("mode").addEventListener("change",switchMode);
+$("insertSample").addEventListener("click",async()=>{
+ try{const [ads]=await data(),h=ads.advertisements.find(x=>x.ad_id==="H01");
+  $("adText").value=h.facilities.map(f=>f.source_excerpt).join("\n");
+ }catch(e){$("conditionStatus").textContent="例文を読めません："+e.message;}
+});
+function showPoint(id){
+ selected=id;
+ for(const b of $("plot").querySelectorAll("button.pin"))b.dataset.selected=String(b.dataset.id===id);
+ for(const b of $("candidates").querySelectorAll("div.card"))b.dataset.selected=String(b.dataset.id===id);
+ const detail=$("detail");detail.replaceChildren();
+ const p=report?.map_points.find(x=>x.id===id);
+ if(!p){detail.append(txt("p","この地点の参照座標はありません。候補は削除しません。"));return;}
+ detail.append(txt("h3",p.label));
+ detail.append(txt("p",(p.point_precision==="town_chome_reference_only"?"町丁目代表点です。建物や施設の所在を細かく示しません。":
+  "住所番号の代表点です。玄関や施設入口の座標ではありません。")+" 道路距離は実測していません。"));
+ const match=report.conditions.filter(c=>(c.place_id==="station:seibu-hibarigaoka"?c.place_id:"facility:"+c.place_id)===id);
+ for(const c of match){
+  const block=txt("div","","entry");block.append(txt("strong",c.label));
+  block.append(txt("p","広告原文："+c.source_quote,"evidence"));
+  block.append(txt("p","住所参照："+c.reference_status+"。徒歩の実測なし。"));
+  detail.append(block);
+ }
+ const c=report.exploratory_order.candidates.find(x=>x.candidate_id===id);
+ if(c){
+  detail.append(txt("h3","探索順 "+(c.reference_order??"未算出")+
+   " ／ 条件 "+c.available_clues+"/"+c.advertised_clue_count+"件で比較"));
+  detail.append(txt("p","仮定を変えた場合の順位："+(c.scenario_best_rank??"—")+"〜"+
+   (c.scenario_worst_rank??"—")+"。住所番号同士の条件："+c.quality_counts.address_number_clues+
+   "件、町丁目を含む条件："+c.quality_counts.town_level_clues+"件。"));
+  for(const e of c.evidence){
+   const row=txt("div","","entry");
+   const label=report.conditions.find(x=>x.place_id===e.place_id)?.label??e.place_id;
+   row.append(txt("strong",label));
+   row.append(txt("p",e.used_for_model?
+    "広告記載の距離目安："+e.approximate_advertised_m+"m ／ 参考点間の直線距離："+e.straight_reference_m+
+    "m（徒歩実測ではありません）。位置精度："+e.reference_quality:
+    "比較条件が欠測。減点や失格にはしません。","evidence"));
+   detail.append(row);
+  }
+ }
+ if(p.public_source_url){
+  const a=document.createElement("a");a.href=p.public_source_url;a.target="_blank";
+  a.rel="noopener noreferrer";a.textContent="公開施設情報を開く";detail.append(a);
+ }
+}
+function render(){
+ if(!report)return;
+ const els=report.exploratory_order,stat=$("stats");stat.replaceChildren();
+ for(const [value,label] of [[report.available_public_buildings,"公開候補"],[report.coordinate_reference_count,"番号参照点"],[report.lower_precision_town_reference_count,"町丁目のみ"]]){
+  const box=txt("div","","metric");box.append(txt("strong",value),txt("span",label));stat.append(box);
+ }
+ $("status").textContent=els.no_model_conditions?
+  "明示された有効な徒歩条件がないため、全候補を保持したまま探索順は未算出です。":
+  "全"+els.retained_candidates+"候補を保持。参考距離の仮定（直線×"+els.focus_factor+
+  "）に基づく探索順です。係数・位置参照の粗さで順序が変わり得ます。正解確率や実際の徒歩分数ではありません。";
+ const root=$("candidates");root.replaceChildren();
+ for(const c of els.candidates){
+  const div=txt("div","","card");div.dataset.id=c.candidate_id;div.dataset.selected=String(selected===c.candidate_id);
+  const b=txt("button","","");b.type="button";
+  b.append(txt("strong",(c.reference_order===null?"未比較":"参考"+c.reference_order+"位")+"　公開住宅 "+c.candidate_id));
+  b.append(txt("small","比較 "+c.available_clues+"/"+c.advertised_clue_count+"条件　"+
+   (c.scenario_best_rank===null?"":("仮定変更時 "+c.scenario_best_rank+"〜"+c.scenario_worst_rank+"位　"))+
+   (c.reference_location_quality==="town_chome_reference_only"?"町丁目参照":"番号参照")));
+  b.addEventListener("click",()=>showPoint(c.candidate_id));div.append(b);root.append(div);
+ }
+ const plot=$("plot");plot.replaceChildren();plot.append(txt("div","↑ 北","north"));
+ for(const p of report.map_points){
+  const b=txt("button",p.type==="public_complex_reference"?p.id:
+   p.type==="station_reference"?"駅":"施","pin");b.type="button";
+  b.dataset.id=p.id;b.dataset.type=p.type;b.dataset.precision=p.point_precision;
+  b.dataset.selected=String(selected===p.id);b.style.left=p.xPct+"%";b.style.top=p.yPct+"%";
+  b.title=p.label;b.setAttribute("aria-label",p.label+"。参照地点の根拠を確認");
+  b.addEventListener("click",()=>showPoint(p.id));plot.append(b);
+ }
+ const places=$("placeList");places.replaceChildren();
+ for(const p of report.map_points.filter(x=>x.type!=="public_complex_reference")){
+  const b=txt("button",p.label+"　"+(p.point_precision==="town_chome_reference_only"?"町丁目":"住所番号"),"subtle");
+  b.type="button";b.style.margin="4px";b.style.fontSize="12px";b.addEventListener("click",()=>showPoint(p.id));
+  places.append(b);
+ }
+ const missing=$("missing");missing.replaceChildren();
+ for(const p of report.missing_target_references){
+  missing.append(txt("p",p.label+"：番・号の参照なし。町丁目代表点で表示。補間や除外はしません。","warn"));
+ }
+ if(selected)showPoint(selected);
+}
+async function run(){
+ $("run").disabled=true;
+ try{
+  const [ads,pois,buildings,refs,towns]=await data(),mode=$("mode").value;
+  const bridge=mode==="prelocked"?bridgePrelockedPublicAd(ads,pois,$("ad").value):
+   mode==="text"?bridgePastedPublicText($("adText").value,pois):
+   bridgeReviewedJson($("json").value,$("original").value,pois);
+  report=buildHibariSameRegionMapReview(bridge,refs,buildings,pois,towns,{focusFactor:Number($("factor").value)});
+  $("conditionStatus").textContent="原文に根拠がある施設条件 "+bridge.conditions.length+"件、出典等の不足で保留 "+
+   bridge.withheld.length+"件。これは実際に歩いた経路の採点ではありません。";
+  const adopted=$("conditions");adopted.replaceChildren();
+  for(const c of report.conditions){const div=txt("div","","entry");
+   div.append(txt("strong",c.label+"（徒歩"+c.advertised_walk_minutes+"分）"));
+   div.append(txt("p",c.source_quote+" ／ 参照位置："+c.reference_status,"evidence"));
+   adopted.append(div);
+  }
+  if(!report.conditions.length)adopted.append(txt("p","有効な条件なし。全候補を残します。"));
+  const held=$("withheld");held.replaceChildren();
+  for(const h of report.withheld_conditions)held.append(txt("p",h.field+"： "+h.reason,"warn"));
+  if(!report.withheld_conditions.length)held.append(txt("p","今回の追加保留なし。"));
+  selected=null;render();
+  $("detail").replaceChildren();$("detail").append(txt("p","ピンまたは候補一覧から選べます。"));
+ }catch(e){
+  // An invalid next input must not leave an old result on screen.
+  report=null;selected=null;
+  for(const id of ["conditions","withheld","stats","plot","candidates","placeList","detail","missing"])
+   $(id).replaceChildren();
+  $("conditionStatus").textContent="比較できません："+String(e.message);
+  $("status").textContent="この入力に対する順位は未算出です。公開候補のデータ自体は削除されていません。入力を修正して再実行してください。";
+ }finally{$("run").disabled=false;}
+}
+$("run").addEventListener("click",run);
+$("factor").addEventListener("change",run);
+$("ad").addEventListener("change",run);
+switchMode();run();
+</script></body></html>

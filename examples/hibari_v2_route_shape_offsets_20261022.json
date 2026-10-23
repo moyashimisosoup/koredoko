@@ -1,0 +1,89 @@
+{
+  "schema_version": "app023-route-shape-endpoint-offsets-v0.1",
+  "app_id": "APP-023",
+  "cohort_id": "hibarigaoka-20261021",
+  "rechecked_on_jst": "2026-10-22",
+  "endpoint_offset_method": "Decode Valhalla route.legs[0].shape as encoded polyline6; haversine from public address-number reference to first/last returned route shape vertex.",
+  "endpoint_offset_interpretation": "Input-to-geometry endpoint distance, NOT independently measured entrance or street snap error.",
+  "valhalla_api_docs_url": "https://valhalla.github.io/valhalla/api/decoding/",
+  "coordinates_origin_file": "examples/hibari_geolonia_v2_address_number_20261022.json",
+  "api_data_source": "https://valhalla1.openstreetmap.de/route",
+  "route_graph_revision": "not_available",
+  "observed_reference_routes": 2,
+  "quality_certified_routes": 0,
+  "public_entrances_verified": 0,
+  "observations": [
+    {
+      "candidate_id": "K03",
+      "destination_key": "station:seibu-hibarigaoka",
+      "route_request_url": "https://valhalla1.openstreetmap.de/route?json=%7B%22locations%22%3A%5B%7B%22lat%22%3A35.749908039000005%2C%22lon%22%3A139.5437929%7D%2C%7B%22lat%22%3A35.751715822%2C%22lon%22%3A139.544906739%7D%5D%2C%22costing%22%3A%22pedestrian%22%2C%22directions_options%22%3A%7B%22units%22%3A%22kilometers%22%7D%2C%22directions_type%22%3A%22none%22%7D",
+      "source_coordinate_file": "examples/hibari_geolonia_v2_address_number_20261022.json",
+      "engine": "Valhalla public demo",
+      "mode": "pedestrian",
+      "polyline_precision": 6,
+      "polyline6": "g|~dcAatadiG]]oQiQwMwNsI}HkKsH{XgPoBZuBvAq@fC{BzIyB`I_@hAa@VmPgFB}BjAeE~@uC",
+      "polyline_point_count": 18,
+      "geometry_first_point": {
+        "lat": 35.749844,
+        "lon": 139.543889
+      },
+      "geometry_last_point": {
+        "lat": 35.751676,
+        "lon": 139.544881
+      },
+      "input_origin_point": {
+        "lat": 35.749908039000005,
+        "lon": 139.5437929
+      },
+      "input_destination_point": {
+        "lat": 35.751715822,
+        "lon": 139.544906739
+      },
+      "input_to_shape_start_offset_m": 11.22,
+      "input_to_shape_end_offset_m": 5,
+      "route_length_m": 298,
+      "route_time_seconds": 217.2,
+      "graph_version": null,
+      "facility_entrance_verified": false,
+      "station_exit_verified": false,
+      "source_quality": "polyline_endpoint_offset_not_independent_street_snap_measurement",
+      "eligible_for_accuracy_scoring": false
+    },
+    {
+      "candidate_id": "K05",
+      "destination_key": "station:seibu-hibarigaoka",
+      "route_request_url": "https://valhalla1.openstreetmap.de/route?json=%7B%22locations%22%3A%5B%7B%22lat%22%3A35.752760122%2C%22lon%22%3A139.542337389%7D%2C%7B%22lat%22%3A35.751715822%2C%22lon%22%3A139.544906739%7D%5D%2C%22costing%22%3A%22pedestrian%22%2C%22directions_options%22%3A%7B%22units%22%3A%22kilometers%22%7D%2C%22directions_type%22%3A%22none%22%7D",
+      "source_coordinate_file": "examples/hibari_geolonia_v2_address_number_20261022.json",
+      "engine": "Valhalla public demo",
+      "mode": "pedestrian",
+      "polyline_precision": 6,
+      "polyline6": "irdecAis~ciG`KdMjOaDoBuRUeTe@{[CuIbAqDb@s@jKe\\vEaOhIqQv@cBtDn@B}BjAeE~@uC",
+      "polyline_point_count": 17,
+      "geometry_first_point": {
+        "lat": 35.752757,
+        "lon": 139.542341
+      },
+      "geometry_last_point": {
+        "lat": 35.751676,
+        "lon": 139.544881
+      },
+      "input_origin_point": {
+        "lat": 35.752760122,
+        "lon": 139.542337389
+      },
+      "input_destination_point": {
+        "lat": 35.751715822,
+        "lon": 139.544906739
+      },
+      "input_to_shape_start_offset_m": 0.48,
+      "input_to_shape_end_offset_m": 5,
+      "route_length_m": 335,
+      "route_time_seconds": 259.645,
+      "graph_version": null,
+      "facility_entrance_verified": false,
+      "station_exit_verified": false,
+      "source_quality": "polyline_endpoint_offset_not_independent_street_snap_measurement",
+      "eligible_for_accuracy_scoring": false
+    }
+  ]
+}

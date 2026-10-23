@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light">
+<title>これどこ｜歩行経路の欠測監査</title>
+<style>
+:root{color-scheme:light;font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#f6f7f6;color:#203038}
+*{box-sizing:border-box}body{margin:0}main{max-width:980px;padding:24px 15px 60px;margin:auto}
+a{color:#286b58}p{color:#586675;line-height:1.7}h1{font-size:clamp(24px,4.5vw,34px);margin:7px 0}h2{font-size:18px;margin:0 0 12px}
+.panel{background:white;border:1px solid #d7dfdb;border-radius:18px;margin:16px 0;padding:19px}
+.note{font-size:13px;color:#607074}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.metric{border:1px solid #dce6e1;background:#f7faf8;border-radius:14px;padding:13px}
+.metric strong{display:block;font-size:clamp(22px,4vw,31px);font-variant-numeric:tabular-nums}
+.metric span{display:block;font-size:13px;color:#566a60}
+select,input{font:inherit;width:100%;min-height:43px;border:1px solid #acbcb5;border-radius:9px;padding:10px;background:white}
+button{font:inherit;font-weight:700;border-radius:999px;min-height:44px;padding:10px 22px;cursor:pointer;background:#276b57;color:white;border:0}
+button:disabled{background:#a9b7b1;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #2c8774;outline-offset:2px}
+label{display:block;font-weight:700;font-size:14px;margin:12px 0 8px}
+#status{padding:12px;background:#f0f5f2;border-radius:10px;line-height:1.65;white-space:pre-wrap}
+.scroller{overflow:auto;max-height:550px;border:1px solid #e0e5e2;border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13px}thead th{position:sticky;top:0;background:#f2f6f4}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #e8ece9;white-space:nowrap}
+.missing{color:#945b27}.matched{color:#176b4a}.synthetic{color:#606f84}
+@media(max-width:620px){.metrics{gap:7px}.metric{padding:9px}.panel{padding:13px}th,td{padding:8px}.scroller{max-height:440px}}
+</style>
+</head>
+<body><main>
+<p class="note"><a href="./index.html">← これどこ</a> / APP-023・検証準備</p>
+<h1>歩行経路の欠測監査</h1>
+<p>駅・施設への経路を収集するための研究用一覧です。物件名・正解対応は表示しません。<strong>欠測を地理的な推測距離に置き換えず</strong>、実際に取得した経路の証拠を後から点検できます。</p>
+<section class="panel">
+<h2>比較条件を選択</h2>
+<label for="scope">候補集合（匿名建物7件）</label>
+<select id="scope">
+<option value="direct">直接確認した広告3件の条件：駅＋公式施設5件、最大42経路</option>
+<option value="all">広告7件の条件：駅＋公式施設9件、最大70経路（広告4件は検索索引のみ）</option>
+</select>
+<label for="observations">既に収集した歩行経路の証拠JSON（任意）</label>
+<input id="observations" type="file" accept=".json,application/json">
+<p class="note">各データには候補ID、目的地ID、計測値、取得時刻、使用した道路エンジン・版、出典URL、両端の根拠・吸着距離が必要です。入力ファイルは端末内で処理し、送信しません。空の場合は全件「未測定」です。</p>
+<button id="check" type="button">欠測状態を点検</button>
+</section>
+<section class="panel" aria-live="polite">
+<h2>観測状況</h2>
+<div class="metrics">
+<div class="metric"><strong id="planned">—</strong><span>計測予定組</span></div>
+<div class="metric"><strong id="observed">—</strong><span>提出された経路記録</span></div>
+<div class="metric"><strong id="missing">—</strong><span>未測定</span></div>
+</div>
+<p class="note">提出されたURL・座標・距離はこの画面だけでは独立検証されません。出入口未確認の参考経路は正式な位置同定に利用できず、合成データは記録数から除外します。</p>
+<div id="status" role="status">読み込み前です。</div>
+</section>
+<section class="panel" aria-label="実際に取得した参考歩行経路">
+<h2>参考歩行経路（実API取得・採点対象外）</h2>
+<p class="note">住居表示の番号参照点から歩行ルートAPIに照会した結果です。経路網から距離が返り、ポリライン形状の端点と入力住所座標との差を確認しました。ただし、これは正式な道路吸着距離や建物入口・駅出口の位置精度を示しません。上の採点用記録数には加えません。</p>
+<div id="pilotStatus" class="status" role="status">参考経路を読み込んでいます。</div>
+<div class="scroller"><table><thead><tr><th>匿名公開候補</th><th>目的地</th><th>参考距離</th><th>始点差</th><th>駅側差</th><th>経路出典</th></tr></thead><tbody id="pilotRows"></tbody></table></div>
+</section>
+<section class="panel">
+<h2>候補×目的地の一覧</h2>
+<div class="scroller"><table><thead><tr><th>匿名候補</th><th>目的地</th><th>計測値</th><th>状態</th><th>根拠</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+<p class="note">プログラムの自動検査・GitHub CIと、実GPS測量・歩行経路API取得・PC/iPhone実機動作確認は別の工程です。公開住棟のみを対象とし、非公開住戸や個人の位置は扱いません。</p>
+</main>
+<script type="module">
+import {buildHibariRouteCoverage} from "./src/hibari_reference_point_plan.mjs";
+import {auditHibariRouteObservations} from "./src/hibari_route_observation_audit.mjs";
+import {summarizeHibariReferenceWalkPilot} from "./src/hibari_v2_reference_pilot.mjs";
+import {auditHibariPilotRouteShapeOffsets} from "./src/hibari_route_shape_endpoint_audit.mjs";
+const $=id=>document.getElementById(id);
+const read=async file=>{const resp=await fetch("./examples/"+file,{cache:"no-store"});if(!resp.ok)throw Error("公開根拠台帳の読込失敗: "+file);return resp.json();};
+let inputs=null;
+async function init(){
+ if(inputs)return inputs;
+ inputs=await Promise.all(["hibari_real_ads_prelocked_20261021.json","hibari_poi_identities_20261021.json","hibari_public_building_addresses_20261021.json"].map(read));
+ return inputs;
+}
+async function render(){
+ $("check").disabled=true;$("status").textContent="確認中…";
+ try{
+  const [ads,pois,buildings]=await init();
+  const plan=buildHibariRouteCoverage(ads,pois,buildings,{directOnly:$("scope").value==="direct"});
+  const file=$("observations").files[0];
+  if(file&&file.size>1000000)throw Error("JSONは1MB以下にしてください");
+  const content=file?JSON.parse(await file.text()):[];
+  const observations=Array.isArray(content)?content:content?.observations;
+  const audit=auditHibariRouteObservations(plan,observations);
+  $("planned").textContent=audit.planned_route_pairs;
+  $("observed").textContent=audit.measured_route_pairs;
+  $("missing").textContent=audit.missing_route_pairs;
+  $("status").textContent="出入口の品質確認が必要な経路："+audit.entrance_review_needed_pairs+
+   "組。 合成試験のみ："+audit.synthetic_test_pairs+"組。\n独立正解率：未測定。予測順位：未確定。";
+  const [pilot,refs]=await Promise.all([
+   read("hibari_v2_exploratory_walks_20261022.json"),
+   read("hibari_geolonia_v2_address_number_20261022.json")]);
+  const preview=summarizeHibariReferenceWalkPilot(pilot,refs,plan);
+  const shapeFile=await read("hibari_v2_route_shape_offsets_20261022.json");
+  const shapeAudit=auditHibariPilotRouteShapeOffsets(shapeFile,pilot,refs,plan);
+  const offsets=new Map(shapeAudit.rows.map(x=>[x.candidate_id,x]));
+  $("pilotStatus").textContent="実際のAPI応答："+preview.exploratory_observed_pairs+
+   "組／予定"+preview.planned_pairs+"組。経路形状の端点差は2本で算出済み。品質確認済み："+
+   shapeAudit.quality_certified_routes+"組。建物入口・駅出口は未確認。正解率には使用不可。";
+  $("pilotRows").replaceChildren();
+  for(const pilotRow of preview.evidence){
+   const tr=document.createElement("tr");
+   const offset=offsets.get(pilotRow.candidate_id);
+   for(const value of [pilotRow.candidate_id,"ひばりヶ丘駅",pilotRow.reported_distance_m+"m",
+     offset?offset.start_reference_to_geometry_m.toFixed(2)+"m":"—",
+     offset?offset.station_reference_to_geometry_m.toFixed(2)+"m":"—"]){
+    const td=document.createElement("td");td.textContent=value;tr.append(td);
+   }
+   const source=document.createElement("td");
+   const a=document.createElement("a");a.href=pilotRow.source_url;a.textContent="取得した経路";a.target="_blank";a.rel="noopener noreferrer";
+   source.append(a);tr.append(source);$("pilotRows").append(tr);
+  }
+  $("rows").replaceChildren();
+  const labels=new Map(plan.destinations.map(d=>[d.destination_key,d.name]));
+  for(const x of audit.rows){
+   const tr=document.createElement("tr");
+   for(const str of [x.candidate_id,labels.get(x.destination_key)||x.destination_key,
+      x.observed?x.meters+"m":x.record_class==="synthetic_test_only"?"合成のみ":"—",x.status]){
+    const td=document.createElement("td");td.textContent=str;tr.append(td);
+   }
+   tr.lastChild.className=x.observed?"matched":x.record_class==="synthetic_test_only"?"synthetic":"missing";
+   const source=document.createElement("td");
+   if(x.observed&&x.route_source_url){const a=document.createElement("a");a.href=x.route_source_url;a.textContent="経路出典";a.rel="noopener noreferrer";a.target="_blank";source.append(a);}
+   else source.textContent="—";
+   tr.append(source);
+   $("rows").append(tr);
+  }
+ }catch(e){
+  $("status").textContent="検査エラー："+String(e?.message||e)+
+  "\n不正な経路データは採点・計測済み扱いにしません。";
+  $("planned").textContent="—";$("observed").textContent="—";$("missing").textContent="—";$("rows").replaceChildren();
+ }finally{$("check").disabled=false;}
+}
+$("check").addEventListener("click",render);
+$("scope").addEventListener("change",render);
+render();
+</script></body></html>
