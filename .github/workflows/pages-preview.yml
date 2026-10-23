@@ -86,5 +86,7 @@ jobs:
           check "area.html" "tile.openstreetmap.org"
           check "src/area_overlap_solver.mjs" "solveSearchArea"
           check "src/openpoi_facility_matcher.mjs" "enrichWithOpenPoi"
+          check "area.html" 'id="listing-url"'
+          check "src/url_prompt_builder.mjs" "buildListingExtractionPrompt"
           check "examples/hibari_poi_identities_20261021.json" "app023-poi-identity-ledger-v0.1"
           echo "APP-023 Pages live HTTP content checks complete."
