@@ -40,7 +40,7 @@ test("browser area UI handles text safely, never inserts private addresses or in
  assert.ok(!h.includes("fetch(\"https"));
  assert.ok(!h.includes("building:K"));
  assert.ok(!h.includes("ひばりヶ丘プラザ"));
- assert.ok(h.includes("徒歩経路APIはまだ使用していません"));
+ assert.ok(h.includes("道路徒歩経路も未計測"));
  assert.ok(h.includes("OpenPOIの出典"));
  assert.ok(h.includes("広告全文や住所は送らず"));
 });
